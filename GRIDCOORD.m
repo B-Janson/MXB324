@@ -44,76 +44,101 @@ for i=n+1:n*m-1
         NT(i)=4;
     elseif (((XY(i,1) > 0) && (XY(i,1)) < 500) && ((XY(i,2) > 0)) && ((XY(i,2) <30))) || (((XY(i,1) > 350) && (XY(i,1)) < 500) && (XY(i,2) > 0) && (XY(i,2) <80))
         %Sandstone Interior
-        NT(i)=5;
+        if (~(XY(i,1) == 450) && (XY(i,2) == 10))
+            NT(i)=5;
+        elseif XY(i,2) >= 76
+            NT(i)=6;
+        else
+            NT(i)=7;
+        end
     elseif ((XY(i,1) == 500) && ((XY(i,2) > 0))) && ((XY(i,2) <80))
         %Right sandstone boundary
-        NT(i)=6;
+        if XY(i,2) < 76
+            NT(i)=8;
+        else
+            NT(i)=9;
+        end
     elseif (XY(i,2) == 30) && (XY(i,1) == 0)
         %S/A Boundary
-        NT(i)=7;
+        NT(i)=10;
     elseif ((XY(i,2) == 30) && ((XY(i,1) > 0))) && ((XY(i,1) < 50))
         %S/A Interface
-        NT(i)=8;
+        NT(i)=11;
     elseif (XY(i,2) == 30) && (XY(i,1) == 50)
         %S/A/C lower corner
-        NT(i)=9;
+        NT(i)=12;
     elseif ((XY(i,2) == 30) && ((XY(i,2) > 0))) && ((XY(i,2) <80))
         %S/C horizontal interface
-        NT(i)=10;
+        NT(i)=13;
     elseif (XY(i,2) == 30) && (XY(i,1) == 350)
         %S/C corner
-        NT(i)=11;
+        NT(i)=14;
     elseif (XY(i,1) == 0) && (XY(i,2) > 30)
         %A left boundary
-        NT(i)=12;
+        if XY(i,2) < 78
+            NT(i)=15;
+        else
+            NT(i)=16;
+        end
     elseif (((XY(i,1) > 0) && (XY(i,1)) < 50) && ((XY(i,2) > 30)) && ((XY(i,2) > 80))) || (((XY(i,1) > 0) && (XY(i,1)) < 500) && (XY(i,2) > 40) && (XY(i,2) <80))
         %A Interior
-        NT(i)=13;
+        if (~(XY(i,1) == 100) && (XY(i,2) == 50))
+            NT(i)=17;
+        elseif XY(i,2) >=78
+            NT(i)=18;
+        else
+            NT(i)=19;
+        end
     elseif ((XY(i,1) == 50) && ((XY(i,2) > 30))) && ((XY(i,2) < 40))
         %A/C interface
-        NT(i)=14;
+        NT(i)=20;
     elseif (((XY(i,1) > 50) && (XY(i,1)) < 350) && ((XY(i,2) > 30))) && ((XY(i,2) < 40))
         %C interior
-        NT(i)=15;
+        NT(i)=21;
     elseif ((XY(i,1) == 350) && ((XY(i,2) > 30))) && ((XY(i,2) <50))
         %C/S vertical interface
-        NT(i)=16;
+        NT(i)=22;
     elseif ((XY(i,1) == 50)) && ((XY(i,2) == 40))
         %C/A corner
-        NT(i)=17;
+        NT(i)=23;
     elseif ((XY(i,2) == 40) && ((XY(i,1) > 50))) && ((XY(i,2) < 350))
         %C/A horizontal interface
-        NT(i)=18;
+        NT(i)=24;
     elseif ((XY(i,1) == 350)) && ((XY(i,2) == 40))
         %C/A/S upper corner
-        NT(i)=19;
+        NT(i)=25;
     elseif ((XY(i,1) == 350) && ((XY(i,2) > 40))) && ((XY(i,2) < 80))
         %A/S interface
-        NT(i)=20;
+        if XY(i,2) < 78
+            NT(i)=26;
+        else
+            NT(i)=27;
+        end
     elseif 1 == 0 %((XY(i,1) == 0) && ((XY(i,2) == 60))
         %Bed/River
-        NT(i)=21;
+        NT(i)=28;
     elseif 1 == 0 %((XY(i,1) == 0) && ((XY(i,2) > 60))) && ((XY(i,2) <80))
         %River Boundary
-        NT(i)=22;
+        
+        
     elseif ((XY(i,1) == 0)) && ((XY(i,2) == 80))
         %River/Rain, L bedrock rain for baby problem
-        NT(i)=23;
+        NT(i)=29;
     elseif ((XY(i,2) == 80) && ((XY(i,1) > 0))) && ((XY(i,1) < 350))
         %A/Rain boundary
-        NT(i)=24;
+        NT(i)=30;
     elseif ((XY(i,1) == 350)) && ((XY(i,2) == 80))
         %A/S/Rain Boundary
-        NT(i)=25;
+        NT(i)=31;
     elseif ((XY(i,2) == 80) && ((XY(i,1) > 350))) && ((XY(i,1) <500))
         %S/Rain Boundary
-        NT(i)=26;
+        NT(i)=32;
     elseif (XY(i,1) == 500) && (XY(i,2) == 80)
         %S/bedrock/rain
-        NT(i)=27;
+        NT(i)=33;
     end
 end
-NT(DIM.n*DIM.m)=27;
+NT(DIM.n*DIM.m)=34;
 
 B=gallery('tridiag',n*m,1,1,1);
 L=n;

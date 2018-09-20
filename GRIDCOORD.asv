@@ -25,7 +25,7 @@ DIM.dy=zeros(1,DIM.m-1);
 X=X';
 Y=Y';
 XY=[X(:),Y(:)];
-
+DIM.XY=XY;
 
 %Assign a node type to each vertex,
 %Just the baby problem for now
@@ -44,31 +44,51 @@ for i=n+1:n*m-1
         NT(i)=4;
     elseif (((XY(i,1) > 0) && (XY(i,1)) < 500) && ((XY(i,2) > 0)) && ((XY(i,2) <30))) || (((XY(i,1) > 350) && (XY(i,1)) < 500) && (XY(i,2) > 0) && (XY(i,2) <80))
         %Sandstone Interior
-        NT(i)=5;
+        if (~(XY(1,i) == 450) && (XY(2,i) == 10))
+            NT(i)=5;
+        elseif XY(2,i) >= 76
+            NT(i)=6;
+        else
+            NT(i)=7;
+        end
     elseif ((XY(i,1) == 500) && ((XY(i,2) > 0))) && ((XY(i,2) <80))
         %Right sandstone boundary
-        NT(i)=6;
+        if XY(2,i) < 76
+            NT(i)=7;
+        else
+            NT(i)=;
+        end
     elseif (XY(i,2) == 30) && (XY(i,1) == 0)
         %S/A Boundary
-        NT(i)=7;
+        NT(i)=8;
     elseif ((XY(i,2) == 30) && ((XY(i,1) > 0))) && ((XY(i,1) < 50))
         %S/A Interface
-        NT(i)=8;
+        NT(i)=9;
     elseif (XY(i,2) == 30) && (XY(i,1) == 50)
         %S/A/C lower corner
-        NT(i)=9;
+        NT(i)=10;
     elseif ((XY(i,2) == 30) && ((XY(i,2) > 0))) && ((XY(i,2) <80))
         %S/C horizontal interface
-        NT(i)=10;
+        NT(i)=11;
     elseif (XY(i,2) == 30) && (XY(i,1) == 350)
         %S/C corner
-        NT(i)=11;
+        NT(i)=12;
     elseif (XY(i,1) == 0) && (XY(i,2) > 30)
         %A left boundary
-        NT(i)=12;
+        if XY(i,2) < 78
+            NT(i)=13;
+        else
+            NT(i)=;
+        end
     elseif (((XY(i,1) > 0) && (XY(i,1)) < 50) && ((XY(i,2) > 30)) && ((XY(i,2) > 80))) || (((XY(i,1) > 0) && (XY(i,1)) < 500) && (XY(i,2) > 40) && (XY(i,2) <80))
         %A Interior
-        NT(i)=13;
+        if (~(XY(1,i) == 100) && (XY(2,i) == 50))
+            NT(i)=14;
+        elseif XY(2,i) >=78
+            NT(i)=;
+        else
+            NT(i)=15;
+        end
     elseif ((XY(i,1) == 50) && ((XY(i,2) > 30))) && ((XY(i,2) < 40))
         %A/C interface
         NT(i)=14;
@@ -77,7 +97,7 @@ for i=n+1:n*m-1
         NT(i)=15;
     elseif ((XY(i,1) == 350) && ((XY(i,2) > 30))) && ((XY(i,2) <50))
         %C/S vertical interface
-        NT(i)=16;
+        NT(i)=;
     elseif ((XY(i,1) == 50)) && ((XY(i,2) == 40))
         %C/A corner
         NT(i)=17;
@@ -89,13 +109,18 @@ for i=n+1:n*m-1
         NT(i)=19;
     elseif ((XY(i,1) == 350) && ((XY(i,2) > 40))) && ((XY(i,2) < 80))
         %A/S interface
-        NT(i)=20;
+        if XY(i,2) < 76
+            NT(i)=16;
+        else
+            NT(i)=;
+        end
     elseif 1 == 0 %((XY(i,1) == 0) && ((XY(i,2) == 60))
         %Bed/River
         NT(i)=21;
     elseif 1 == 0 %((XY(i,1) == 0) && ((XY(i,2) > 60))) && ((XY(i,2) <80))
         %River Boundary
-        NT(i)=22;
+        
+        
     elseif ((XY(i,1) == 0)) && ((XY(i,2) == 80))
         %River/Rain, L bedrock rain for baby problem
         NT(i)=23;
@@ -131,11 +156,6 @@ b=bandwidth(B(r,r));
 DIM.r=r;
 DIM.b=b;
 
-
 DIM.XY=DIM.XY(r,:);
-DIM.dy=zeros(n*m-1,1);
-for i=1:DIM.m-1
-    DIM.dy(i)=DIM.y(i+1)-DIM.dy(i);
-end
 DIM.NT=NT(r);
 end
