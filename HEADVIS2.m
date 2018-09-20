@@ -2,7 +2,7 @@ function []=HEADVIS(DIM,PHI)
 
 n=DIM.n;
 m=DIM.m;
-Y=DIM.y;
+Z=DIM.z;
 X=DIM.x;
 
 HEAD=zeros(m,n);
@@ -17,8 +17,8 @@ end
 
 figure()
 hold on
-surf(X,Y,HEAD,'EdgeColor','none')
-contour(X,Y,HEAD,[0 0],'r','linewidth',0.5);
+surf(X,Z,HEAD,'EdgeColor','none')
+contour(X,Z,HEAD,[0 0],'r','linewidth',0.5);
 colorbar
 
 xlabel('X (m)')

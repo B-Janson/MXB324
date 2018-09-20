@@ -1,43 +1,71 @@
 function [DIM]=GRIDCOORD()
+% GRIDCOORD returns the dimension of the grid
 
+WIDTH = 500;
+HEIGHT = 80;
 
-%The Discretisation we need in the y coordinate
+n = 251;
+m = 41;
 
-DIM.x=linspace(0,500,51); %Keep it uniform for now
-n=length(DIM.x);
-DIM.n=n;
-DIM.x=sort(DIM.x);
-DIM.dx=zeros(1,DIM.n-1);
-for i=1:DIM.n-1
-    DIM.dx(i)=DIM.x(i+1)-DIM.dx(i);
+% Keep it uniform for now
+% The discretisation we need in the x coordinate
+DIM.x = linspace(0, WIDTH, n); 
+DIM.n = n;
+
+DIM.dx = zeros(1, n-1);
+for i = 1:n-1
+    DIM.dx(i) = DIM.x(i+1) - DIM.x(i);
 end
 
 %The Discretisation we need in the y
-DIM.y=linspace(0,80,6); %We Basic
-m=length(DIM.y);
-DIM.m=m;
-DIM.y=sort(DIM.y);
-DIM.dy=zeros(1,DIM.m-1);
+DIM.z = linspace(0, HEIGHT, m);
+DIM.m = m;
+
+DIM.dz = zeros(1, m-1);
+for i = 1:m-1
+    DIM.dz(i) = DIM.z(i + 1) - DIM.z(i);
+end
 
 
 %Create coordinate vector
-[X,Y]=meshgrid(DIM.x,DIM.y);
-X=X';
-Y=Y';
-XY=[X(:),Y(:)];
+[X, Z] = meshgrid(DIM.x, DIM.z);
+X = X';
+Z = Z';
+XY=[X(:), Z(:)];
 DIM.XY=XY;
+
+% Set node point constants
+DIM.K_xx = zeros(n*m, 1);
+DIM.K_zz = zeros(n*m, 1);
+DIM.psi_res = zeros(n*m, 1);
+DIM.psi_sat = zeros(n*m, 1);
+DIM.alpha = zeros(n*m, 1);
+DIM.n_const = zeros(n*m, 1);
+
+% Set all cells to be Alluvium
+for i = 1:n*m
+    DIM.K_xx(i)     = 2.6;
+    DIM.K_zz(i)     = 0.91;
+    DIM.psi_res(i)  = 0.01;
+    DIM.psi_sat(i)  = 0.33;
+    DIM.alpha(i)    = 1.43;
+    DIM.n_const(i)  = 1.51;
+end
 
 %Assign a node type to each vertex,
 %Just the baby problem for now
 %Add in the river nodes later
-NT=zeros(n*m,1);
+NT=zeros(n*m, 1);
 
 %Bottom L corner
 NT(1)=1;
+
 %Bottom Row
 NT(2:DIM.n-1)=2;
+
 %Bottom R corner
 NT(n)=3;
+
 for i=n+1:n*m-1
     if ((XY(i,1) == 0) && ((XY(i,2) > 0))) && ((XY(i,2) <80))
         %Left Sandstone Boundary

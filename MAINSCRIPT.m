@@ -1,19 +1,19 @@
 close all
 clear
+clc
 %% Part 0 Initialisation
 
-T=linspace(0,24,25)%Units, maybe weeks?
+T=linspace(0,24,25); %Units, maybe weeks?
 
 
-[DIM]=GRIDCOORD;
-U0=INITCOND(DIM);
+[DIM] = GRIDCOORD;
+[h, phi, k, S] = INITCOND(DIM);
 %[M]=MATGEN(DIM,h);
 %[S]=SGEN(DIM);
 
 
-HEADVIS1(DIM,U0)
-PHI=WCONT(DIM,U0);
-HEADVIS2(DIM,PHI)
+HEADVIS1(DIM, h)
+HEADVIS2(DIM, phi)
 
 %% PART 1 Convergence?
 
