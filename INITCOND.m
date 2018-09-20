@@ -13,5 +13,5 @@ htop=-10;
 for i=1:n*m
     U0(i)=hbot+(htop-hbot)*XY(i,2)/80;
 end
-
+U0(DIM.r)=U0;
 end
