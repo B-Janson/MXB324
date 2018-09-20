@@ -3,7 +3,7 @@ function [DIM]=GRIDCOORD()
 
 %The Discretisation we need in the y coordinate
 
-DIM.x=linspace(0,500,251); %Keep it uniform for now
+DIM.x=linspace(0,500,51); %Keep it uniform for now
 n=length(DIM.x);
 DIM.n=n;
 DIM.x=sort(DIM.x);
@@ -13,14 +13,12 @@ for i=1:DIM.n-1
 end
 
 %The Discretisation we need in the y
-DIM.y=linspace(0,80,41); %We Basic
+DIM.y=linspace(0,80,6); %We Basic
 m=length(DIM.y);
 DIM.m=m;
 DIM.y=sort(DIM.y);
 DIM.dy=zeros(1,DIM.m-1);
-for i=1:DIM.m-1
-    DIM.dy(i)=DIM.y(i+1)-DIM.dy(i);
-end
+
 
 %Create coordinate vector
 [X,Y]=meshgrid(DIM.x,DIM.y);
@@ -116,5 +114,23 @@ for i=n+1:n*m-1
     end
 end
 NT(DIM.n*DIM.m)=27;
-DIM.NT=NT;
+
+B=gallery('tridiag',n*m,1,1,1);
+L=n;
+U=n*m;
+for i=1:n*(m-1)
+    B(L,i)=1;
+    B(U-n,U)=1;
+    L=L+1;
+    U=U-1;
+end
+
+r=symrcm(B);
+b=bandwidth(B(r,r));
+
+DIM.r=r;
+DIM.b=b;
+
+DIM.XY=DIM.XY(r,:);
+DIM.NT=NT(r);
 end
