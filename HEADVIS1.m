@@ -4,6 +4,7 @@ n=DIM.n;
 m=DIM.m;
 Z=DIM.z;
 X=DIM.x;
+H(DIM.r) = H;
 
 HEAD=zeros(m,n);
 C=n*m+1;

@@ -5,7 +5,7 @@
 Number | Description | Coordinates
 ------ | ----------- | -----------
 1 | Bottom left corner | x = 0 && z = 0
-2 | Bottom horizontal boundary | 0 < x < 80 && z = 0
+2 | Bottom horizontal boundary | 0 < x < 500 && z = 0
 3 | Bottom right corner | x = 500 && z = 0
 4 | Left sandstone boundary | x = 0 && 0 < z < 30
 5 | Pump | x = 450 && z = 10

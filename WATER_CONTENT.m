@@ -1,4 +1,4 @@
-function [PHI]=WCONT(DIM, h, S, i)
+function [PHI]=WATER_CONTENT(DIM, h, S, i)
 % Water content function
 
 PHI = 0;
