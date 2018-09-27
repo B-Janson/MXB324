@@ -1,16 +1,20 @@
 function [h, phi, k, S]=INITCOND(DIM)
+% Function to set up all variables according the initial state of the
+% aquifer
+
 n = DIM.n;
 m = DIM.m;
 XY = DIM.XY;
-%%Create the initial vector
 
+% Given initial constants
+hbot = -5;
+htop = -10;
+
+% Create the initial vectors
 h   = zeros(n*m, 1);
 phi = zeros(n*m, 1);
 k   = zeros(n*m, 1);
 S   = zeros(n*m, 1);
-
-hbot = -5;
-htop = -10;
 
 for i = 1:n*m
     h(i) = hbot + (htop - hbot) * XY(i, 2)/80;

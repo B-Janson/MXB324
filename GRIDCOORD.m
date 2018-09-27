@@ -5,11 +5,12 @@ function [DIM]=GRIDCOORD()
 WIDTH = 500;
 HEIGHT = 80;
 
+% number of horizontal node points
 n = 251;
+% number of vertical node points
 m = 41;
 
 num_nodes = n * m;
-num_cells = (n - 1) * (m - 1);
 
 % Keep it uniform for now
 
@@ -22,6 +23,17 @@ for i = 1:n-1
     DIM.dx(i) = DIM.x(i + 1) - DIM.x(i);
 end
 
+DELTAX = zeros(num_nodes, 2);
+for j = 1:m
+    DELTAX((j-1) * n + 1, :) = DIM.dx(1) / 2;
+    DELTAX(j * n, :) = DIM.dx(end) / 2;
+
+    for i = 2:n-1
+        DELTAX((j-1) * n + i, 1) = DIM.dx(i - 1) / 2;
+        DELTAX((j-1) * n + i, 2) = DIM.dx(i) / 2;
+    end
+end
+
 %The Discretisation we need in the y
 DIM.z = linspace(0, HEIGHT, m);
 DIM.m = m;
@@ -31,6 +43,27 @@ for i = 1:m-1
     DIM.dz(i) = DIM.z(i + 1) - DIM.z(i);
 end
 
+DELTAZ = zeros(num_nodes, 2);
+for j = 1:n
+    DELTAZ((j-1) * m + 1, :) = DIM.dz(1) / 2;
+    DELTAZ(j * m, :) = DIM.dz(end) / 2;
+
+    for i = 2:m-1
+        DELTAZ((j-1) * m + i, 1) = DIM.dz(i - 1) / 2;
+        DELTAZ((j-1) * m + i, 2) = DIM.dz(i) / 2;
+    end
+end
+
+DIM.cell_volume = zeros(n*m, 4);
+for i = 1:m
+    for j = 1:n
+        index = (i-1) * n + j;
+        DIM.cell_volume(index, 1) = DELTAX(index, 2) * DELTAZ(index, 2);
+        DIM.cell_volume(index, 2) = DELTAX(index, 1) * DELTAZ(index, 2);
+        DIM.cell_volume(index, 3) = DELTAX(index, 1) * DELTAZ(index, 1);
+        DIM.cell_volume(index, 4) = DELTAX(index, 2) * DELTAZ(index, 1);
+    end
+end
 
 %Create coordinate vector
 [X, Z] = meshgrid(DIM.x, DIM.z);
@@ -40,21 +73,21 @@ XY = [X(:), Z(:)];
 DIM.XY = XY;
 
 % Set node point constants
-DIM.K_xx = zeros(n*m, 1);
-DIM.K_zz = zeros(n*m, 1);
-DIM.psi_res = zeros(n*m, 1);
-DIM.psi_sat = zeros(n*m, 1);
-DIM.alpha = zeros(n*m, 1);
-DIM.n_const = zeros(n*m, 1);
+DIM.K_xx = zeros(num_nodes, 4);
+DIM.K_zz = zeros(num_nodes, 4);
+DIM.phi_res = zeros(num_nodes, 4);
+DIM.phi_sat = zeros(num_nodes, 4);
+DIM.alpha = zeros(num_nodes, 4);
+DIM.n_const = zeros(num_nodes, 4);
 
 % Set all cells to be Alluvium
-for i = 1:num_cells
-    DIM.K_xx(i)     = 2.6;
-    DIM.K_zz(i)     = 0.91;
-    DIM.psi_res(i)  = 0.01;
-    DIM.psi_sat(i)  = 0.33;
-    DIM.alpha(i)    = 1.43;
-    DIM.n_const(i)  = 1.51;
+for i = 1:num_nodes
+    DIM.K_xx(i, :)     = 2.6;
+    DIM.K_zz(i, :)     = 0.91;
+    DIM.phi_res(i, :)  = 0.01;
+    DIM.phi_sat(i, :)  = 0.33;
+    DIM.alpha(i, :)    = 1.43;
+    DIM.n_const(i, :)  = 1.51;
 end
 
 % Assign a node type to each vertex,
@@ -72,7 +105,6 @@ NT(2:DIM.n-1) = 2;
 NT(n)=3;
 
 for i = n+1:num_nodes-1
-    disp(XY(i,:))
     if ((XY(i,1) == 0) && (XY(i,2) > 0) && (XY(i,2) < 30))
         %Left Sandstone Boundary
         NT(i)=4;

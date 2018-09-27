@@ -1,20 +1,21 @@
 function [PHI]=WCONT(DIM, h, S, i)
-% n=DIM.n;
-% m=DIM.m;
-% XY=DIM.XY;
+% Water content function
 
-%Sres
-%Ssat
-%Cres
-%Csat
-Ares=0.01;
-Asat=0.33;
-% PHI=zeros(1,length(h));
+PHI = 0;
+phi_res = DIM.phi_res(i, :);
+phi_sat = DIM.phi_sat(i, :);
+cell_volume = DIM.cell_volume(i, :);
 
 if h(i) < 0
-    PHI = Ares + (Asat - Ares) * S(i);
+    for cell = 1:4
+        PHI = PHI + cell_volume(cell) * (phi_res(cell) + S(i) * (phi_sat(cell) - phi_res(cell)));
+    end
+    PHI = PHI / sum(cell_volume);
 else
-    PHI = Asat;
+    for cell = 1:4
+        PHI = PHI + cell_volume(cell) * phi_sat(cell);
+    end
+    PHI = PHI / sum(cell_volume);
 end
 
 end
