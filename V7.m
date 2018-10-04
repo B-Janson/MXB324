@@ -1,4 +1,4 @@
-function f = V7(DIM, i, h, h_old, phi, phi_old, k, k_old, dt, theta) %, sigma)
+function f = V7(DIM, i, h, h_old, phi, phi_old, k, k_old, PARAMS)
 % Normal sandstone interior node
 
 n = DIM.n;
@@ -13,6 +13,9 @@ east = (DIM.r == i+1);
 west = (DIM.r == i-1);
 north = (DIM.r == i+n);
 south = (DIM.r == i-n);
+
+dt = PARAMS.dt;
+theta = PARAMS.theta;
 
 if i == 332
     disp('jsda')

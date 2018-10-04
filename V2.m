@@ -1,4 +1,4 @@
-function f = V2(DIM, i, h, h_old, phi, phi_old, k, k_old, dt, theta) %, sigma)
+function f = V2(DIM, i, h, h_old, phi, phi_old, k, k_old, PARAMS)
 % Bottom Boundary
 
 n = DIM.n;
@@ -12,6 +12,9 @@ point = (DIM.r == i);
 east = (DIM.r == i+1);
 west = (DIM.r == i-1);
 north = (DIM.r == i+n);
+
+dt = PARAMS.dt;
+theta = PARAMS.theta;
 
 f = phi(point) - phi_old(point) - dt/cell_volume * (theta * ( ...
               (k(point) + k(east)) * K_xx * dz/(4 * dx) * (h(east) - h(point)) ...

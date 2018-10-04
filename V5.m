@@ -1,4 +1,4 @@
-function f = V5(DIM, i, h, h_old, phi, phi_old, k, k_old, dt, theta) %, sigma)
+function f = V5(DIM, i, h, h_old, phi, phi_old, k, k_old, PARAMS)
 % Pump at (450, 10)
 
 % XYN = DIM.XY;

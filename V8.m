@@ -1,4 +1,4 @@
-function f = V8(DIM, i, h, h_old, phi, phi_old, k, k_old, dt, theta) %, sigma)
+function f = V8(DIM, i, h, h_old, phi, phi_old, k, k_old, PARAMS)
 % Right boundary sandstone
 
 % XYN = DIM.XY;
@@ -15,6 +15,9 @@ point = (DIM.r == i);
 west = (DIM.r == i-1);
 north = (DIM.r == i+n);
 south = (DIM.r == i-n);
+
+dt = PARAMS.dt;
+theta = PARAMS.theta;
 
 f = phi(point) - phi_old(point) - dt/cell_volume * (theta * ( ...
               (k(point) + k(west)) * K_xx * dz/(4 * dx) * (h(west) - h(point)) ...

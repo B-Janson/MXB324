@@ -1,4 +1,4 @@
-function f = V33(DIM, i, h, h_old, phi, phi_old, k, k_old, dt, t, theta, r_f) %, sigma)
+function f = V33(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
 % Sandstone/Rain
 
 n = DIM.n;
@@ -11,6 +11,10 @@ cell_volume = DIM.cell_volume(1,1);
 point = (DIM.r == i);
 west = (DIM.r == i-1);
 south = (DIM.r == i-n);
+
+dt = PARAMS.dt;
+theta = PARAMS.theta;
+r_f = PARAMS.r_f;
 
 f = phi(point) - phi_old(point) - dt/cell_volume * (theta * ( ...
               (k(point) + k(west)) * K_xx * dz/(4 * dx) * (h(west) - h(point)) ...

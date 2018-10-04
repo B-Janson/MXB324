@@ -1,4 +1,4 @@
-function jacobian = jac_func(DIM, F, FVM_func, h, h_old, S_old, phi_old, k_old, t, dt, theta)
+function jacobian = jac_func(DIM, F, FVM_func, h, h_old, S_old, phi_old, k_old, t, PARAMS)
 
 n = DIM.n;
 m = DIM.m;
@@ -23,7 +23,7 @@ for j = 1:n*m
     shift_vec(j) = 1; 
     h_shift = h + step*shift_vec; % Create the shifted version of u for the finite difference
     % Evaluate the function with the shift
-    Fhs = FVM_func(DIM, h_shift, h_old, S_old, phi_old, k_old, t, dt, theta);
+    Fhs = FVM_func(DIM, h_shift, h_old, S_old, phi_old, k_old, t, PARAMS);
     % Update the column of the jacobian with the finite difference formula
     jacobian(:,j) = (Fhs - F)/step;
 end
