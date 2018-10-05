@@ -6,7 +6,7 @@ WIDTH = 500;
 HEIGHT = 80;
 
 % number of horizontal node points
-n = 251;
+n = 3;
 % number of vertical node points
 m = 41;
 
@@ -234,7 +234,9 @@ b=bandwidth(B(r,r));
 
 DIM.r=r;
 DIM.b=b;
+DIM.r = 1:n*m;
 
-DIM.XY=DIM.XY(r,:);
-DIM.NT=NT(r);
+% DIM.XY=DIM.XY(r,:);
+% DIM.NT=NT(r);
+DIM.NT = NT;
 end
