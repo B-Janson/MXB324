@@ -1,18 +1,11 @@
-function F = FVM_TEST(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS)
+function [F, S, phi, k] = FVM_TEST(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS)
 
 n = DIM.n;
 m = DIM.m;
 F = zeros(n*m, 1);
-% h_old(DIM.r) = h_old;
-% h(DIM.r) = h;
-% S_old(DIM.r) = S_old;
-% phi_old(DIM.r) = phi_old;
-% k_old(DIM.r) = k_old;
 S = S_old;
 phi = phi_old;
 k = k_old;
-
-r_f = 0.00171;
 
 for i = 1:n*m
     S(i) = SATURATION(DIM, h, i);

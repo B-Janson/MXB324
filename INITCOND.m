@@ -1,4 +1,4 @@
-function [h, phi, k, S]=INITCOND(DIM)
+function [h, S, phi, k]=INITCOND(DIM)
 % Function to set up all variables according the initial state of the
 % aquifer
 
