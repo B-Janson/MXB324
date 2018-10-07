@@ -9,7 +9,7 @@ dx = DIM.dx(1,1);
 dz = DIM.dz(1,1);
 K_xx = DIM.K_xx(1,1);
 K_zz = DIM.K_zz(1,1);
-cell_volume = DIM.cell_volume(1,1) + DIM.cell_volume(1,1);
+VOL = DIM.VOL(1,1) + DIM.VOL(1,1);
 
 point = (DIM.r == i);
 west = (DIM.r == i-1);
@@ -19,7 +19,7 @@ south = (DIM.r == i-n);
 dt = PARAMS.dt;
 theta = PARAMS.theta;
 
-f = phi(point) - phi_old(point) - dt/cell_volume * (theta * ( ...
+f = phi(point) - phi_old(point) - dt/VOL * (theta * ( ...
               (k(point) + k(west)) * K_xx * dz/(4 * dx) * (h(west) - h(point)) ...
             + (k(point) + k(north)) * K_zz * dx / 4 * ((h(north) - h(point)) / dz + 1)  ...
             + (k(point) + k(south)) * K_zz * dx / 4 * ((h(south) - h(point)) / dz - 1)  ...

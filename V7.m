@@ -6,7 +6,7 @@ dx = DIM.dx(1,1);
 dz = DIM.dz(1,1);
 K_xx = DIM.K_xx(1,1);
 K_zz = DIM.K_zz(1,1);
-cell_volume = sum(DIM.cell_volume(i,:));
+VOL = sum(DIM.VOL(i,:));
 
 point = (DIM.r == i);
 east = (DIM.r == i+1);
@@ -21,7 +21,7 @@ if i == 332
     disp('jsda')
 end
 
-f = phi(point) - phi_old(point) - dt/cell_volume * (theta * ( ...
+f = phi(point) - phi_old(point) - dt/VOL * (theta * ( ...
               (k(point) + k(east)) * K_xx * dz/(4 * dx) * (h(east) - h(point)) ... % gamma 1
             + (k(point) + k(north)) * K_zz * dx / 4 * ((h(north) - h(point)) / dz + 1)  ... % gamma 2
             + (k(point) + k(north)) * K_zz * dx / 4 * ((h(north) - h(point)) / dz + 1)  ... % gamma 3

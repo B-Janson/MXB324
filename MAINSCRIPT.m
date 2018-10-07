@@ -34,7 +34,7 @@ end
 t = 0;
 timesteps = 0;
 
-while t + PARAMS.dt < PARAMS.endtime
+while (t + PARAMS.dt < PARAMS.endtime) || (norm(phi-phi_old) > PARAMS.breaktol)
     t = t + PARAMS.dt;
     timesteps = timesteps + 1;
     

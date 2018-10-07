@@ -4,7 +4,7 @@ function [h, S, phi, k]=INITCOND(DIM)
 
 n = DIM.n;
 m = DIM.m;
-XY = DIM.XY;
+XZ = DIM.XZ;
 
 % Given initial constants
 hbot = -5;
@@ -17,7 +17,7 @@ k   = zeros(n*m, 1);
 S   = zeros(n*m, 1);
 
 for i = 1:n*m
-    h(i) = hbot + (htop - hbot) * XY(i, 2)/80;
+    h(i) = hbot + (htop - hbot) * XZ(i, 2)/80;
     S(i) = SATURATION(DIM, h, i);
     phi(i) = WATER_CONTENT(DIM, h, S, i);
     k(i) = PERM(DIM, h, S, i);

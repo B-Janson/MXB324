@@ -1,17 +1,19 @@
 function [SAT] = SATURATION(DIM, h, i)
 
-SAT = 0;
-n = DIM.n_const(i, :);
-m = 1 - 1./n;
-alpha_const = DIM.alpha(i, :);
 
-cell_volume = DIM.cell_volume(i, :);
 
 if h(i) < 0
+    SAT = 0;
+    VOL= DIM.VOL(i, :);
     for cell = 1:4
-        SAT = SAT + cell_volume(cell) * (1 + (-alpha_const(cell) * h(i))^n(cell))^-m(cell);
+        %Pull from soil parameters table
+        n = DIM.SP(DIM.ST(i,cell), 6);
+        m = 1 - 1./n;
+        alpha=DIM.SP(DIM.ST(i,cell), 5);
+        SAT = SAT + VOL(cell) * (1 + (-alpha * h(i))^n)^-m;
     end
-    SAT = SAT / sum(cell_volume);
+    %Average over control volume
+    SAT = SAT / VOL(5);
 else
     SAT = 1;
 end

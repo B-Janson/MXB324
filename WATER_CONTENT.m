@@ -2,20 +2,28 @@ function [PHI]=WATER_CONTENT(DIM, h, S, i)
 % Water content function
 
 PHI = 0;
-phi_res = DIM.phi_res(i, :);
-phi_sat = DIM.phi_sat(i, :);
-cell_volume = DIM.cell_volume(i, :);
+%Pull volumes of the cell
+VOL = DIM.VOL(i, :);
 
-if h(i) < 0
+if h(i) < 0 %Unsaturated
     for cell = 1:4
-        PHI = PHI + cell_volume(cell) * (phi_res(cell) + S(i) * (phi_sat(cell) - phi_res(cell)));
+        %Pull parameters from table
+        PR =DIM.SP(DIM.ST(i,cell), 3);
+        PS =DIM.SP(DIM.ST(i,cell), 4);
+        %Find water content of the sub control volume
+        PHI = PHI + VOL(cell) * (PR + S(i) * (PS - PR));
     end
-    PHI = PHI / sum(cell_volume);
-else
+    %Average over whole cell
+    PHI = PHI / VOL(5);
+else %Saturated
     for cell = 1:4
-        PHI = PHI + cell_volume(cell) * phi_sat(cell);
+        %Pull parameter from table
+        PS =DIM.SP(DIM.ST(i,cell), 4);
+        %Find water content of the sub control volume
+        PHI = PHI + VOL(cell) * PS(cell);
     end
-    PHI = PHI / sum(cell_volume);
+    %Average over whole cell
+    PHI = PHI / VOL(5);
 end
 
 end

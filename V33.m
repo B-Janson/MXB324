@@ -6,7 +6,7 @@ dx = DIM.dx(1,1);
 dz = DIM.dz(1,1);
 K_xx = DIM.K_xx(1,1);
 K_zz = DIM.K_zz(1,1);
-cell_volume = DIM.cell_volume(1,1);
+VOL = DIM.VOL(1,1);
 dt = PARAMS.dt;
 theta = PARAMS.theta;
 r_f = PARAMS.r_f;
@@ -34,7 +34,7 @@ gamma_2 = k_s * K_zz * ((h(south) - h(point)) / dz + 1) * dx / 2;
 gamma_1_old = -active_flow_old * r_f * dx / 2;
 gamma_2_old = k_s_old * K_zz * ((h_old(south) - h_old(point)) / dz + 1) * dx / 2;
 
-f = phi(point) - phi_old(point) + dt/cell_volume * (theta * ( ...
+f = phi(point) - phi_old(point) + dt/VOL * (theta * ( ...
             gamma_1 + gamma_2) ...
             + (1 - theta) * ( ...
             gamma_1_old + gamma_2_old));
