@@ -37,6 +37,9 @@ timesteps = 0;
 while (t + PARAMS.dt < PARAMS.endtime) || (norm(phi-phi_old) > PARAMS.breaktol)
     t = t + PARAMS.dt;
     timesteps = timesteps + 1;
+%    R=PARAMS.r_f*(1+cos((2*pi)*t/365)); For when we finally want to stop
+%    using constant rainfall
+    
     
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
         if mod(iters, PARAMS.jacobian_update) == 0
