@@ -4,7 +4,7 @@ function [PARAMS] = INIT_PARAMS()
 %   Detailed explanation goes here
 
 PARAMS.r_f          = 0.00171;  % rainfall constant
-PARAMS.dt           = 50;       % timestep size
+PARAMS.dt           = 10;       % timestep size
 PARAMS.endtime      = 4000000;  % end time
 PARAMS.theta        = 0.5;      % temporal weighting, 1-Backward Euler, 0.5-Crank-Nicholson
 PARAMS.sigma        = 1;        % stream weighting, 0-Upwinding, 1-Averaging, 2-Downwinding
