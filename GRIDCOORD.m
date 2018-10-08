@@ -6,14 +6,11 @@ W = 500;
 H = 80;
 
 
-DIM.x=linspace(0,W,2); %Keep it uniform for now
+DIM.x=linspace(0,W,3); %Keep it uniform for now
 n=length(DIM.x);
 DIM.n=n;
 DIM.x=sort(DIM.x);
-DIM.dx=zeros(1,DIM.n-1);
-for i=1:DIM.n-1
-    DIM.dx(i)=DIM.x(i+1)-DIM.dx(i);
-end
+
 
 %The Discretisation we need in the y
 DIM.z=linspace(0,H,81); %We Basic
@@ -67,11 +64,11 @@ DIM.DELTA=DELTA;
 %[UL,UR,DR,DL,TV]
 DIM.VOL = zeros(n*m, 5);
 for i = 1:m*n
-    DIM.VOL(i, 1) = DELTA(i, 1) * DELTA(i, 4);
-    DIM.VOL(i, 2) = DELTA(i, 2) * DELTA(i, 4);
-    DIM.VOL(i, 3) = DELTA(i, 2) * DELTA(i, 3);
-    DIM.VOL(i, 4) = DELTA(i, 1) * DELTA(i, 3);
-    DIM.VOL(i,5)=sum(DELTA(i,1:4));
+    DIM.VOL(i, 1) = DELTA(i, 1) * DELTA(i, 4);%UL
+    DIM.VOL(i, 2) = DELTA(i, 2) * DELTA(i, 4);%UR
+    DIM.VOL(i, 3) = DELTA(i, 2) * DELTA(i, 3);%DR
+    DIM.VOL(i, 4) = DELTA(i, 1) * DELTA(i, 3);%DL
+    DIM.VOL(i,5)=sum(DIM.VOL(i,1:4));
 end
 
 
