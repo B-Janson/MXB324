@@ -20,7 +20,7 @@ else %Saturated
         %Pull parameter from table
         PS =DIM.SP(DIM.ST(i,cell), 4);
         %Find water content of the sub control volume
-        PHI = PHI + VOL(cell) * PS(cell);
+        PHI = PHI + VOL(cell) * PS;
     end
     %Average over whole cell
     PHI = PHI / VOL(5);
