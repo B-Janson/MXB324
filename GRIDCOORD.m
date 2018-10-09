@@ -264,7 +264,7 @@ r=symrcm(B);
 b=bandwidth(B(r,r));
 
 DIM.r=r;
-DIM.b=b;
+DIM.b=2*b+1;
 DIM.r = r;
 
 DIM.XZ=DIM.XZ(r,:);
