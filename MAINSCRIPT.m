@@ -1,6 +1,7 @@
 close all
 clear
 clc
+format compact
 %% Part 0 Initialisation
 [PARAMS] = INIT_PARAMS;
 [DIM] = GRIDCOORD;
