@@ -34,9 +34,11 @@ end
 
 t = 0;
 timesteps = 0;
+T=[0];
+DT=[PARAMS.DT];
 
-PUMPS=0;
-while (t + PARAMS.dt < PARAMS.endtime) || (norm(phi-phi_old) > PARAMS.breaktol)
+
+while (norm(phi-phi_old) > PARAMS.breaktol)
     t = t + PARAMS.dt;
     timesteps = timesteps + 1;
 %    R=PARAMS.r_f*(1+cos((2*pi)*t/365)); For when we finally want to stop
@@ -97,10 +99,11 @@ while (t + PARAMS.dt < PARAMS.endtime) || (norm(phi-phi_old) > PARAMS.breaktol)
             SOL_VIS(DIM, phi_figure, 'default', ['Water Content Time: ', num2str(t)], phi);
         end
     end
+    T(end+1)=t;
     
 end
 
-PUMPS=1;
+PARAMS.PUMPS=1;
 
 % F(DIM.r) = F;
 % h(DIM.r) = h;

@@ -14,7 +14,8 @@ PARAMS.max_iters    = 20;       % maximum number of iterations for the Newton st
 PARAMS.jacobian_update = 1;     % how often should the Jacobian be recalculated
 PARAMS.plot_times = 0:5:PARAMS.endtime; % vector of times to save and plot the numerical solution
 PARAMS.realtime_plot = true;    % should a plot of the solution be produced in realtime? 
-                                %No, way to slow
+
+PARAM.PUMPS=0;%PUMPS start off                                %No, way to slow
 PARAMS.debug = true;            % should we display some debug status info
 PARAMS.method = 'Full'; % how to calculate the Jacobian, Full is the normal one
 PARAMS.breaktol=10^-12;

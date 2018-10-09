@@ -31,14 +31,14 @@ if strcmp(PARAMS.method,'Full')
     end
     [~,c]=chol(J);
     if c ~= 0
-       error('Not SPD'); 
+        error('Not SPD');
     end
 elseif strcmp(PARAMS.method,'Column')
     %Creates the column based finite differences matrix
     
     B=DIM.b;
     S=zeros(n*m,B);
-    J=S;
+    Jcol=S;
     step=S;
     %Finds the s-vectors
     for i=1:B:n*m
@@ -49,25 +49,28 @@ elseif strcmp(PARAMS.method,'Column')
     %Generate jacobian
     
     for i=1:B
-    
-    a=norm(h,2); 
-    s=norm(S(:,i),2);
-    % Find a suitable finite difference
-    if a ~= 0
-        step(:,i) = step(:,i)*sqrt(eps)*a/s;
-    else
-        step(:,i) = step(:,i)*sqrt(eps)/s;
+        
+        a=norm(h,2);
+        s=norm(S(:,i),2);
+        % Find a suitable finite difference
+        if a ~= 0
+            step(:,i) = step(:,i)*sqrt(eps)*a/s;
+        else
+            step(:,i) = step(:,i)*sqrt(eps)/s;
+        end
+        
+        Fnudge=FVM_func(DIM, h+step(i,:), h_old, S_old, phi_old, k_old, t, PARAMS);
+        Jcol(:,i)=(Fnudge-F)./step(:,i);        
     end
     
-    Fnudge=FVM_func(DIM, h+step(i,:), h_old, S_old, phi_old, k_old, t, PARAMS);
-    J(:,i)=(Fnudge-F)./step(:,i);
+    %Put elements into jacobian
     
     
-    
+    [~,c]=chol(J);
+    if c ~= 0
+        error('Not SPD');
     end
-    
-    
-    
+end
 end
 
-end
+
