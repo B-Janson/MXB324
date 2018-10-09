@@ -13,7 +13,7 @@ DIM.x=sort(DIM.x);
 
 
 %The Discretisation we need in the y
-DIM.z=linspace(0,H,5); %We Basic
+DIM.z=linspace(0,H,3); %We Basic
 m=length(DIM.z);
 DIM.m=m;
 DIM.z=sort(DIM.z);
@@ -265,7 +265,7 @@ b=bandwidth(B(r,r));
 
 DIM.r=r;
 DIM.b=2*b+1;
-DIM.r = r;
+DIM.r = r
 
 DIM.XZ=DIM.XZ(r,:);
 DIM.NT=NT(r);

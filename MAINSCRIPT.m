@@ -47,8 +47,10 @@ while (t + PARAMS.dt < PARAMS.endtime) || (norm(phi-phi_old) > PARAMS.breaktol)
             fevals = fevals + DIM.n * DIM.m;
         end
     
-        del_h = jacobian\(-F);
-        h = LineSearch(DIM, @FVM_TEST, h, del_h, h_old, S_old, phi_old, k_old, t, PARAMS);
+        dh = jacobian\(-F); %This line is now in Jsolv
+
+        
+        h = LineSearch(DIM, @FVM_TEST, h, dh, h_old, S_old, phi_old, k_old, t, PARAMS);
 
         [F, S, phi, k] = FVM_TEST(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
         err = norm(F, 2);

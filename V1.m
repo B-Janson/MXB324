@@ -4,6 +4,8 @@ function f = V1(DIM, h, h_old, phi, phi_old, k, k_old, PARAMS)
 % XYN = DIM.XY;
 % XYN(:,DIM.r) = XYN;
 
+
+
 n = DIM.n;
 D=DIM.DELTA(1,:);
 K_xx = DIM.SP(DIM.ST(1,2),2);

@@ -29,13 +29,18 @@ if strcmp(PARAMS.method,'Full')
         % Update the column of the jacobian with the finite difference formula
         J(:,j) = (Fnudge - F)/step;
     end
+    [~,c]=chol(J);
+    if c ~= 0
+       error('Not SPD'); 
+    end
 elseif strcmp(PARAMS.method,'Column')
+    %Creates the column based finite differences matrix
+    
     B=DIM.b;
-    
-    
     S=zeros(n*m,B);
     J=S;
     step=S;
+    %Finds the s-vectors
     for i=1:B:n*m
         for j=1:B
             S(i+j-1,j)=1;
