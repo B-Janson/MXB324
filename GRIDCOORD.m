@@ -97,7 +97,11 @@ ST(1,:)=[1,1,1,1];
 %Bottom Row
 NT(2:DIM.n-1) = 2;
 for i=2:DIM.n-1
-ST(i,:)=[1,1,1,1];
+if XZ(i,1) <= 350
+    ST(i,:)=[1,1,1,1];
+else XZ(i,1) > 350
+    ST(i,:)=[1,1,1,1];
+end
 end
 
 %Bottom R corner
@@ -262,18 +266,11 @@ for i = 1:n*(m-1)
     U=U-1;
 end
 
-figure()
-spy(B)
-
-
 r=symrcm(B);
 Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)))
 
-figure()
-spy(B(r,r))
-
 DIM.r=r;
-DIM.b=2*b2+1
+DIM.b=2*B+1;
 
 DIM.XZ=DIM.XZ(r,:);
 DIM.NT=NT(r);
