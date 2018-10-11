@@ -3,6 +3,8 @@ clear
 clc
 format compact
 %% Part 0 Initialisation
+framenum = 1;
+
 [PARAMS] = INIT_PARAMS;
 [DIM] = GRIDCOORD;
 [h_old, S_old, phi_old, k_old] = INITCOND(DIM);
@@ -24,6 +26,14 @@ f_eval_total = 1;
 
 jacobian = jac_func(DIM, F, @FVM_TEST, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
 total_bw = 2*bandwidth(jacobian)+1;
+
+%%
+videoName_wcont = 'WaterContent.avi';
+videoName_phead = 'PressureHead.avi';
+
+wcontvideo = VideoWriter(videoName_wcont);
+pheadvideo = VideoWriter(videoName_phead);
+
 
 if PARAMS.realtime_plot
     head_figure = figure('Name', 'Head');
@@ -96,12 +106,18 @@ while (norm(phi-phi_old) > PARAMS.breaktol)
     if PARAMS.realtime_plot == true
         if 0 == 0
             SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(t)], h);
+            pressurehead(framenum) = getframe(gcf);
             SOL_VIS(DIM, phi_figure, 'default', ['Water Content Time: ', num2str(t)], phi);
+            watercontent(framenum) = getframe(gcf);
+            framenum = framenum +1;
         end
     end
     T(end+1)=t;
     
 end
+
+CREATE_VIDEO(wcontvideo, watercontent, 20);
+CREATE_VIDEO(pheadvideo, pressurehead, 20);
 
 PARAMS.PUMPS=1;
 
