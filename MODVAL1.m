@@ -16,6 +16,11 @@ elseif rain_type == 1
 
 PHIBAR= -(r/Lx)*t+ (365/(2*pi))*sin((2*pi)/365 * t)/(Lx*Ly) +PHI0;
 
+elseif rain_type == 2
+%For polynomial best fit of DALBY rainfall data
+
+PHIBAR= 0; %get polynomial best fit to rainfall data over 12months    
+    
 end
 
 Err=abs(PHIBAR-WCONT(DIM,h));
