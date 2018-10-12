@@ -37,19 +37,18 @@ elseif strcmp(PARAMS.method,'Column')
     %Creates the column based finite differences matrix
     b=DIM.b;
     B=2*b+1;
-    S=zeros(n*m,B);
+    S=zeros(n*m,b);
     Jcol=S;
-    step=ones(n*m,B);
     %Finds the s-vectors
-    for i=1:B:n*m
-        for j=1:B
+    for i=1:b:n*m
+        for j=1:b
             S(i+j-1,j)=1;
         end
     end
     %Generate jacobian
+    step=S;
     
-    for i=1:B
-        
+    for i=1:b
         a=norm(h,2);
         s=norm(S(:,i),2);
         % Find a suitable finite difference
@@ -59,36 +58,32 @@ elseif strcmp(PARAMS.method,'Column')
             step(:,i) = step(:,i)*sqrt(eps)/s;
         end
         Fnudge=FVM_func(DIM, h+step(i,:), h_old, S_old, phi_old, k_old, t, PARAMS);
-        Jcol(:,i)=(Fnudge-F)./step(:,i)   ;
+        Jcol(:,i)=(Fnudge-F)./step(:,i);
     end
     
     %Put elements into jacobian
     
     J=zeros(m*n,n*m);
     
-    %First Band
-    fin=b;
-    for i=1:b
-        J(i,1:1+fin)=Jcol(i,1:1+fin);
-        fin=fin+1;
-        
-    end
+    %First Bands
+    
+    for i=1:b-2
+        J(i,1:1+i)=Jcol(i,1:i+1);      
+    end    
     %Middle Bands
-    for i=b+1:m*n-b-1
-        J(i,i-b:i+b)=Jcol(i,:);
-        
+    
+    start=0;    
+    for i=b-1:m*n-1
+        J(i,1+start:b+start)=Jcol(i,:);
+        start=start+1;        
     end
     %Last Band
-    begin=1;
-    for i=m*n-b:m*n
-        J(i,begin+b-1:m*n)=Jcol(i,begin:B);
-        begin=begin+1;
-    end   
+    J(m*n,m*n-b+2:m*n)=Jcol(m*n,2:b);
+    
     [~,c]=chol(J);
     if c ~= 0
-        error('Not SPD');
-        
         eig(J)
+        error('Not SPD');
     end
 end
 end
