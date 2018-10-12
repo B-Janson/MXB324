@@ -15,9 +15,9 @@ PARAMS.jacobian_update = 1;     % how often should the Jacobian be recalculated
 PARAMS.plot_times = 0:5:PARAMS.endtime; % vector of times to save and plot the numerical solution
 PARAMS.realtime_plot = true;    % should a plot of the solution be produced in realtime? 
 
-PARAM.PUMPS=0;%PUMPS start off                                %No, way to slow
+PARAMS.PUMPS=0;%PUMPS start off                                %No, way to slow
 PARAMS.debug = true;            % should we display some debug status info
-PARAMS.method = 'Full'; % how to calculate the Jacobian, Full is the normal one
+PARAMS.method = 'Column'; % how to calculate the Jacobian, Full is the normal one
 PARAMS.breaktol=10^-12;
 % 'finite differences' - Uses full finite difference jacobian requiring N function evaluations. 
 % 'tridiagonal' - Uses a banded tridiagonal Jacobian with 3 function evaluations.

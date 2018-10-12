@@ -6,7 +6,7 @@ W = 500;
 H = 80;
 
 
-DIM.x=linspace(0,W,3); %Keep it uniform for now
+DIM.x=linspace(0,W,4); %Keep it uniform for now
 n=length(DIM.x);
 DIM.n=n;
 DIM.x=sort(DIM.x);
@@ -267,10 +267,12 @@ for i = 1:n*(m-1)
 end
 
 r=symrcm(B);
+b=bandwidth(B);
 Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)))
 
+
 DIM.r=r;
-DIM.b=2*B+1;
+DIM.b=b+1;
 
 DIM.XZ=DIM.XZ(r,:);
 DIM.NT=NT(r);
