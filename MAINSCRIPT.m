@@ -24,8 +24,8 @@ iters = 0;
 fevals = 0;
 f_eval_total = 1;
 
-jacobian = jac_func(DIM, F, @FVM_TEST, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
-total_bw = 2*bandwidth(jacobian)+1;
+J = jac_func(DIM, F, @FVM_TEST, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
+
 
 %%
 videoName_wcont = 'WaterContent.avi';
@@ -57,11 +57,12 @@ while (norm(phi-phi_old) > PARAMS.breaktol)
     
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
         if mod(iters, PARAMS.jacobian_update) == 0
-            jacobian = jac_func(DIM, F, @FVM_TEST, h, h_old, S_old, phi_old, k_old, t, PARAMS);
+            J_old=J;
+            J = jac_func(DIM, F, @FVM_TEST, h, h_old, S_old, phi_old, k_old, t, PARAMS);
             fevals = fevals + DIM.n * DIM.m;
         end
     
-        dh = jacobian\(-F); %This line is now in Jsolv
+        dh = J\(-F); %This line is now in Jsolv
 
         
         h = LineSearch(DIM, @FVM_TEST, h, dh, h_old, S_old, phi_old, k_old, t, PARAMS);
