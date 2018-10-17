@@ -26,13 +26,11 @@ f_eval_total = 1;
 
 J = jac_func_2(DIM, F, @FVM_TEST, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
 
+% videoName_wcont = 'WaterContent.avi';
+% videoName_phead = 'PressureHead.avi';
 
-%%
-videoName_wcont = 'WaterContent.avi';
-videoName_phead = 'PressureHead.avi';
-
-wcontvideo = VideoWriter(videoName_wcont);
-pheadvideo = VideoWriter(videoName_phead);
+% wcontvideo = VideoWriter(videoName_wcont);
+% pheadvideo = VideoWriter(videoName_phead);
 
 
 if PARAMS.realtime_plot
@@ -44,7 +42,7 @@ end
 
 t = 0;
 timesteps = 0;
-T=[0];
+% T=[0];
 steady_state = false;
 
 while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
@@ -52,7 +50,6 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
     timesteps = timesteps + 1;
 %    R=PARAMS.r_f*(1+cos((2*pi)*t/365)); For when we finally want to stop
 %    using constant rainfall
-    
     
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
         if mod(iters, PARAMS.jacobian_update) == 0
@@ -63,7 +60,6 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
     
         dh = J\(-F); %This line is now in Jsolv
 
-        
         h = LineSearch(DIM, @FVM_TEST, h, dh, h_old, S_old, phi_old, k_old, t, PARAMS);
 
         [F, S, phi, k] = FVM_TEST(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
@@ -72,7 +68,7 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
         fevals = fevals + 1;
         
         if PARAMS.debug == true
-            fprintf('t:%d iters:%d err:%d fevals:%d dank:%d max_h:%d\n', t, iters, err, fevals, timesteps, max(h));
+            fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d min(h):%d\n', t, iters, err, fevals, timesteps, min(h) >= 0);
         end
         
         if iters == PARAMS.max_iters - 1 || err > 1e12
@@ -82,6 +78,15 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
             t = t + PARAMS.dt;
         end
         
+        if min(h) >= 0
+            break
+        end
+        
+    end
+    
+    if min(h) >= 0
+        fprintf('steady state\n')
+        steady_state = true;
     end
     
     % We have now converged
@@ -97,7 +102,7 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
     f_eval_total = f_eval_total + fevals + 1;
     fevals = 0;
     
-    if iters <= 3
+    if iters <= 5 && PARAMS.adaptive_timestep == true
         PARAMS.dt = PARAMS.dt * 1.5;
     end
     
@@ -105,16 +110,12 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
 
     if PARAMS.realtime_plot == true
         SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(t)], h);
-        pressurehead(framenum) = getframe(gcf);
+%         pressurehead(framenum) = getframe(gcf);
         SOL_VIS(DIM, phi_figure, 'default', ['Water Content Time: ', num2str(t)], phi);
-        watercontent(framenum) = getframe(gcf);
+%         watercontent(framenum) = getframe(gcf);
         framenum = framenum +1;
     end
-    T(end+1)=t;
-    
-    if t > 100000
-        steady_state = true;
-    end
+%     T(end+1)=t;
     
 end
 

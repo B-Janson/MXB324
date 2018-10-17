@@ -1,4 +1,4 @@
-function [PARAMS] = INIT_PARAMS()
+function [PARAMS] = VERIF_PARAMS()
 % INIT_PARAMS Initialises the parameters of the problem and returns them in
 % a struct
 %   Detailed explanation goes here

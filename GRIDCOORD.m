@@ -146,10 +146,9 @@ Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)))
 
 DIM.r=r;
 DIM.b=b;
-DIM.r = 1:n*m;
 
-DIM.NT = NT;
-
-% DIM.XZ=DIM.XZ(r,:);
-% DIM.NT=NT(r);
+DIM.XZ = DIM.XZ(r,:);
+DIM.NT = NT(r);
+DIM.DELTA = DIM.DELTA(r, :);
+DIM.VOL = DIM.VOL(r, :);
 end
