@@ -11,9 +11,9 @@ format compact
 [h_old, S_old, phi_old, k_old] = VERIF_INIT_COND(DIM);
 
 h = h_old;
-S = S_old;
-phi = phi_old;
-k = k_old;
+% S = S_old;
+% phi = phi_old;
+% k = k_old;
 
 % Initial calculation of F at t = dt
 F = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
@@ -26,7 +26,14 @@ f_eval_total = 1;
 framenum = 1;
 
 % Get the jacobian
-J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
+J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS, 'full');
+total_bandwidth = bandwidth(J);
+[DIM, h_old, S_old, phi_old, k_old, F] = REORDER_NODES(DIM, J, h_old, S_old, phi_old, k_old, F);
+
+h = h_old;
+S = S_old;
+phi = phi_old;
+k = k_old;
 
 % videoName_wcont = 'WaterContent.avi';
 % videoName_phead = 'PressureHead.avi';
@@ -62,15 +69,16 @@ timesteps = 0;
 steady_state = false;
 
 %% Part 1 Main Solver
-
-while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
+tic;
+while steady_state == false && t < PARAMS.endtime %(norm(phi-phi_old) > PARAMS.breaktol)
     t = t + PARAMS.dt;
     timesteps = timesteps + 1;
 %    R=PARAMS.r_f*(1+cos((2*pi)*t/365)); For when we finally want to stop
 %    using constant rainfall
     
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
-        if mod(iters, PARAMS.jacobian_update) == 0 && err > 1e-8
+        rho = err / err_old;
+        if mod(iters, PARAMS.jacobian_update) == 0 && err > 1e-8 || rho > PARAMS.rho_max
             J_old=J;
             J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
             fevals = fevals + DIM.n * DIM.m;
@@ -89,7 +97,8 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
         
         % Output some debug info if wanted
         if PARAMS.debug == true
-            fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d steady_state:%d dt:%d\n', t, iters, err, fevals, timesteps, min(h) >= 0, PARAMS.dt);
+            fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d steady_state:%d dt:%d rho:%d method:%s\n', ...
+                t, iters, err, fevals, timesteps, min(h) >= 0, PARAMS.dt, rho, PARAMS.method);
         end
         
         % If haven't converged but has been too many iterations, halve time
@@ -99,6 +108,9 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
             t = t - PARAMS.dt;
             PARAMS.dt = PARAMS.dt / 2;
             t = t + PARAMS.dt;
+            if PARAMS.dt < 5
+                PARAMS.method = 'full';
+            end
         end
         
         % If pressure head is positive at surface, steady state reached
@@ -125,9 +137,14 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
     fevals = 0;
     
     % If adaptive time stepping and converged quickly, increase time step
-    if iters <= PARAMS.jacobian_update
+    if iters <= PARAMS.jacobian_update * 1.5
         PARAMS.dt = PARAMS.dt * PARAMS.adaptive_timestep;
+        if PARAMS.dt > 30
+            PARAMS.method = 'column';
+        end
     end
+    
+    
     
     % reset iters
     iters = 0;
@@ -137,12 +154,14 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
 %         pressurehead(framenum) = getframe(gcf);
 %         SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(t)], phi);
 %         watercontent(framenum) = getframe(gcf);
-        SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(0)], S);
+        SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(t)], S);
         framenum = framenum +1;
     end
 %     T(end+1)=t;
     
 end
+
+toc
 
 % CREATE_VIDEO(wcontvideo, watercontent, 20);
 % CREATE_VIDEO(pheadvideo, pressurehead, 20);

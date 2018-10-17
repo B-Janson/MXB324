@@ -409,6 +409,8 @@ r=symrcm(B);
 b=bandwidth(B(r,r));
 Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)))
 
+r = 1:n*m;
+
 DIM.r=r;
 DIM.b=b;
 
