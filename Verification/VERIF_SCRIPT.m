@@ -34,12 +34,26 @@ J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PAR
 % wcontvideo = VideoWriter(videoName_wcont);
 % pheadvideo = VideoWriter(videoName_phead);
 
+sat_col = zeros(30, 3);
+
+for i = 1:20
+    sat_col(i, 1) = max(1.0 - 1.0 * (i-1) / 10, 0);
+    sat_col(i, 2) = max(1.0 - 1.0 * (i-1) / 20, 0);
+    sat_col(i, 3) = 1.0;
+end
+
+for i = 21:30
+    sat_col(i, 3) = 1.0 - 0.5 * (i-21) / 10;
+end
+
 if PARAMS.realtime_plot
     % if realtime plotting, show the initial state of solution
     head_figure = figure('Name', 'Head');
-    phi_figure = figure('Name', 'Water Content');
+%     phi_figure = figure('Name', 'Water Content');
+    sat_figure = figure('Name', 'Saturation');
     SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(0)], h);
-    SOL_VIS(DIM, phi_figure, 'default', ['Water Content Time: ', num2str(0)], phi);
+%     SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(0)], phi);
+    SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(0)], S);
 end
 
 t = 0;
@@ -56,7 +70,7 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
 %    using constant rainfall
     
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
-        if mod(iters, PARAMS.jacobian_update) == 0
+        if mod(iters, PARAMS.jacobian_update) == 0 && err > 1e-8
             J_old=J;
             J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
             fevals = fevals + DIM.n * DIM.m;
@@ -75,7 +89,7 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
         
         % Output some debug info if wanted
         if PARAMS.debug == true
-            fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d min(h):%d\n', t, iters, err, fevals, timesteps, min(h) >= 0);
+            fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d steady_state:%d dt:%d\n', t, iters, err, fevals, timesteps, min(h) >= 0, PARAMS.dt);
         end
         
         % If haven't converged but has been too many iterations, halve time
@@ -111,8 +125,8 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
     fevals = 0;
     
     % If adaptive time stepping and converged quickly, increase time step
-    if iters <= 5 && PARAMS.adaptive_timestep == true
-        PARAMS.dt = PARAMS.dt * 1.2;
+    if iters <= PARAMS.jacobian_update
+        PARAMS.dt = PARAMS.dt * PARAMS.adaptive_timestep;
     end
     
     % reset iters
@@ -121,8 +135,9 @@ while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
     if PARAMS.realtime_plot == true
         SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(t)], h);
 %         pressurehead(framenum) = getframe(gcf);
-        SOL_VIS(DIM, phi_figure, 'default', ['Water Content Time: ', num2str(t)], phi);
+%         SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(t)], phi);
 %         watercontent(framenum) = getframe(gcf);
+        SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(0)], S);
         framenum = framenum +1;
     end
 %     T(end+1)=t;

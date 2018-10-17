@@ -13,7 +13,7 @@ PARAMS.sigma        = 1;        % stream weighting, 0-Upwinding, 1-Averaging, 2-
 PARAMS.tol_a        = 1e-10;    % absolute tolerance of the Newton step
 PARAMS.tol_r        = 0;        % relative tolerance of the Newton step
 PARAMS.max_iters    = 20;       % maximum number of iterations for the Newton step
-PARAMS.jacobian_update = 5;     % how often should the Jacobian be recalculated
+PARAMS.jacobian_update = 6;     % how often should the Jacobian be recalculated
 PARAMS.plot_times = 0:5:PARAMS.endtime; % vector of times to save and plot the numerical solution
 PARAMS.realtime_plot = true;    % should a plot of the solution be produced in realtime? 
 PARAMS.gmres_tol=10^-8;         % Maximumn bound upon the residual
@@ -21,7 +21,7 @@ PARAMS.gmres_max=16;            % Maximum gmres iterations
 
 PARAMS.PUMPS=0;                 % PUMPS start off    %No, way to slow
 PARAMS.debug = true;            % should we display some debug status info
-PARAMS.adaptive_timestep = true; % should we change the time step
+PARAMS.adaptive_timestep = 1.2; % amount to 'fast forward' time if converging quickly
 PARAMS.method = 'Column'; % how to calculate the Jacobian, Full is the normal one
 PARAMS.steady_state_tol = 10^-8; % tolerance between water content to determine steady state
 
