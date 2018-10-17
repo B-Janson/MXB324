@@ -6,9 +6,9 @@ WIDTH = 500;
 HEIGHT = 80;
 
 % number of horizontal node points
-n = 3;
+n = 21;
 % number of vertical node points
-m = 11;
+m = 17;
 
 num_nodes = n * m;
 
@@ -29,7 +29,8 @@ Z=Z';
 XZ=[X(:),Z(:)];
 DIM.XZ=XZ;
 
-%% Create the distance matrix
+% Create the distance matrix
+
 % Create distance vectors dx=[L, R]
 dx=zeros(DIM.n,2);
 dx(1,2)=DIM.x(2)-DIM.x(1);
@@ -74,7 +75,7 @@ for i = 1:m*n
     DIM.VOL(i,5)=sum(DIM.VOL(i,1:4));
 end
 
-%% Soil parameters (from PDF)
+% Soil parameters (from PDF)
 % Set all cells to be Alluvium
 DIM.SP=[2.6,  0.91,   0.01,   0.33,   0.143, 1.51; ...   % Alluvium
         0.08, 0.0159, 0.106,  0.4686, 1.04,  1.3954; ... % 
@@ -88,14 +89,276 @@ DIM.phi_sat = zeros(num_nodes, 4);
 DIM.alpha = zeros(num_nodes, 4);
 DIM.n_const = zeros(num_nodes, 4);
 
-% Set all cells to be Alluvium
+% Set all cells to be Sandstone
 for i = 1:num_nodes
-    DIM.K_xx(i, :)     = 2.6;
-    DIM.K_zz(i, :)     = 0.91;
-    DIM.phi_res(i, :)  = 0.01;
-    DIM.phi_sat(i, :)  = 0.33;
-    DIM.alpha(i, :)    = 1.43;
-    DIM.n_const(i, :)  = 1.51;
+    DIM.K_xx(i, :)     = 3.9;
+    DIM.K_zz(i, :)     = 1.17;
+    DIM.phi_res(i, :)  = 0.0286;
+    DIM.phi_sat(i, :)  = 0.3658;
+    DIM.alpha(i, :)    = 2.8;
+    DIM.n_const(i, :)  = 2.239;
+end
+
+for i = 1:num_nodes
+    x = XZ(i, 1);
+    z = XZ(i, 2);
+    if 0 <= x && x < 50 && z == 30
+        % Alluvium top
+        DIM.K_xx(i, 1:2)     = 2.6;
+        DIM.K_zz(i, 1:2)     = 0.91;
+        DIM.phi_res(i, 1:2)  = 0.01;
+        DIM.phi_sat(i, 1:2)  = 0.33;
+        DIM.alpha(i, 1:2)    = 1.43;
+        DIM.n_const(i, 1:2)  = 1.51;
+        
+        % Sandstone bottom
+        DIM.K_xx(i, 3:4)     = 3.9;
+        DIM.K_zz(i, 3:4)     = 1.17;
+        DIM.phi_res(i, 3:4)  = 0.0286;
+        DIM.phi_sat(i, 3:4)  = 0.3658;
+        DIM.alpha(i, 3:4)    = 2.8;
+        DIM.n_const(i, 3:4)  = 2.239;
+    elseif x == 50 && z == 30
+        % Confining top right
+        DIM.K_xx(i, 1)     = 0.08;
+        DIM.K_zz(i, 1)     = 0.0159;
+        DIM.phi_res(i, 1)  = 0.106;
+        DIM.phi_sat(i, 1)  = 0.4686;
+        DIM.alpha(i, 1)    = 1.04;
+        DIM.n_const(i, 1)  = 1.3954;
+        
+        % Alluvium top left
+        DIM.K_xx(i, 2)     = 2.6;
+        DIM.K_zz(i, 2)     = 0.91;
+        DIM.phi_res(i, 2)  = 0.01;
+        DIM.phi_sat(i, 2)  = 0.33;
+        DIM.alpha(i, 2)    = 1.43;
+        DIM.n_const(i, 2)  = 1.51;
+        
+        % Sandstone bottom
+        DIM.K_xx(i, 3:4)     = 3.9;
+        DIM.K_zz(i, 3:4)     = 1.17;
+        DIM.phi_res(i, 3:4)  = 0.0286;
+        DIM.phi_sat(i, 3:4)  = 0.3658;
+        DIM.alpha(i, 3:4)    = 2.8;
+        DIM.n_const(i, 3:4)  = 2.239;
+    elseif 50 < x && x < 350 && z == 30
+        % Confining top
+        DIM.K_xx(i, 1:2)     = 0.08;
+        DIM.K_zz(i, 1:2)     = 0.0159;
+        DIM.phi_res(i, 1:2)  = 0.106;
+        DIM.phi_sat(i, 1:2)  = 0.4686;
+        DIM.alpha(i, 1:2)    = 1.04;
+        DIM.n_const(i, 1:2)  = 1.3954;
+        
+        % Sandstone bottom
+        DIM.K_xx(i, 3:4)     = 3.9;
+        DIM.K_zz(i, 3:4)     = 1.17;
+        DIM.phi_res(i, 3:4)  = 0.0286;
+        DIM.phi_sat(i, 3:4)  = 0.3658;
+        DIM.alpha(i, 3:4)    = 2.8;
+        DIM.n_const(i, 3:4)  = 2.239;
+    elseif x == 350 && z == 30
+        % Sandstone top right
+        DIM.K_xx(i, 1)     = 3.9;
+        DIM.K_zz(i, 1)     = 1.17;
+        DIM.phi_res(i, 1)  = 0.0286;
+        DIM.phi_sat(i, 1)  = 0.3658;
+        DIM.alpha(i, 1)    = 2.8;
+        DIM.n_const(i, 1)  = 2.239;
+        
+        % Confining top left
+        DIM.K_xx(i, 2)     = 0.08;
+        DIM.K_zz(i, 2)     = 0.0159;
+        DIM.phi_res(i, 2)  = 0.106;
+        DIM.phi_sat(i, 2)  = 0.4686;
+        DIM.alpha(i, 2)    = 1.04;
+        DIM.n_const(i, 2)  = 1.3954;
+        
+        % Sandstone bottom
+        DIM.K_xx(i, 3:4)     = 3.9;
+        DIM.K_zz(i, 3:4)     = 1.17;
+        DIM.phi_res(i, 3:4)  = 0.0286;
+        DIM.phi_sat(i, 3:4)  = 0.3658;
+        DIM.alpha(i, 3:4)    = 2.8;
+        DIM.n_const(i, 3:4)  = 2.239;
+    elseif x == 350 && 30 < z && z < 40
+        % Sandstone top right
+        DIM.K_xx(i, 1)     = 3.9;
+        DIM.K_zz(i, 1)     = 1.17;
+        DIM.phi_res(i, 1)  = 0.0286;
+        DIM.phi_sat(i, 1)  = 0.3658;
+        DIM.alpha(i, 1)    = 2.8;
+        DIM.n_const(i, 1)  = 2.239;
+        
+        % Confining left
+        DIM.K_xx(i, 2:3)     = 0.08;
+        DIM.K_zz(i, 2:3)     = 0.0159;
+        DIM.phi_res(i, 2:3)  = 0.106;
+        DIM.phi_sat(i, 2:3)  = 0.4686;
+        DIM.alpha(i, 2:3)    = 1.04;
+        DIM.n_const(i, 2:3)  = 1.3954;
+        
+        % Sandstone bottom right
+        DIM.K_xx(i, 4)     = 3.9;
+        DIM.K_zz(i, 4)     = 1.17;
+        DIM.phi_res(i, 4)  = 0.0286;
+        DIM.phi_sat(i, 4)  = 0.3658;
+        DIM.alpha(i, 4)    = 2.8;
+        DIM.n_const(i, 4)  = 2.239;
+    elseif x == 350 && z == 40
+        % Sandstone top right
+        DIM.K_xx(i, 1)     = 3.9;
+        DIM.K_zz(i, 1)     = 1.17;
+        DIM.phi_res(i, 1)  = 0.0286;
+        DIM.phi_sat(i, 1)  = 0.3658;
+        DIM.alpha(i, 1)    = 2.8;
+        DIM.n_const(i, 1)  = 2.239;
+        
+        % Alluvium top left
+        DIM.K_xx(i, 2)     = 2.6;
+        DIM.K_zz(i, 2)     = 0.91;
+        DIM.phi_res(i, 2)  = 0.01;
+        DIM.phi_sat(i, 2)  = 0.33;
+        DIM.alpha(i, 2)    = 1.43;
+        DIM.n_const(i, 2)  = 1.51;
+        
+        % Confining bottom left
+        DIM.K_xx(i, 3)     = 0.08;
+        DIM.K_zz(i, 3)     = 0.0159;
+        DIM.phi_res(i, 3)  = 0.106;
+        DIM.phi_sat(i, 3)  = 0.4686;
+        DIM.alpha(i, 3)    = 1.04;
+        DIM.n_const(i, 3)  = 1.3954;
+        
+        % Sandstone bottom right
+        DIM.K_xx(i, 4)     = 3.9;
+        DIM.K_zz(i, 4)     = 1.17;
+        DIM.phi_res(i, 4)  = 0.0286;
+        DIM.phi_sat(i, 4)  = 0.3658;
+        DIM.alpha(i, 4)    = 2.8;
+        DIM.n_const(i, 4)  = 2.239;
+    elseif x == 350 && 40 < z && z < 80
+        % Sandstone top right
+        DIM.K_xx(i, 1)     = 3.9;
+        DIM.K_zz(i, 1)     = 1.17;
+        DIM.phi_res(i, 1)  = 0.0286;
+        DIM.phi_sat(i, 1)  = 0.3658;
+        DIM.alpha(i, 1)    = 2.8;
+        DIM.n_const(i, 1)  = 2.239;
+        
+        % Alluvium left
+        DIM.K_xx(i, 2:3)     = 2.6;
+        DIM.K_zz(i, 2:3)     = 0.91;
+        DIM.phi_res(i, 2:3)  = 0.01;
+        DIM.phi_sat(i, 2:3)  = 0.33;
+        DIM.alpha(i, 2:3)    = 1.43;
+        DIM.n_const(i, 2:3)  = 1.51;
+        
+        % Sandstone bottom right
+        DIM.K_xx(i, 4)     = 3.9;
+        DIM.K_zz(i, 4)     = 1.17;
+        DIM.phi_res(i, 4)  = 0.0286;
+        DIM.phi_sat(i, 4)  = 0.3658;
+        DIM.alpha(i, 4)    = 2.8;
+        DIM.n_const(i, 4)  = 2.239;
+    elseif x == 350 && z == 80
+        % Alluvium left
+        DIM.K_xx(i, 3)     = 2.6;
+        DIM.K_zz(i, 3)     = 0.91;
+        DIM.phi_res(i, 3)  = 0.01;
+        DIM.phi_sat(i, 3)  = 0.33;
+        DIM.alpha(i, 3)    = 1.43;
+        DIM.n_const(i, 3)  = 1.51;
+        
+        % Sandstone bottom right
+        DIM.K_xx(i, 4)     = 3.9;
+        DIM.K_zz(i, 4)     = 1.17;
+        DIM.phi_res(i, 4)  = 0.0286;
+        DIM.phi_sat(i, 4)  = 0.3658;
+        DIM.alpha(i, 4)    = 2.8;
+        DIM.n_const(i, 4)  = 2.239;
+    elseif x == 50 && 30 < z && z < 40
+        % Confining top right
+        DIM.K_xx(i, 1)     = 0.08;
+        DIM.K_zz(i, 1)     = 0.0159;
+        DIM.phi_res(i, 1)  = 0.106;
+        DIM.phi_sat(i, 1)  = 0.4686;
+        DIM.alpha(i, 1)    = 1.04;
+        DIM.n_const(i, 1)  = 1.3954;
+        
+        % Alluvium left
+        DIM.K_xx(i, 2:3)     = 2.6;
+        DIM.K_zz(i, 2:3)     = 0.91;
+        DIM.phi_res(i, 2:3)  = 0.01;
+        DIM.phi_sat(i, 2:3)  = 0.33;
+        DIM.alpha(i, 2:3)    = 1.43;
+        DIM.n_const(i, 2:3)  = 1.51;
+        
+        % Confining bottom right
+        DIM.K_xx(i, 4)     = 0.08;
+        DIM.K_zz(i, 4)     = 0.0159;
+        DIM.phi_res(i, 4)  = 0.106;
+        DIM.phi_sat(i, 4)  = 0.4686;
+        DIM.alpha(i, 4)    = 1.04;
+        DIM.n_const(i, 4)  = 1.3954;
+    elseif x == 50 && z == 40
+        % Alluvium top and bottom left
+        DIM.K_xx(i, 1:3)     = 2.6;
+        DIM.K_zz(i, 1:3)     = 0.91;
+        DIM.phi_res(i, 1:3)  = 0.01;
+        DIM.phi_sat(i, 1:3)  = 0.33;
+        DIM.alpha(i, 1:3)    = 1.43;
+        DIM.n_const(i, 1:3)  = 1.51;
+        
+        % Confining bottom right
+        DIM.K_xx(i, 4)     = 0.08;
+        DIM.K_zz(i, 4)     = 0.0159;
+        DIM.phi_res(i, 4)  = 0.106;
+        DIM.phi_sat(i, 4)  = 0.4686;
+        DIM.alpha(i, 4)    = 1.04;
+        DIM.n_const(i, 4)  = 1.3954;
+    elseif 50 < x && x < 350 && z == 40
+        % Alluvium top
+        DIM.K_xx(i, 1:2)     = 2.6;
+        DIM.K_zz(i, 1:2)     = 0.91;
+        DIM.phi_res(i, 1:2)  = 0.01;
+        DIM.phi_sat(i, 1:2)  = 0.33;
+        DIM.alpha(i, 1:2)    = 1.43;
+        DIM.n_const(i, 1:2)  = 1.51;
+        
+        % Confining bottom
+        DIM.K_xx(i, 3:4)     = 0.08;
+        DIM.K_zz(i, 3:4)     = 0.0159;
+        DIM.phi_res(i, 3:4)  = 0.106;
+        DIM.phi_sat(i, 3:4)  = 0.4686;
+        DIM.alpha(i, 3:4)    = 1.04;
+        DIM.n_const(i, 3:4)  = 1.3954;
+    elseif 0 <= x && x < 50 && 30 < z && z <= 80
+        % Alluvium everywhere
+        DIM.K_xx(i, :)     = 2.6;
+        DIM.K_zz(i, :)     = 0.91;
+        DIM.phi_res(i, :)  = 0.01;
+        DIM.phi_sat(i, :)  = 0.33;
+        DIM.alpha(i, :)    = 1.43;
+        DIM.n_const(i, :)  = 1.51;
+    elseif 50 <= x && x < 350 && 40 < z && z <= 80
+        % Alluvium everywhere
+        DIM.K_xx(i, :)     = 2.6;
+        DIM.K_zz(i, :)     = 0.91;
+        DIM.phi_res(i, :)  = 0.01;
+        DIM.phi_sat(i, :)  = 0.33;
+        DIM.alpha(i, :)    = 1.43;
+        DIM.n_const(i, :)  = 1.51;
+    elseif 50 < x && x < 350 && 30 < z && z < 40
+        % Confining everywhere
+        DIM.K_xx(i, :)     = 0.08;
+        DIM.K_zz(i, :)     = 0.0159;
+        DIM.phi_res(i, :)  = 0.106;
+        DIM.phi_sat(i, :)  = 0.4686;
+        DIM.alpha(i, :)    = 1.04;
+        DIM.n_const(i, :)  = 1.3954;
+    end     
 end
 
 % Assign a node type to each vertex,
@@ -110,7 +373,7 @@ NT(1) = 1;
 NT(2:DIM.n-1) = 2;
 
 %Bottom R corner
-NT(n)=3;
+NT(n) = 3;
 
 for i = n+1:num_nodes-1
     if XZ(i,1) == 0
@@ -128,7 +391,9 @@ for i = n+1:num_nodes-1
     end
 end
 
-NT(num_nodes)=9;
+NT(num_nodes) = 9;
+
+
 
 B=gallery('tridiag',num_nodes,1,1,1);
 L=n;
@@ -144,9 +409,11 @@ r=symrcm(B);
 b=bandwidth(B(r,r));
 Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)))
 
+r = 1:n*m;
+
 DIM.r=r;
 DIM.b=b;
-% DIM.r = 1:n*m;
+
 
 % DIM.NT = NT;
 
@@ -154,4 +421,10 @@ DIM.XZ = DIM.XZ(r,:);
 DIM.NT = NT(r);
 DIM.DELTA = DIM.DELTA(r, :);
 DIM.VOL = DIM.VOL(r, :);
+DIM.K_xx = DIM.K_xx(r, :);
+DIM.K_zz = DIM.K_zz(r, :);
+DIM.phi_res = DIM.phi_res(r, :);
+DIM.phi_sat = DIM.phi_sat(r, :);
+DIM.alpha = DIM.alpha(r, :);
+DIM.n_const = DIM.n_const(r, :);
 end
