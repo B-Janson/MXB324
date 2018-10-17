@@ -24,7 +24,7 @@ iters = 0;
 fevals = 0;
 f_eval_total = 1;
 
-J = jac_func(DIM, F, @FVM_TEST, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
+J = jac_func_2(DIM, F, @FVM_TEST, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
 
 
 %%
@@ -45,10 +45,9 @@ end
 t = 0;
 timesteps = 0;
 T=[0];
-DT=[PARAMS.DT];
+steady_state = false;
 
-
-while (norm(phi-phi_old) > PARAMS.breaktol)
+while steady_state == false %(norm(phi-phi_old) > PARAMS.breaktol)
     t = t + PARAMS.dt;
     timesteps = timesteps + 1;
 %    R=PARAMS.r_f*(1+cos((2*pi)*t/365)); For when we finally want to stop
@@ -58,7 +57,7 @@ while (norm(phi-phi_old) > PARAMS.breaktol)
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
         if mod(iters, PARAMS.jacobian_update) == 0
             J_old=J;
-            J = jac_func(DIM, F, @FVM_TEST, h, h_old, S_old, phi_old, k_old, t, PARAMS);
+            J = jac_func_2(DIM, F, @FVM_TEST, h, h_old, S_old, phi_old, k_old, t, PARAMS);
             fevals = fevals + DIM.n * DIM.m;
         end
     
@@ -105,20 +104,22 @@ while (norm(phi-phi_old) > PARAMS.breaktol)
     iters = 0;
 
     if PARAMS.realtime_plot == true
-        if 0 == 0
-            SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(t)], h);
-            pressurehead(framenum) = getframe(gcf);
-            SOL_VIS(DIM, phi_figure, 'default', ['Water Content Time: ', num2str(t)], phi);
-            watercontent(framenum) = getframe(gcf);
-            framenum = framenum +1;
-        end
+        SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(t)], h);
+        pressurehead(framenum) = getframe(gcf);
+        SOL_VIS(DIM, phi_figure, 'default', ['Water Content Time: ', num2str(t)], phi);
+        watercontent(framenum) = getframe(gcf);
+        framenum = framenum +1;
     end
     T(end+1)=t;
     
+    if t > 100000
+        steady_state = true;
+    end
+    
 end
 
-CREATE_VIDEO(wcontvideo, watercontent, 20);
-CREATE_VIDEO(pheadvideo, pressurehead, 20);
+% CREATE_VIDEO(wcontvideo, watercontent, 20);
+% CREATE_VIDEO(pheadvideo, pressurehead, 20);
 
 PARAMS.PUMPS=1;
 
