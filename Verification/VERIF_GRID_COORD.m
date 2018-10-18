@@ -75,12 +75,6 @@ for i = 1:m*n
     DIM.VOL(i,5)=sum(DIM.VOL(i,1:4));
 end
 
-% Soil parameters (from PDF)
-% Set all cells to be Alluvium
-DIM.SP=[2.6,  0.91,   0.01,   0.33,   0.143, 1.51; ...   % Alluvium
-        0.08, 0.0159, 0.106,  0.4686, 1.04,  1.3954; ... % 
-        3.9,  1.17,   0.0286, 0.3658, 2.8,   2.239];     % 
-
 % Set node point constants
 DIM.K_xx = zeros(num_nodes, 4);
 DIM.K_zz = zeros(num_nodes, 4);
@@ -392,8 +386,6 @@ for i = n+1:num_nodes-1
 end
 
 NT(num_nodes) = 9;
-
-
 
 B=gallery('tridiag',num_nodes,1,1,1);
 L=n;

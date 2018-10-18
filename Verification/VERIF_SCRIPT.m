@@ -144,8 +144,6 @@ while steady_state == false && t < PARAMS.endtime %(norm(phi-phi_old) > PARAMS.b
         end
     end
     
-    
-    
     % reset iters
     iters = 0;
 

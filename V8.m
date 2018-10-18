@@ -19,9 +19,14 @@ dt = PARAMS.dt;
 theta = PARAMS.theta;
 r_f = PARAMS.r_f(PARAMS.r_t);
 active_flow = 1;
+active_flow_old = 1;
+
+if h(point) >= 0
+    active_flow = 0;
+end
 
 if h_old(point) >= 0
-   active_flow = 0; 
+   active_flow_old = 0; 
 end
 
 k_e = (k(point) + k(east)) / 2;
@@ -40,8 +45,8 @@ gamma_5 = k_s * K_zz(3) * dx(1) / 2 * ((h(south) - h(point))/dz - 1);
 gamma_6 = k_s * K_zz(4) * dx(2) / 2 * ((h(south) - h(point))/dz - 1);
 
 gamma_1_old = k_e_old * K_xx(4) * dz / 2 * ((h_old(east) - h_old(point))/dx(2));
-gamma_2_old = active_flow * r_f * dx(2) / 2;
-gamma_3_old = active_flow * r_f * dx(1) / 2;
+gamma_2_old = active_flow_old * r_f * dx(2) / 2;
+gamma_3_old = active_flow_old * r_f * dx(1) / 2;
 gamma_4_old = k_w_old * K_xx(3) * dz / 2 * ((h_old(west) - h_old(point))/dx(1));
 gamma_5_old = k_s_old * K_zz(3) * dx(1) / 2 * ((h_old(south) - h_old(point))/dz - 1);
 gamma_6_old = k_s_old * K_zz(4) * dx(2) / 2 * ((h_old(south) - h_old(point))/dz - 1);

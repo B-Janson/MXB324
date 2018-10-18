@@ -18,6 +18,15 @@ cell_volume = DIM.VOL(point, 5);
 
 dt = PARAMS.dt;
 theta = PARAMS.theta;
+sink = 0;
+
+if PARAMS.PUMPS == 1
+    if DIM.XZ(point, 1) == 450 && DIM.XZ(point, 2) == 10
+        sink = PARAMS.town_rate * 10;
+    elseif DIM.XZ(point, 1) == 100 && DIM.XZ(point, 2) == 50
+        sink = PARAMS.bore_rate * 10;
+    end
+end
 
 k_e = (k(point) + k(east)) / 2;
 k_w = (k(point) + k(west)) / 2;
@@ -47,7 +56,8 @@ gamma_6_old = k_s_old * K_zz(3) * dx(1) / 2 * ((h_old(south) - h_old(point))/dz(
 gamma_7_old = k_s_old * K_zz(4) * dx(2) / 2 * ((h_old(south) - h_old(point))/dz(1) - 1);
 gamma_8_old = k_e_old * K_xx(4) * dz(1) / 2 * ((h_old(east) - h_old(point))/dx(2));
 
-f = phi(point) - phi_old(point) - dt/cell_volume * (theta * ...
+f = phi(point) - phi_old(point) - dt * (theta * sink + (1 - theta) * sink) ...
+            - dt/cell_volume * (theta * ...
              (gamma_1 + gamma_2 + gamma_3 + gamma_4 + gamma_5 + gamma_6 + gamma_7 + gamma_8) ...
             + (1 - theta) * ( ...
               gamma_1_old + gamma_2_old + gamma_3_old + gamma_4_old + gamma_5_old + gamma_6_old + gamma_7_old + gamma_8_old));

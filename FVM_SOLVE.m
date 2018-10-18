@@ -1,4 +1,4 @@
-function [F, S, phi, k] = FVM_TEST(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS)
+function [F, S, phi, k] = FVM_SOLVE(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS)
 
 n = DIM.n;
 m = DIM.m;

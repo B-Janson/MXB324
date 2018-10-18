@@ -7,7 +7,7 @@ PARAMS.r_f          = [0.00171,0.0171,0.000171];  % rainfall constant [normal,fl
 PARAMS.r_t          = 1;        % rain type 1=normal, 2=flood, 3=drought
 PARAMS.r_m          = 1;        % rain model 1=constant, 2=cosine, 3=interpol
 PARAMS.dt           = 50;       % timestep size
-PARAMS.endtime      = 4000;     % end time
+PARAMS.endtime      = 40000;     % end time
 PARAMS.theta        = 0.5;      % temporal weighting, 1-Backward Euler, 0.5-Crank-Nicholson
 PARAMS.sigma        = 1;        % stream weighting, 0-Upwinding, 1-Averaging, 2-Downwinding
 PARAMS.tol_a        = 1e-10;    % absolute tolerance of the Newton step
@@ -27,6 +27,4 @@ PARAMS.method = 'column'; % how to calculate the Jacobian, Full is the normal on
 PARAMS.steady_state_tol = 10^-8; % tolerance between water content to determine steady state
 
 
-
 end
-
