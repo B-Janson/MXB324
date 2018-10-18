@@ -75,8 +75,8 @@ while steady_state == false && t < PARAMS.endtime %(norm(phi-phi_old) > PARAMS.b
         fevals = fevals + 1;
         
         if PARAMS.debug == true
-            fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d steady_state:%d dt:%d rho:%d method:%s\n', ...
-                t, iters, err, fevals, timesteps, min(h) >= 0, PARAMS.dt, rho, PARAMS.method);
+            fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d steady_state:%d dt:%d rho:%d method:%s norm(phi-phi_old):%d\n', ...
+                t, iters, err, fevals, timesteps, min(h) >= 0, PARAMS.dt, rho, PARAMS.method, norm(phi - phi_old, 2));
         end
         
         if iters == PARAMS.max_iters - 1 || err > 1e12
@@ -136,8 +136,10 @@ save('steady_state');
 
 %% Part 3 Pumps
 clear, close all
-load('steady-state-mat.mat')
+load('steady_state.mat')
 PARAMS.PUMPS = 1;
+% PARAMS.dt = 1;
+PARAMS.endtime = 20000;
 
 F = FVM_SOLVE(DIM, h, h, S, phi, k, t, PARAMS);
 err = norm(F, 2);
@@ -167,8 +169,8 @@ while t < PARAMS.endtime %(norm(phi-phi_old) > PARAMS.breaktol)
         fevals = fevals + 1;
         
         if PARAMS.debug == true
-            fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d steady_state:%d dt:%d rho:%d method:%s\n', ...
-                t, iters, err, fevals, timesteps, min(h) >= 0, PARAMS.dt, rho, PARAMS.method);
+            fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d steady_state:%d dt:%d rho:%d method:%s norm(dh,2):%d\n', ...
+                t, iters, err, fevals, timesteps, min(h) >= 0, PARAMS.dt, rho, PARAMS.method, norm(dh,2));
         end
         
         if iters == PARAMS.max_iters - 1 || err > 1e4
