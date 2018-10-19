@@ -11,9 +11,6 @@ format compact
 [h_old, S_old, phi_old, k_old] = VERIF_INIT_COND(DIM);
 
 h = h_old;
-% S = S_old;
-% phi = phi_old;
-% k = k_old;
 
 % Initial calculation of F at t = dt
 F = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
@@ -35,6 +32,10 @@ S = S_old;
 phi = phi_old;
 k = k_old;
 
+T = 0;
+phi_avg = PHI_AVG(DIM, phi);
+phi_true = PHI_TRUE(DIM, PARAMS, 0);
+
 % videoName_wcont = 'WaterContent.avi';
 % videoName_phead = 'PressureHead.avi';
 
@@ -54,13 +55,19 @@ for i = 21:30
 end
 
 if PARAMS.realtime_plot
+    figure
+    hold on
+    plot(0, phi_avg, 'b')
+    plot(0, phi_true, 'r')
+    hold off
+    drawnow
     % if realtime plotting, show the initial state of solution
-    head_figure = figure('Name', 'Head');
+%     head_figure = figure('Name', 'Head');
 %     phi_figure = figure('Name', 'Water Content');
-    sat_figure = figure('Name', 'Saturation');
-    SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(0)], h);
+%     sat_figure = figure('Name', 'Saturation');
+%     SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(0)], h);
 %     SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(0)], phi);
-    SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(0)], S);
+%     SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(0)], S);
 end
 
 t = 0;
@@ -122,6 +129,10 @@ while steady_state == false && t < PARAMS.endtime %(norm(phi-phi_old) > PARAMS.b
         
     end
     
+    T(end + 1) = t;
+    phi_avg(end + 1) = PHI_AVG(DIM, phi);
+    phi_true(end + 1) = PHI_TRUE(DIM, PARAMS, t);
+    
     % We have now converged, so update variables
     h_old = h;
     S_old = S;
@@ -145,12 +156,17 @@ while steady_state == false && t < PARAMS.endtime %(norm(phi-phi_old) > PARAMS.b
     iters = 0;
 
     if PARAMS.realtime_plot == true
-        SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(t)], h);
+        hold on
+        plot(T, phi_avg, 'b')
+        plot(T, phi_true, 'r')
+        hold off
+        drawnow
+%         SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(t)], h);
 %         pressurehead(framenum) = getframe(gcf);
 %         SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(t)], phi);
 %         watercontent(framenum) = getframe(gcf);
-        SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(t)], S);
-        framenum = framenum +1;
+%         SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(t)], S);
+%         framenum = framenum +1;
     end
 %     T(end+1)=t;
     

@@ -5,10 +5,13 @@ function [DIM]=VERIF_GRID_COORD()
 WIDTH = 500;
 HEIGHT = 80;
 
+DIM.WIDTH = WIDTH;
+DIM.HEIGHT = HEIGHT;
+
 % number of horizontal node points
 n = 11;
 % number of vertical node points
-m = 25;
+m = 17;
 
 num_nodes = n * m;
 
