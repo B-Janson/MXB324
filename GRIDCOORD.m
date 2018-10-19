@@ -6,9 +6,9 @@ WIDTH = 500;
 HEIGHT = 80;
 
 % number of horizontal node points
-n = 11;
+n = 23;
 % number of vertical node points
-m = 9;
+m = 5;
 
 num_nodes = n * m;
 
@@ -401,7 +401,7 @@ r=symrcm(B);
 b=bandwidth(B(r,r));
 Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)))
 
-r = 1:n*m;
+%r = 1:n*m;
 
 DIM.r=r;
 DIM.b=b;

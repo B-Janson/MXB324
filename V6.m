@@ -28,7 +28,7 @@ k_s_old = (k_old(point) + k_old(south)) / 2;
 gamma_1 = k_n * K_zz(2) * dx / 2 * (1 + (h(north) - h(point))/dz(2));
 gamma_2 = k_w * K_xx(2) * dz(2) / 2 * ((h(west) - h(point))/dx);
 gamma_3 = k_w * K_xx(3) * dz(1) / 2 * ((h(west) - h(point))/dx);
-gamma_4 = k_s * K_zz(3) * dx / 2 * ((h(south) - h(point))/dz(1) - 1);
+gamma_4 = k_s * K_zz(3) * dx / 2 * (((h(south) - h(point))/dz(1)) - 1);
 
 gamma_1_old = k_n_old * K_zz(2) * dx / 2 * (1 + (h_old(north) - h_old(point))/dz(2));
 gamma_2_old = k_w_old * K_xx(2) * dz(2) / 2 * ((h_old(west) - h_old(point))/dx);
