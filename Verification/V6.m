@@ -25,23 +25,57 @@ theta = PARAMS.theta;
 sigma = PARAMS.sigma;
 
 % calculate k
-k_n_up   = max(k(point), k(north));
-k_n_down = min(k(point), k(north));
-k_w_up   = max(k(point), k(west));
-k_w_down = min(k(point), k(west));
-k_s_up   = max(k(point), k(south));
-k_s_down = min(k(point), k(south));
+if h(point) >= h(west)
+    k_w_up   = k(point);
+    k_w_down = k(west);
+else
+    k_w_up   = k(west);
+    k_w_down = k(point);
+end
+
+if h(point) >= h(north) + dz(2)
+    k_n_up   = k(point);
+    k_n_down = k(north);
+else
+    k_n_up   = k(north);
+    k_n_down = k(point);
+end
+
+if h(point) >= h(south) - dz(1)
+    k_s_up   = k(point);
+    k_s_down = k(south);
+else
+    k_s_up   = k(south);
+    k_s_down = k(point);
+end
 
 k_n = k_n_up + sigma / 2 * (k_n_down - k_n_up);
 k_w = k_w_up + sigma / 2 * (k_w_down - k_w_up);
 k_s = k_s_up + sigma / 2 * (k_s_down - k_s_up);
 
-k_n_up_old   = max(k_old(point), k_old(north));
-k_n_down_old = min(k_old(point), k_old(north));
-k_w_up_old   = max(k_old(point), k_old(west));
-k_w_down_old = min(k_old(point), k_old(west));
-k_s_up_old   = max(k_old(point), k_old(south));
-k_s_down_old = min(k_old(point), k_old(south));
+if h_old(point) >= h_old(west)
+    k_w_up_old   = k_old(point);
+    k_w_down_old = k_old(west);
+else
+    k_w_up_old   = k_old(west);
+    k_w_down_old = k_old(point);
+end
+
+if h_old(point) >= h_old(north) + dz(2)
+    k_n_up_old   = k_old(point);
+    k_n_down_old = k_old(north);
+else
+    k_n_up_old   = k_old(north);
+    k_n_down_old = k_old(point);
+end
+
+if h_old(point) >= h_old(south) - dz(1)
+    k_s_up_old   = k_old(point);
+    k_s_down_old = k_old(south);
+else
+    k_s_up_old   = k_old(south);
+    k_s_down_old = k_old(point);
+end
 
 k_n_old = k_n_up_old + sigma / 2 * (k_n_down_old - k_n_up_old);
 k_w_old = k_w_up_old + sigma / 2 * (k_w_down_old - k_w_up_old);
