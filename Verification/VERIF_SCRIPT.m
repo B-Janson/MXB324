@@ -42,46 +42,31 @@ phi_true = PHI_TRUE(DIM, PARAMS, 0);
 % wcontvideo = VideoWriter(videoName_wcont);
 % pheadvideo = VideoWriter(videoName_phead);
 
-sat_col = zeros(30, 3);
-
-for i = 1:20
-    sat_col(i, 1) = max(1.0 - 1.0 * (i-1) / 10, 0);
-    sat_col(i, 2) = max(1.0 - 1.0 * (i-1) / 20, 0);
-    sat_col(i, 3) = 1.0;
-end
-
-for i = 21:30
-    sat_col(i, 3) = 1.0 - 0.5 * (i-21) / 10;
-end
+sat_col = SAT_COLOUR;
 
 if PARAMS.realtime_plot
-    figure
-    hold on
-    plot(0, phi_avg, 'b')
-    plot(0, phi_true, 'r')
-    hold off
-    drawnow
     % if realtime plotting, show the initial state of solution
-%     head_figure = figure('Name', 'Head');
-%     phi_figure = figure('Name', 'Water Content');
+    head_figure = figure('Name', 'Head');
+    phi_figure = figure('Name', 'Water Content');
 %     sat_figure = figure('Name', 'Saturation');
-%     SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(0)], h);
-%     SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(0)], phi);
+    SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(0)], h);
+    SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(0)], phi);
 %     SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(0)], S);
+    
+    analytic_figure = figure('Name', 'Analytic');
+    axis([0 PARAMS.endtime 0 0.3])
+    SOL_ANALYTIC(analytic_figure, T, phi_avg, phi_true)
 end
 
 t = 0;
 timesteps = 0;
-% T=[0];
 steady_state = false;
 
 %% Part 1 Main Solver
 tic;
-while steady_state == false && t < PARAMS.endtime %(norm(phi-phi_old) > PARAMS.breaktol)
+while steady_state == false && t < PARAMS.endtime
     t = t + PARAMS.dt;
     timesteps = timesteps + 1;
-%    R=PARAMS.r_f*(1+cos((2*pi)*t/365)); For when we finally want to stop
-%    using constant rainfall
     
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
         rho = err / err_old;
@@ -156,19 +141,15 @@ while steady_state == false && t < PARAMS.endtime %(norm(phi-phi_old) > PARAMS.b
     iters = 0;
 
     if PARAMS.realtime_plot == true
-        hold on
-        plot(T, phi_avg, 'b')
-        plot(T, phi_true, 'r')
-        hold off
-        drawnow
-%         SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(t)], h);
+        SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(t)], h);
 %         pressurehead(framenum) = getframe(gcf);
-%         SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(t)], phi);
+        SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(t)], phi);
 %         watercontent(framenum) = getframe(gcf);
 %         SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(t)], S);
-%         framenum = framenum +1;
+        
+        SOL_ANALYTIC(analytic_figure, T, phi_avg, phi_true)
+%         framenum = framenum + 1;
     end
-%     T(end+1)=t;
     
 end
 
