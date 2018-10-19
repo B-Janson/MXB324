@@ -13,6 +13,7 @@ dx = DELTA(2);
 dz = DELTA(3:4);
 K_xx = DIM.K_xx(point, :);
 K_zz = DIM.K_zz(point, :);
+K_r = PARAMS.K_r;
 cell_volume = DIM.VOL(point, 5);
 
 dt = PARAMS.dt;
@@ -78,15 +79,15 @@ end
 
 gamma_1 = k_e * K_xx(1) * dz(2) / 2 * ((h(east) - h(point))/dx);
 gamma_2 = k_n * K_zz(1) * dx / 2 * (1 + (h(north) - h(point))/dz(2));
-gamma_3 = K_xx(1) * DEL_H(2) * dz(2) / 2;
-gamma_4 = K_xx(4) * DEL_H(1) * dz(1) / 2;
+gamma_3 = K_r * DEL_H(2) * dz(2) / 2;
+gamma_4 = K_r * DEL_H(1) * dz(1) / 2;
 gamma_5 = k_s * K_zz(4) * dx / 2 * ((h(south) - h(point))/dz(1) - 1);
 gamma_6 = k_e * K_xx(4) * dz(1) / 2 * ((h(east) - h(point))/dx);
 
 gamma_1_old = k_e_old * K_xx(1) * dz(2) / 2 * ((h_old(east) - h_old(point))/dx);
 gamma_2_old = k_n_old * K_zz(1) * dx / 2 * (1 + (h_old(north) - h_old(point))/dz(2));
-gamma_3_old = K_xx(1) * DEL_H_old(2) * dz(2) / 2;
-gamma_4_old = K_xx(4) * DEL_H_old(1) * dz(1) / 2;
+gamma_3_old = K_r * DEL_H_old(2) * dz(2) / 2;
+gamma_4_old = K_r * DEL_H_old(1) * dz(1) / 2;
 gamma_5_old = k_s_old * K_zz(4) * dx / 2 * ((h_old(south) - h_old(point))/dz(1) - 1);
 gamma_6_old = k_e_old * K_xx(4) * dz(1) / 2 * ((h_old(east) - h_old(point))/dx);
 

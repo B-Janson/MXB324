@@ -23,15 +23,30 @@ cell_volume = DIM.VOL(point, 5);
 
 dt = PARAMS.dt;
 theta = PARAMS.theta;
+sigma = PARAMS.sigma;
 
 % calculate k
-k_e = (k(point) + k(east)) / 2;
-k_n = (k(point) + k(north)) / 2;
-k_s = (k(point) + k(south)) / 2;
+k_e_up   = max(k(point), k(east));
+k_e_down = min(k(point), k(east));
+k_n_up   = max(k(point), k(north));
+k_n_down = min(k(point), k(north));
+k_s_up   = max(k(point), k(south));
+k_s_down = min(k(point), k(south));
 
-k_e_old = (k_old(point) + k_old(east)) / 2;
-k_n_old = (k_old(point) + k_old(north)) / 2;
-k_s_old = (k_old(point) + k_old(south)) / 2;
+k_e = k_e_up + sigma / 2 * (k_e_down - k_e_up);
+k_n = k_n_up + sigma / 2 * (k_n_down - k_n_up);
+k_s = k_s_up + sigma / 2 * (k_s_down - k_s_up);
+
+k_e_up_old   = max(k_old(point), k_old(east));
+k_e_down_old = min(k_old(point), k_old(east));
+k_n_up_old   = max(k_old(point), k_old(north));
+k_n_down_old = min(k_old(point), k_old(north));
+k_s_up_old   = max(k_old(point), k_old(south));
+k_s_down_old = min(k_old(point), k_old(south));
+
+k_e_old = k_e_up_old + sigma / 2 * (k_e_down_old - k_e_up_old);
+k_n_old = k_n_up_old + sigma / 2 * (k_n_down_old - k_n_up_old);
+k_s_old = k_s_up_old + sigma / 2 * (k_s_down_old - k_s_up_old);
 
 % calculate line integrals
 gamma_1 = -k_e * K_xx(ST(1)) * dz(2) / 2 * ((h(east) - h(point))/dx);

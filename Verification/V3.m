@@ -22,13 +22,24 @@ cell_volume = DIM.VOL(point, 5);
 
 dt = PARAMS.dt;
 theta = PARAMS.theta;
+sigma = PARAMS.sigma;
 
 % calculate k
-k_w = (k(point) + k(west)) / 2;
-k_n = (k(point) + k(north)) / 2;
+k_n_up   = max(k(point), k(north));
+k_n_down = min(k(point), k(north));
+k_w_up   = max(k(point), k(west));
+k_w_down = min(k(point), k(west));
 
-k_w_old = (k_old(point) + k_old(west)) / 2;
-k_n_old = (k_old(point) + k_old(north)) / 2;
+k_n = k_n_up + sigma / 2 * (k_n_down - k_n_up);
+k_w = k_w_up + sigma / 2 * (k_w_down - k_w_up);
+
+k_n_up_old   = max(k_old(point), k_old(north));
+k_n_down_old = min(k_old(point), k_old(north));
+k_w_up_old   = max(k_old(point), k_old(west));
+k_w_down_old = min(k_old(point), k_old(west));
+
+k_n_old = k_n_up_old + sigma / 2 * (k_n_down_old - k_n_up_old);
+k_w_old = k_w_up_old + sigma / 2 * (k_w_down_old - k_w_up_old);
 
 gamma_1 = -k_w * K_xx * dz / 2 * ((h(west) - h(point))/dx);
 gamma_2 = -k_n * K_zz * dx / 2 * ((h(north) - h(point))/dz + 1);

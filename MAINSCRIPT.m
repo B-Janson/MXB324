@@ -90,13 +90,13 @@ while steady_state == false && t < PARAMS.endtime %(norm(phi-phi_old) > PARAMS.b
             end
         end
         
-        % If pressure head is positive at surface, steady state reached
-        if min(h) >= 0
-            fprintf('steady state\n')
-            steady_state = true;
-            break
-        end
-        
+    end
+    
+    % If water content 'unchanging', steady state reached
+    if norm(phi - phi_old, 2) < PARAMS.steady_state_tol
+        fprintf('steady state\n')
+        steady_state = true;
+        break
     end
     
     % We have now converged
@@ -148,8 +148,6 @@ err_old = err; % The error for the new timestep to compare with the next Newton 
 while t < PARAMS.endtime %(norm(phi-phi_old) > PARAMS.breaktol)
     t = t + PARAMS.dt;
     timesteps = timesteps + 1;
-%    R=PARAMS.r_f*(1+cos((2*pi)*t/365)); For when we finally want to stop
-%    using constant rainfall
     
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
         rho = err / err_old;
