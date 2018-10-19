@@ -10,8 +10,10 @@ south = (DIM.r == i-n);
 DELTA = DIM.DELTA(point, :);
 dx = DELTA(2);
 dz = DELTA(3);
-K_xx = DIM.K_xx(point, 4);
-K_zz = DIM.K_zz(point, 4);
+
+ST = DIM.ST(point, 4);
+K_xx = DIM.K_xx(ST);
+K_zz = DIM.K_zz(ST);
 cell_volume = DIM.VOL(point, 5);
 
 dt = PARAMS.dt;

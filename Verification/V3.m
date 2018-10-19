@@ -13,9 +13,10 @@ north = (DIM.r == n+n);
 DELTA = DIM.DELTA(point, :);
 dx = DELTA(1);
 dz = DELTA(4);
-% get the K values for the first quadrant only
-K_xx = DIM.K_xx(point, 2);
-K_zz = DIM.K_zz(point, 2);
+% get the K values for the second quadrant only
+ST = DIM.ST(point, 2);
+K_xx = DIM.K_xx(ST);
+K_zz = DIM.K_zz(ST);
 % get total cell volume
 cell_volume = DIM.VOL(point, 5);
 

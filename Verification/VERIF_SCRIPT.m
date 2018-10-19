@@ -27,8 +27,8 @@ framenum = 1;
 
 % Get the jacobian
 J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS, 'full');
-total_bandwidth = bandwidth(J);
-[DIM, h_old, S_old, phi_old, k_old, F] = REORDER_NODES(DIM, J, h_old, S_old, phi_old, k_old, F);
+% total_bandwidth = bandwidth(J);
+% [DIM, h_old, S_old, phi_old, k_old, F] = REORDER_NODES(DIM, J, h_old, S_old, phi_old, k_old, F);
 
 h = h_old;
 S = S_old;
@@ -138,10 +138,7 @@ while steady_state == false && t < PARAMS.endtime %(norm(phi-phi_old) > PARAMS.b
     
     % If adaptive time stepping and converged quickly, increase time step
     if iters <= PARAMS.jacobian_update * 1.5
-        PARAMS.dt = PARAMS.dt * PARAMS.adaptive_timestep;
-        if PARAMS.dt > 30
-            PARAMS.method = 'column';
-        end
+        PARAMS.dt = min(PARAMS.dt * PARAMS.adaptive_timestep, PARAMS.max_dt);
     end
     
     % reset iters

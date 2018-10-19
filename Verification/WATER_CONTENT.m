@@ -2,17 +2,21 @@ function [PHI]=WATER_CONTENT(DIM, h, S, i)
 % Water content function
 
 PHI = 0;
-phi_res = DIM.phi_res(i, :);
-phi_sat = DIM.phi_sat(i, :);
+ST = DIM.ST(i, :);
 cell_volume = DIM.VOL(i, :);
 
 if h(i) < 0
     for cell = 1:4
-        PHI = PHI + cell_volume(cell) * (phi_res(cell) + S(i) * (phi_sat(cell) - phi_res(cell)));
+        type = ST(cell);
+        res = DIM.phi_res(type);
+        sat = DIM.phi_sat(type);
+        PHI = PHI + cell_volume(cell) * (res + S(i) * (sat - res));
     end
 else
     for cell = 1:4
-        PHI = PHI + cell_volume(cell) * phi_sat(cell);
+        type = ST(cell);
+        sat = DIM.phi_sat(type);
+        PHI = PHI + cell_volume(cell) * sat;
     end
 end
 

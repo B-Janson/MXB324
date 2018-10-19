@@ -14,8 +14,9 @@ DELTA = DIM.DELTA(point, :);
 dx = DELTA(2);
 dz = DELTA(4);
 % get the K values for the first quadrant only
-K_xx = DIM.K_xx(point, 1);
-K_zz = DIM.K_zz(point, 1);
+ST = DIM.ST(point, 1);
+K_xx = DIM.K_xx(ST);
+K_zz = DIM.K_zz(ST);
 % get total cell volume
 cell_volume = DIM.VOL(point, 5);
 
