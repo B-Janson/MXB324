@@ -1,5 +1,5 @@
 function f = V8(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
-% Sandstone/Rain
+%Top row
 
 n = DIM.n;
 

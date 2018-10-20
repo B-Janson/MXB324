@@ -86,7 +86,7 @@ while steady_state == false && t < PARAMS.endtime
         err = norm(F, 2);
         iters = iters + 1;
         fevals = fevals + 1;
-        
+        disp(PARAMS.dt)
         % Output some debug info if wanted
         if PARAMS.debug == true
             fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d steady_state:%d dt:%d rho:%d method:%s\n', ...
@@ -152,7 +152,7 @@ while steady_state == false && t < PARAMS.endtime
     end
     
 end
-
+disp('Steady State Reached')
 toc
 
 % CREATE_VIDEO(wcontvideo, watercontent, 20);

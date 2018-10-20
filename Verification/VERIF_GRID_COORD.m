@@ -9,9 +9,9 @@ DIM.WIDTH = WIDTH;
 DIM.HEIGHT = HEIGHT;
 
 % number of horizontal node points
-n = 11;
+n = 6;
 % number of vertical node points
-m = 17;
+m = 11;
 
 num_nodes = n * m;
 
@@ -22,8 +22,14 @@ DIM.x=linspace(0, WIDTH, n);
 DIM.n=n;
 
 % Discretisation in z
-DIM.z=linspace(0, HEIGHT, m);
+DIM.z=linspace(0, 36, m);
 DIM.m=m;
+DIM.z(end+1)=39.5;
+DIM.z(end+1)=39;
+DIM.z(end+1)=38;
+DIM.z(end+1)=38;
+DIM.z=unique(DIM.z);
+
 
 %Create coordinate vector
 [X,Z]=meshgrid(DIM.x,DIM.z);
@@ -243,7 +249,7 @@ r=symrcm(B);
 b=bandwidth(B(r,r));
 Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)))
 
-r = 1:n*m;
+
 
 DIM.r=r;
 DIM.b=b;

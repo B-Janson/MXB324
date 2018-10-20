@@ -1,6 +1,5 @@
 function f = V9(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
-% Sandstone/Rain
-
+% Top right
 n = DIM.n;
 
 % find which index we want from the re-arranged matrix
