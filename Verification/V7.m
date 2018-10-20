@@ -4,9 +4,9 @@ function f = V7(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
 n = DIM.n;
 
 % find which index we want from the re-arranged matrix
-point = (DIM.r == i);
-east = (DIM.r == i+1);
-south = (DIM.r == i-n);
+point = DIM.r((DIM.r == i);
+east = DIM.r((DIM.r == i+1);
+south = DIM.r((DIM.r == i-n);
 
 % get the dx and dz values
 DELTA = DIM.DELTA(point, :);

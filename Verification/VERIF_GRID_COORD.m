@@ -208,33 +208,36 @@ end
 % Add in the river nodes later
 NT = zeros(num_nodes, 1);
 
-%Bottom L corner
-NT(1) = 1;
 
-%Bottom Row
-NT(2:DIM.n-1) = 2;
-
-%Bottom R corner
-NT(n) = 3;
-
-for i = n+1:num_nodes-1
-    if XZ(i,1) == 0
-        if XZ(i,2) == HEIGHT
-            NT(i) = 7;
-        else
-            NT(i) = 4;
-        end
-    elseif XZ(i,1) == WIDTH
-        NT(i) = 6;
-    elseif XZ(i,2) == HEIGHT
-        NT(i) = 8;
-    else
-        NT(i) = 5;
-    end
+for i=1:m*n
+if XZ(i,2) == 0
+    %Bottom edge
+    NT(i)=2;
+elseif XZ(i,2) == 80
+    %Top edge
+    NT(i)=8;
+elseif XZ(i,1) == 0
+    %Left edge
+    NT(i)=4;
+elseif XZ(i,1) == 500
+    %Right edge
+    NT(i)=6;
+else
+    %Interior
+    NT(i)=5;
 end
+end
+%Bottom Left
+NT(1)=1;
+%Bottom Right
+NT(n)=3;
+%Top Left
+NT(n*(m-1)+1)=7;
+%Top Right
+NT(n*m)=9;
 
-NT(num_nodes) = 9;
 
+%Discover layout of the jacobian
 B=gallery('tridiag',num_nodes,1,1,1);
 L=n;
 U=num_nodes;
@@ -245,15 +248,15 @@ for i = 1:n*(m-1)
     U=U-1;
 end
 
+%RCM reorder the jacobian
 r=symrcm(B);
 b=bandwidth(B(r,r));
-Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)))
-
-
-
+Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)));
+disp(Weightloss)
 DIM.r=r;
 DIM.b=b;
 
+%Reorder Everything
 DIM.XZ = DIM.XZ(r,:);
 DIM.NT = NT(r);
 DIM.ST = DIM.ST(r, :);

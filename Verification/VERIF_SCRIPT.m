@@ -25,7 +25,6 @@ framenum = 1;
 % Get the jacobian
 J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS, 'full');
 % total_bandwidth = bandwidth(J);
-% [DIM, h_old, S_old, phi_old, k_old, F] = REORDER_NODES(DIM, J, h_old, S_old, phi_old, k_old, F);
 
 h = h_old;
 S = S_old;
