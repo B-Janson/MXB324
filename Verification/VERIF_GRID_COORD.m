@@ -13,23 +13,24 @@ n = 6;
 % number of vertical node points
 m = 11;
 
-num_nodes = n * m;
 
 % Keep it uniform for now
 
 % Discretisation in x
-DIM.x=linspace(0, WIDTH, n); 
+DIM.x=linspace(0, WIDTH, n);
 DIM.n=n;
 
 % Discretisation in z
 DIM.z=linspace(0, 36, m);
-DIM.m=m;
-DIM.z(end+1)=39.5;
 DIM.z(end+1)=39;
 DIM.z(end+1)=38;
 DIM.z(end+1)=38;
 DIM.z=unique(DIM.z);
 
+
+m=length(DIM.z);
+DIM.m=m;
+num_nodes = n * m;
 
 %Create coordinate vector
 [X,Z]=meshgrid(DIM.x,DIM.z);
@@ -113,7 +114,7 @@ for i = 1:num_nodes
     elseif x == 50 && z == 30
         % Confining top right
         DIM.ST(i, 1) = confining;
-
+        
         % Alluvium top left
         DIM.ST(i, 2) = alluvium;
         
@@ -200,42 +201,46 @@ for i = 1:num_nodes
     elseif 50 < x && x < 350 && 30 < z && z < 40
         % Confining everywhere
         DIM.ST(i, :) = confining;
-    end     
+    end
 end
 
 % Assign a node type to each vertex,
 % Just the baby problem for now
 % Add in the river nodes later
 NT = zeros(num_nodes, 1);
-
+reshape(NT,[n m])'
 
 for i=1:m*n
-if XZ(i,2) == 0
-    %Bottom edge
-    NT(i)=2;
-elseif XZ(i,2) == 80
-    %Top edge
-    NT(i)=8;
-elseif XZ(i,1) == 0
-    %Left edge
-    NT(i)=4;
-elseif XZ(i,1) == 500
-    %Right edge
-    NT(i)=6;
-else
-    %Interior
-    NT(i)=5;
-end
+    if XZ(i,2) == 0
+        %Bottom edge
+        NT(i)=2;
+    elseif XZ(i,2) == 80
+        %Top edge
+        NT(i)=8;
+    elseif XZ(i,1) == 0
+        %Left edge
+        NT(i)=4;
+    elseif XZ(i,1) == 500
+        %Right edge
+        NT(i)=6;
+    else
+        %Interior
+        NT(i)=5;
+    end
+    reshape(NT,[n m])'
 end
 %Bottom Left
 NT(1)=1;
+reshape(NT,[n m])'
 %Bottom Right
 NT(n)=3;
+reshape(NT,[n m])'
 %Top Left
 NT(n*(m-1)+1)=7;
+reshape(NT,[n m])'
 %Top Right
-NT(n*m)=9;
-
+NT(end)=9;
+reshape(NT,[n m])'
 
 %Discover layout of the jacobian
 B=gallery('tridiag',num_nodes,1,1,1);
