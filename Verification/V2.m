@@ -5,10 +5,10 @@ function f = V2(DIM, i, h, h_old, phi, phi_old, k, k_old, PARAMS)
 n = DIM.n;
 
 % find which index we want from the re-arranged matrix
-point = DIM.r((DIM.r == i));
-east = DIM.r((DIM.r == i+1));
-west = DIM.r((DIM.r == i-1));
-north = DIM.r((DIM.r == i+n));
+point = (DIM.r == i);
+east = (DIM.r == i+1);
+west = (DIM.r == i-1);
+north = (DIM.r == i+n);
 
 % get the dx and dz values
 DELTA = DIM.DELTA(point, :);

@@ -1,9 +1,5 @@
-function jacobian = JAC_FUNC(DIM, F, FVM_func, h, h_old, S_old, phi_old, k_old, t, PARAMS, method)
+function jacobian = JAC_FUNC(DIM, F, FVM_func, h, h_old, S_old, phi_old, k_old, t, PARAMS)
 % Calculate the jacobian at the current time step
-
-if nargin == 10
-    method = PARAMS.method;
-end
 
 n = DIM.n;
 m = DIM.m;
@@ -14,7 +10,7 @@ jacobian = zeros(n*m, n*m);
 % Is the solution the 0 vector?
 a = norm(h, 2);
 
-switch method
+switch PARAMS.method
     case 'full'
         % Find a suitable finite difference
         if a ~= 0
@@ -41,6 +37,7 @@ switch method
         end
     case 'column'
         b = DIM.b;
+        half_b = (b - 1) / 2;
         shifts = zeros(n*m, b); % Initialise array of shift vectors
         ep = zeros(1, b); % initialise vector of shift sizes
         Js = zeros(n*m, b);
@@ -80,19 +77,19 @@ switch method
         % reorder shift vectors into the full jacobian
         % handle the first shift vectors up to the main diagonal separately
         for k = 1:b-1
-           jacobian(1:1+k, k) = Js(1:1+k, k); 
+           jacobian(1:k+half_b, k) = Js(1:k+half_b, k); 
         end
         
         % Do all remaining elements
         for k = 1:b
-             idxs = find(shifts(3:n*m, k)) + 2; % find the ones in each shift vector after the ones previously accounted for
+             idxs = find(shifts(b:n*m, k)) + b - 1; % find the ones in each shift vector after the ones previously accounted for
              for j = 1:length(idxs) % for each block left in the matrix
-                 col_len_low = min(1, n*m - idxs(j)); % calculate if a block has the full length of the bandwidth or if it is shorter (near to the bottom of the Jacobian)
-                 i = idxs(j)-1:idxs(j)+col_len_low; % calculate indexes of the block of elements
+                 col_len_low = min(half_b, n*m - idxs(j)); % calculate if a block has the full length of the bandwidth or if it is shorter (near to the bottom of the Jacobian)
+                 i = idxs(j)-half_b:idxs(j)+col_len_low; % calculate indexes of the block of elements
                  jacobian(i,idxs(j)) = Js(i,k); % store block in Js into corresponding column in the position Jacobian
              end
         end
-% end
+end
 
 % fprintf('norm(jacobian - jacobian2, 2) = %d\n', norm(jacobian - jacobian2, 2))
 % pause(1e-10)

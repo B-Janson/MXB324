@@ -9,55 +9,48 @@ DIM.WIDTH = WIDTH;
 DIM.HEIGHT = HEIGHT;
 
 % number of horizontal node points
-n = 6;
+n = 11;
 % number of vertical node points
-m = 11;
+m = 17;
 
+num_nodes = n * m;
 
 % Keep it uniform for now
 
 % Discretisation in x
-DIM.x=linspace(0, WIDTH, n);
-DIM.n=n;
+DIM.x = linspace(0, WIDTH, n);
+DIM.n = n;
 
 % Discretisation in z
-DIM.z=linspace(0, 36, m);
-DIM.z(end+1)=39;
-DIM.z(end+1)=38;
-DIM.z(end+1)=38;
-DIM.z=unique(DIM.z);
+DIM.z = linspace(0, HEIGHT, m);
+DIM.m = m;
 
-
-m=length(DIM.z);
-DIM.m=m;
-num_nodes = n * m;
-
-%Create coordinate vector
-[X,Z]=meshgrid(DIM.x,DIM.z);
-X=X';
-Z=Z';
-XZ=[X(:),Z(:)];
-DIM.XZ=XZ;
+% Create coordinate vector
+[X,Z] = meshgrid(DIM.x,DIM.z);
+X = X';
+Z = Z';
+XZ = [X(:), Z(:)];
+DIM.XZ = XZ;
 
 % Create the distance matrix
 
 % Create distance vectors dx=[L, R]
-dx=zeros(DIM.n,2);
-dx(1,2)=DIM.x(2)-DIM.x(1);
-for i=2:DIM.n-1
-    dx(i,1)=DIM.x(i)-DIM.x(i-1);
-    dx(i,2)=DIM.x(i+1)-DIM.x(i);
+dx = zeros(DIM.n, 2);
+dx(1,2) = DIM.x(2) - DIM.x(1);
+for i = 2:DIM.n-1
+    dx(i,1) = DIM.x(i) - DIM.x(i-1);
+    dx(i,2) = DIM.x(i+1) - DIM.x(i);
 end
-dx(DIM.n,1)=DIM.x(DIM.n)-DIM.x(DIM.n-1);
+dx(DIM.n,1) = DIM.x(DIM.n) - DIM.x(DIM.n-1);
 
 % Create distance vectors dz=[D, U]
-dz=zeros(DIM.m,2);
-dz(1,2)=DIM.z(2)-DIM.z(1);
+dz = zeros(DIM.m,2);
+dz(1,2) = DIM.z(2) - DIM.z(1);
 for i=2:DIM.m-1
-    dz(i,1)=DIM.z(i)-DIM.z(i-1);
-    dz(i,2)=DIM.z(i+1)-DIM.z(i);
+    dz(i,1) = DIM.z(i) - DIM.z(i-1);
+    dz(i,2) = DIM.z(i+1) - DIM.z(i);
 end
-dz(DIM.m,1)=DIM.z(DIM.m)-DIM.z(DIM.m-1);
+dz(DIM.m,1) = DIM.z(DIM.m) - DIM.z(DIM.m-1);
 
 % Create the big distances matrix
 DELTA=zeros(num_nodes, 4);
@@ -72,7 +65,7 @@ for i=0:n:n*(m-1)
 end
 
 % Each row [L,R,D,U]
-DIM.DELTA=DELTA;
+DIM.DELTA = DELTA;
 
 % Each row contains the volumes
 % [UR,UL,DL,DR,TV]
@@ -82,7 +75,7 @@ for i = 1:m*n
     DIM.VOL(i, 2) = DELTA(i, 1) * DELTA(i, 4) / 4; % UL
     DIM.VOL(i, 3) = DELTA(i, 1) * DELTA(i, 3) / 4; % DL
     DIM.VOL(i, 4) = DELTA(i, 2) * DELTA(i, 3) / 4; % DR
-    DIM.VOL(i,5)=sum(DIM.VOL(i,1:4));
+    DIM.VOL(i,5) = sum(DIM.VOL(i,1:4));
 end
 
 DIM.K_xx = [2.6 0.08 3.9];
@@ -208,61 +201,56 @@ end
 % Just the baby problem for now
 % Add in the river nodes later
 NT = zeros(num_nodes, 1);
-reshape(NT,[n m])'
 
-for i=1:m*n
-    if XZ(i,2) == 0
-        %Bottom edge
-        NT(i)=2;
-    elseif XZ(i,2) == 80
-        %Top edge
-        NT(i)=8;
-    elseif XZ(i,1) == 0
-        %Left edge
-        NT(i)=4;
-    elseif XZ(i,1) == 500
-        %Right edge
-        NT(i)=6;
+for i = 1:m*n
+    if XZ(i, 2) == 0
+        % Bottom edge
+        NT(i) = 2;
+    elseif XZ(i, 2) == HEIGHT
+        % Top edge
+        NT(i) = 8;
+    elseif XZ(i, 1) == 0
+        % Left edge
+        NT(i) = 4;
+    elseif XZ(i, 1) == WIDTH
+        % Right edge
+        NT(i) = 6;
     else
-        %Interior
-        NT(i)=5;
+        % Interior
+        NT(i) = 5;
     end
-    reshape(NT,[n m])'
-end
-%Bottom Left
-NT(1)=1;
-reshape(NT,[n m])'
-%Bottom Right
-NT(n)=3;
-reshape(NT,[n m])'
-%Top Left
-NT(n*(m-1)+1)=7;
-reshape(NT,[n m])'
-%Top Right
-NT(end)=9;
-reshape(NT,[n m])'
-
-%Discover layout of the jacobian
-B=gallery('tridiag',num_nodes,1,1,1);
-L=n;
-U=num_nodes;
-for i = 1:n*(m-1)
-    B(L,i)=1;
-    B(U-n,U)=1;
-    L=L+1;
-    U=U-1;
 end
 
-%RCM reorder the jacobian
-r=symrcm(B);
-b=bandwidth(B(r,r));
+% Bottom Left
+NT(1) = 1;
+% Bottom Right
+NT(n) = 3;
+% Top Left
+NT(n * (m - 1) + 1) = 7;
+% Top Right
+NT(n*m) = 9;
+
+% Discover layout of the jacobian
+off_diag = ones(1, num_nodes - 1);
+off_diag(n:n:end) = 0;
+far_band = ones(1, num_nodes - n);
+
+B = diag(ones(1, num_nodes)) + diag(off_diag, 1) + diag(off_diag, -1) ... 
+    + diag(far_band, n) + diag(far_band, -n);
+
+
+% RCM reorder the jacobian
+r = symrcm(B);
 Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)));
 disp(Weightloss)
-DIM.r=r;
-DIM.b=b;
+r = 1:n*m;
+b = 2 * bandwidth(B(r,r)) + 1;
 
-%Reorder Everything
-DIM.XZ = DIM.XZ(r,:);
+DIM.r = r;
+DIM.b = b;
+
+% Reorder Everything
+DIM.XZ = DIM.XZ(r, :);
 DIM.NT = NT(r);
 DIM.ST = DIM.ST(r, :);
 DIM.DELTA = DIM.DELTA(r, :);

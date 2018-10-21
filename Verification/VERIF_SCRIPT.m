@@ -23,8 +23,7 @@ f_eval_total = 1;
 framenum = 1;
 
 % Get the jacobian
-J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS, 'full');
-% total_bandwidth = bandwidth(J);
+J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
 
 h = h_old;
 S = S_old;
@@ -69,7 +68,7 @@ while steady_state == false && t < PARAMS.endtime
     
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
         rho = err / err_old;
-        if mod(iters, PARAMS.jacobian_update) == 0 && err > 1e-8 || rho > PARAMS.rho_max
+        if mod(iters, PARAMS.jacobian_update) == 0 && err > 1e-8 || rho > PARAMS.rho_min
             J_old=J;
             J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
             fevals = fevals + DIM.n * DIM.m;
@@ -85,7 +84,6 @@ while steady_state == false && t < PARAMS.endtime
         err = norm(F, 2);
         iters = iters + 1;
         fevals = fevals + 1;
-        disp(PARAMS.dt)
         % Output some debug info if wanted
         if PARAMS.debug == true
             fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d steady_state:%d dt:%d rho:%d method:%s\n', ...
