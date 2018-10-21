@@ -91,7 +91,6 @@ switch PARAMS.method
         end
 end
 
-% fprintf('norm(jacobian - jacobian2, 2) = %d\n', norm(jacobian - jacobian2, 2))
-% pause(1e-10)
+jacobian = sparse(jacobian);
 
 end

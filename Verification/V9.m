@@ -13,6 +13,7 @@ dx = DELTA(1);
 dz = DELTA(3);
 % get the K values
 ST = DIM.ST(point, 3);
+BC = DIM.BC(point, :);
 K_xx = DIM.K_xx(ST);
 K_zz = DIM.K_zz(ST);
 % get total cell volume
@@ -70,18 +71,19 @@ k_w_old = k_w_up_old + sigma / 2 * (k_w_down_old - k_w_up_old);
 k_s_old = k_s_up_old + sigma / 2 * (k_s_down_old - k_s_up_old);
 
 % calculate line integrals
-gamma_1 = -active_flow * r_f * dx / 2;
-gamma_2 = -k_w * K_xx * dz / 2 * ((h(west) - h(point))/dx);
-gamma_3 = -k_s * K_zz * dx / 2 * ((h(south) - h(point))/dz - 1);
+gamma_1 = BC(1) * dz / 2;
+gamma_2 = -active_flow * r_f * dx / 2;
+gamma_3 = -k_w * K_xx * dz / 2 * ((h(west) - h(point))/dx);
+gamma_4 = -k_s * K_zz * dx / 2 * ((h(south) - h(point))/dz - 1);
 
-gamma_1_old = -active_flow * r_f * dx / 2;
-gamma_2_old = -k_w_old * K_xx * dz / 2 * ((h_old(west) - h_old(point))/dx);
-gamma_3_old = -k_s_old * K_zz * dx / 2 * ((h_old(south) - h_old(point))/dz - 1);
+gamma_2_old = -active_flow * r_f * dx / 2;
+gamma_3_old = -k_w_old * K_xx * dz / 2 * ((h_old(west) - h_old(point))/dx);
+gamma_4_old = -k_s_old * K_zz * dx / 2 * ((h_old(south) - h_old(point))/dz - 1);
 
 % evaluate f function
 f = phi(point) - phi_old(point) + dt/cell_volume * (theta * ...
-            (gamma_1 + gamma_2 + gamma_3) ...
+            (gamma_1 + gamma_2 + gamma_3 + gamma_4) ...
             + (1 - theta) * ( ...
-            gamma_1_old + gamma_2_old + gamma_3_old));
+            gamma_1 + gamma_2_old + gamma_3_old + gamma_4_old));
         
 end

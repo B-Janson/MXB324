@@ -16,6 +16,7 @@ dx = DELTA(1:2);
 dz = DELTA(3:4);
 % get the K values
 ST = DIM.ST(point, :);
+BC = DIM.BC(point, :);
 K_xx = DIM.K_xx;
 K_zz = DIM.K_zz;
 % get total cell volume
@@ -87,6 +88,8 @@ gamma_1 = -k_e * K_xx(ST(1)) * dz(2) / 2 * ((h(east) - h(point))/dx(2));
 gamma_2 = -k_n * K_zz(ST(1)) * dx(2) / 2 * ((h(north) - h(point))/dz(2) + 1);
 gamma_3 = -k_n * K_zz(ST(2)) * dx(1) / 2 * ((h(north) - h(point))/dz(2) + 1);
 gamma_4 = -k_w * K_xx(ST(2)) * dz(2) / 2 * ((h(west) - h(point))/dx(1));
+gamma_5 = BC(1) * dx(1) / 2;
+gamma_6 = BC(2) * dx(2) / 2;
 
 gamma_1_old = -k_e_old * K_xx(ST(1)) * dz(2) / 2 * ((h_old(east) - h_old(point))/dx(2));
 gamma_2_old = -k_n_old * K_zz(ST(1)) * dx(2) / 2 * ((h_old(north) - h_old(point))/dz(2) + 1);
@@ -95,8 +98,8 @@ gamma_4_old = -k_w_old * K_xx(ST(2)) * dz(2) / 2 * ((h_old(west) - h_old(point))
 
 % evaluate f function
 f = phi(point) - phi_old(point) + dt/cell_volume * (theta * ( ...
-              gamma_1 + gamma_2 + gamma_3 + gamma_4) ...
+              gamma_1 + gamma_2 + gamma_3 + gamma_4 + gamma_5 + gamma_6) ...
             + (1 - theta) * ( ...
-              gamma_1_old + gamma_2_old + gamma_3_old + gamma_4_old));
+              gamma_1_old + gamma_2_old + gamma_3_old + gamma_4_old + gamma_5 + gamma_6));
         
 end

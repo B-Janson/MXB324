@@ -15,6 +15,7 @@ dx = DELTA(2);
 dz = DELTA(4);
 % get the K values for the first quadrant only
 ST = DIM.ST(point, 1);
+BC = DIM.BC(point, :);
 K_xx = DIM.K_xx(ST);
 K_zz = DIM.K_zz(ST);
 % get total cell volume
@@ -66,13 +67,15 @@ k_n_old = k_n_up_old + sigma / 2 * (k_n_down_old - k_n_up_old);
 % calculate line integrals
 gamma_1 = -k_e * K_xx * dz / 2 * ((h(east) - h(point))/dx);
 gamma_2 = -k_n * K_zz * dx / 2 * ((h(north) - h(point))/dz + 1);
+gamma_3 = BC(1) * dz / 2;
+gamma_4 = BC(2) * dx / 2;
 
 gamma_1_old = -k_e_old * K_xx * dz / 2 * ((h_old(east) - h_old(point))/dx);
 gamma_2_old = -k_n_old * K_zz * dx / 2 * ((h_old(north) - h_old(point))/dz + 1);
 
 % evaluate f function
 f = phi(point) - phi_old(point) + dt/cell_volume * ( ...
-              theta * (gamma_1 + gamma_2) ...
-            + (1 - theta) * (gamma_1_old + gamma_2_old));
+              theta * (gamma_1 + gamma_2 + gamma_3 + gamma_4) ...
+            + (1 - theta) * (gamma_1_old + gamma_2_old + gamma_3 + gamma_4));
         
 end

@@ -1,4 +1,4 @@
-function [DIM]=VERIF_GRID_COORD()
+function [DIM]=VERIF_GRID_COORD(PARAMS, BC)
 % GRIDCOORD returns the dimension of the grid
 
 % Width and height of aquifer
@@ -9,9 +9,9 @@ DIM.WIDTH = WIDTH;
 DIM.HEIGHT = HEIGHT;
 
 % number of horizontal node points
-n = 11;
+n = PARAMS.n;
 % number of vertical node points
-m = 17;
+m = PARAMS.m;
 
 num_nodes = n * m;
 
@@ -230,6 +230,35 @@ NT(n * (m - 1) + 1) = 7;
 % Top Right
 NT(n*m) = 9;
 
+NODE_BC = zeros(num_nodes, 2);
+
+NODE_BC(1, 1) = BC.left(1);
+NODE_BC(1, 2) = BC.bottom(1);
+
+NODE_BC(n, 1) = BC.right(1);
+NODE_BC(n, 2) = BC.bottom(end);
+
+NODE_BC(end - n + 1, 1) = 0; % rainfall
+NODE_BC(end - n + 1, 2) = BC.left(end);
+
+NODE_BC(end, 1) = BC.right(end);
+NODE_BC(end, 2) = 0; % rainfall
+
+for i = 2:n-1
+    idx = 2 * (i - 1);
+    NODE_BC(i, :) = BC.bottom(idx:idx+1);
+end
+
+for i = 2:m-1
+    index = (i - 1) * n + 1;
+    idx = 2 * (i - 1);
+    NODE_BC(index, :) = BC.left(idx:idx+1);
+    
+    index = i * n;
+    idx = 2 * (i - 1);
+    NODE_BC(index, :) = BC.right(idx:idx+1);
+end
+
 % Discover layout of the jacobian
 off_diag = ones(1, num_nodes - 1);
 off_diag(n:n:end) = 0;
@@ -242,8 +271,6 @@ B = diag(ones(1, num_nodes)) + diag(off_diag, 1) + diag(off_diag, -1) ...
 % RCM reorder the jacobian
 r = symrcm(B);
 Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)));
-disp(Weightloss)
-r = 1:n*m;
 b = 2 * bandwidth(B(r,r)) + 1;
 
 DIM.r = r;
@@ -255,4 +282,5 @@ DIM.NT = NT(r);
 DIM.ST = DIM.ST(r, :);
 DIM.DELTA = DIM.DELTA(r, :);
 DIM.VOL = DIM.VOL(r, :);
+DIM.BC = NODE_BC(r, :);
 end

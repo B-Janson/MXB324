@@ -5,8 +5,10 @@ format compact
 %% Part 0 Initialisation
 % Get the parameters to solve for
 [PARAMS] = VERIF_PARAMS;
+% Get the boundary conditions
+[BC] = BOUNDARY_CONDITIONS(PARAMS);
 % Get the grid & other info about grid
-[DIM] = VERIF_GRID_COORD;
+[DIM] = VERIF_GRID_COORD(PARAMS, BC);
 % Get initial conditions
 [h_old, S_old, phi_old, k_old] = VERIF_INIT_COND(DIM);
 

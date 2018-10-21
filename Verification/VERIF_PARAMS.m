@@ -19,6 +19,8 @@ PARAMS.jacobian_update = 5;     % how often should the Jacobian be recalculated
 PARAMS.realtime_plot = true;    % should a plot of the solution be produced in realtime? 
 PARAMS.gmres_tol = 10^-8;         % Maximumn bound upon the residual
 PARAMS.gmres_max = 16;            % Maximum gmres iterations
+PARAMS.n            = 11;
+PARAMS.m            = 17;
 
 PARAMS.PUMPS = 0;               % PUMPS start off    %No, way to slow
 PARAMS.debug = true;            % should we display some debug status info
