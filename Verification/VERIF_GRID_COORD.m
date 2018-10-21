@@ -38,8 +38,9 @@ DIM.z(end+1)=HEIGHT;
 DIM.z(end+1)=HEIGHT-1.5;
 DIM.z(end+1)=HEIGHT-3;
 DIM.z(end+1:end+9)=[38.75,40,41.25,42.5,45,47.5,48.75,50,51.25];
-DIM.z(end+1)=3;
-DIM.z(end+1)=1.5;
+DIM.z(end+1)=4;
+DIM.z(end+1)=2;
+DIM.z(end+1)=1;
 DIM.z(end+1)=0;
 
 %Tidy up

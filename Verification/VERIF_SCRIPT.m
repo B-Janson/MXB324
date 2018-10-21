@@ -97,7 +97,7 @@ while steady_state == false && t < PARAMS.endtime
         if iters == PARAMS.max_iters - 1 || err > 1e12
             iters = 0;
             t = t - PARAMS.dt;
-            PARAMS.dt = PARAMS.dt / 2;
+            PARAMS.dt = PARAMS.dt / 3;
             t = t + PARAMS.dt;
             if PARAMS.dt < 5
                 PARAMS.method = 'full';
