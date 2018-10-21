@@ -26,6 +26,7 @@ framenum = 1;
 
 % Get the jacobian
 J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
+M = ilu(J);
 
 h = h_old;
 S = S_old;
@@ -54,13 +55,15 @@ if PARAMS.realtime_plot
 %     SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(0)], S);
     
     analytic_figure = figure('Name', 'Analytic');
-    axis([0 PARAMS.endtime 0 0.3])
+    axis([0 PARAMS.endtime 0 0.5])
     SOL_ANALYTIC(analytic_figure, T, phi_avg, phi_true)
 end
 
 t = 0;
 timesteps = 0;
 steady_state = false;
+
+dh_guess = zeros(DIM.n * DIM.m, 1);
 
 %% Part 1 Main Solver
 tic;
@@ -73,11 +76,17 @@ while steady_state == false && t < PARAMS.endtime
         if mod(iters, PARAMS.jacobian_update) == 0 && err > 1e-8 || rho > PARAMS.rho_min
             J_old=J;
             J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
+            M = ilu(J);
             fevals = fevals + DIM.n * DIM.m;
         end
-    
-        % Get the del h
-        dh = J\(-F); %This line is now in Jsolv
+        
+        % Get the del h  
+        if PARAMS.GMRES
+            dh = NEWTON_GMRES(J, -F, dh_guess, M, PARAMS.tol_r, 30, false);
+        else
+            dh = J\(-F);
+        end
+        
         % Update estimate for current timestep's h
         h = LineSearch(DIM, @VERIF_FVM, h, dh, h_old, S_old, phi_old, k_old, t, PARAMS);
 
@@ -88,8 +97,8 @@ while steady_state == false && t < PARAMS.endtime
         fevals = fevals + 1;
         % Output some debug info if wanted
         if PARAMS.debug == true
-            fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d steady_state:%d dt:%d rho:%d method:%s\n', ...
-                t, iters, err, fevals, timesteps, min(h) >= 0, PARAMS.dt, rho, PARAMS.method);
+            fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d steady_state:%d dt:%d rho:%d norm(dh-dh2):%d\n', ...
+                t, iters, err, fevals, timesteps, min(h) >= 0, PARAMS.dt, rho, norm(dh-dh,2));
         end
         
         % If haven't converged but has been too many iterations, halve time
@@ -154,8 +163,15 @@ end
 disp('Steady State Reached')
 toc
 
+save('steady_state_1')
+
 % CREATE_VIDEO(wcontvideo, watercontent, 20);
 % CREATE_VIDEO(pheadvideo, pressurehead, 20);
 
 PARAMS.PUMPS=1;
+
+%%
+clear
+close all
+load('steady_state_1.mat')
 
