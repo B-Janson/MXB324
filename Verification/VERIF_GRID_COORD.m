@@ -9,22 +9,24 @@ DIM.WIDTH = WIDTH;
 DIM.HEIGHT = HEIGHT;
 
 % number of horizontal node points
-n = 6;
+n = 5;
 % number of vertical node points
-m = 11;
+m = 5;
 
 
 % Keep it uniform for now
 
 % Discretisation in x
 DIM.x=linspace(0, WIDTH, n);
+%Make sure the boundaries are included
+DIM.x(end+1)=0;
+DIM.x(end+1)=WIDTH;
 DIM.n=n;
 
 % Discretisation in z
-DIM.z=linspace(0, 36, m);
-DIM.z(end+1)=39;
-DIM.z(end+1)=38;
-DIM.z(end+1)=38;
+DIM.z=linspace(0,HEIGHT,m);
+DIM.z(end+1)=HEIGHT;
+DIM.z(end+1)=0;
 DIM.z=unique(DIM.z);
 
 
@@ -208,7 +210,7 @@ end
 % Just the baby problem for now
 % Add in the river nodes later
 NT = zeros(num_nodes, 1);
-reshape(NT,[n m])'
+
 
 for i=1:m*n
     if XZ(i,2) == 0
@@ -227,20 +229,15 @@ for i=1:m*n
         %Interior
         NT(i)=5;
     end
-    reshape(NT,[n m])'
 end
 %Bottom Left
 NT(1)=1;
-reshape(NT,[n m])'
 %Bottom Right
 NT(n)=3;
-reshape(NT,[n m])'
 %Top Left
 NT(n*(m-1)+1)=7;
-reshape(NT,[n m])'
 %Top Right
 NT(end)=9;
-reshape(NT,[n m])'
 
 %Discover layout of the jacobian
 B=gallery('tridiag',num_nodes,1,1,1);
@@ -256,8 +253,7 @@ end
 %RCM reorder the jacobian
 r=symrcm(B);
 b=bandwidth(B(r,r));
-Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)));
-disp(Weightloss)
+Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)))
 DIM.r=r;
 DIM.b=b;
 
