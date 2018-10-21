@@ -37,7 +37,7 @@ if h(point) >= h(north) + dz
     k_n_up   = k(point);
     k_n_down = k(north);
 else
-    k_n_up   = k(north);
+    k_n_up   = k(north)
     k_n_down = k(point);
 end
 

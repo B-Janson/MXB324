@@ -21,17 +21,23 @@ DIM.x=linspace(0, WIDTH, n);
 %Make sure the boundaries are included
 DIM.x(end+1)=0;
 DIM.x(end+1)=WIDTH;
+
+%Tidy up
+DIM.x=unique(DIM.x);
+n=length(DIM.x);
 DIM.n=n;
+
 
 % Discretisation in z
 DIM.z=linspace(0,HEIGHT,m);
 DIM.z(end+1)=HEIGHT;
 DIM.z(end+1)=0;
+
+%Tidy up
 DIM.z=unique(DIM.z);
-
-
 m=length(DIM.z);
 DIM.m=m;
+
 num_nodes = n * m;
 
 %Create coordinate vector

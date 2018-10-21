@@ -13,7 +13,9 @@ for i = 1:n*m
     k(i) = PERM(DIM, h, S, i);
 end
 
+DIM.r
 for i = DIM.r
+    DIM.NT(i)
     switch DIM.NT(i)
         case 1
             F(i) = V1(DIM, h, h_old, phi, phi_old, k, k_old, PARAMS);
