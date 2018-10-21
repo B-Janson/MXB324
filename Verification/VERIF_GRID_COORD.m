@@ -9,9 +9,9 @@ DIM.WIDTH = WIDTH;
 DIM.HEIGHT = HEIGHT;
 
 % number of horizontal node points
-n = 5;
+n = 13;
 % number of vertical node points
-m = 5;
+m = 13;
 
 
 % Keep it uniform for now
@@ -20,6 +20,8 @@ m = 5;
 DIM.x=linspace(0, WIDTH, n);
 %Make sure the boundaries are included
 DIM.x(end+1)=0;
+DIM.x(end+1:end+8)=[48,50,52,345,348,350,352,355];
+
 DIM.x(end+1)=WIDTH;
 
 %Tidy up
@@ -29,8 +31,15 @@ DIM.n=n;
 
 
 % Discretisation in z
-DIM.z=linspace(0,HEIGHT,m);
+DIM.z=linspace(2,HEIGHT-2,m);
+
+
 DIM.z(end+1)=HEIGHT;
+DIM.z(end+1)=HEIGHT-1.5;
+DIM.z(end+1)=HEIGHT-3;
+DIM.z(end+1:end+9)=[38.75,40,41.25,42.5,45,47.5,48.75,50,51.25];
+DIM.z(end+1)=3;
+DIM.z(end+1)=1.5;
 DIM.z(end+1)=0;
 
 %Tidy up

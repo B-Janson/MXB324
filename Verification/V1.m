@@ -5,9 +5,9 @@ function f = V1(DIM, h, h_old, phi, phi_old, k, k_old, PARAMS)
 n = DIM.n;
 
 % find which index we want from the re-arranged matrix
-point = DIM.r((DIM.r == 1));
-east = DIM.r((DIM.r == 2));
-north = DIM.r((DIM.r == n+1));
+point = find((DIM.r == 1));
+east = find((DIM.r == 2));
+north = find((DIM.r == n+1));
 
 % get the dx and dz values
 DELTA = DIM.DELTA(point, :);
@@ -37,7 +37,7 @@ if h(point) >= h(north) + dz
     k_n_up   = k(point);
     k_n_down = k(north);
 else
-    k_n_up   = k(north)
+    k_n_up   = k(north);
     k_n_down = k(point);
 end
 

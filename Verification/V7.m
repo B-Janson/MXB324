@@ -1,12 +1,13 @@
-function f = V7(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
+function f = V7(DIM, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
 % Top Left
 
 n = DIM.n;
+m=DIM.m;
 
 % find which index we want from the re-arranged matrix
-point = DIM.r((DIM.r == i));
-east = DIM.r((DIM.r == i+1));
-south = DIM.r((DIM.r == i-n));
+point = find((DIM.r == n*(m-1)+1));
+east = find((DIM.r == n*(m-1)+2));
+south = find((DIM.r == n*(m-2)+1));
 
 % get the dx and dz values
 DELTA = DIM.DELTA(point, :);

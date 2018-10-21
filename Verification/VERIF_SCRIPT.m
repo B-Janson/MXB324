@@ -49,14 +49,14 @@ if PARAMS.realtime_plot
     phi_figure = figure('Name', 'Water Content');
 %     sat_figure = figure('Name', 'Saturation');
     SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(0)], h);
-    SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(0)], phi);
+    SOL_VIS(DIM, phi_figure, 'parula', ['Water Content Time: ', num2str(0)], phi);
 %     SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(0)], S);
     
     analytic_figure = figure('Name', 'Analytic');
     axis([0 PARAMS.endtime 0 0.3])
     SOL_ANALYTIC(analytic_figure, T, phi_avg, phi_true)
 end
-J
+
 t = 0;
 timesteps = 0;
 steady_state = false;
@@ -65,7 +65,7 @@ steady_state = false;
 tic;
 while steady_state == false && t < PARAMS.endtime
     t = t + PARAMS.dt;
-    timesteps = timesteps + 1
+    timesteps = timesteps + 1;
     
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
         rho = err / err_old;
@@ -74,7 +74,7 @@ while steady_state == false && t < PARAMS.endtime
             J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
             fevals = fevals + DIM.n * DIM.m;
         end
-        J
+        
         % Get the del h
         dh = J\(-F); %This line is now in Jsolv
         % Update estimate for current timestep's h
@@ -142,7 +142,7 @@ while steady_state == false && t < PARAMS.endtime
     if PARAMS.realtime_plot == true
         SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(t)], h);
 %         pressurehead(framenum) = getframe(gcf);
-        SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(t)], phi);
+        SOL_VIS(DIM, phi_figure, 'parula', ['Water Content Time: ', num2str(t)], phi);
 %         watercontent(framenum) = getframe(gcf);
 %         SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(t)], S);
         
