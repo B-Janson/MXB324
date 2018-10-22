@@ -24,8 +24,10 @@ f_eval_total = 1;
 framenum = 1;
 
 % Get the jacobian
-J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS, 'full');
+J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
 % total_bandwidth = bandwidth(J);
+J2=jac_funcOG(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
+norm(J-J2)
 
 h = h_old;
 S = S_old;
