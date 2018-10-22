@@ -6,7 +6,7 @@ function [PARAMS] = VERIF_PARAMS()
 PARAMS.r_f          = [0.00171];  % rainfall constant [normal,flood,drought]
 PARAMS.r_t          = 1;        % rain type 1=normal, 2=flood, 3=drought
 PARAMS.r_m          = 1;        % rain model 1=constant, 2=cosine, 3=interpol
-PARAMS.dt           = 25;       % timestep size
+PARAMS.dt           = 5;       % timestep size
 PARAMS.max_dt       = 25;       % maximum time step size
 PARAMS.endtime      = 40000;    % end time
 PARAMS.theta        = 0.5;      % temporal weighting, 1-Backward Euler, 0.5-Crank-Nicholson

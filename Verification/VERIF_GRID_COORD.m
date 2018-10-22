@@ -1,4 +1,4 @@
-function [DIM]=VERIF_GRID_COORD()
+function [DIM]=VERIF_GRID_COORD(LIN)
 % GRIDCOORD returns the dimension of the grid
 
 % Width and height of aquifer
@@ -8,21 +8,15 @@ HEIGHT = 80;
 DIM.WIDTH = WIDTH;
 DIM.HEIGHT = HEIGHT;
 
-% number of horizontal node points
-n = 7;
-% number of vertical node points
-m = 9;
 
 
 % Keep it uniform for now
 
 % Discretisation in x
-DIM.x=linspace(0, 45, n);
-DIM.x(end+1:end+2*n+1)=linspace(55, 345, 2*n+1);
-DIM.x(end+1:end+n)=linspace(355, 500, n);
+DIM.x=[0,5,10:10:40,60:10:340,360:10:490,495,WIDTH];
 %Make sure the boundaries are included
-DIM.x(end+1)=0;
-DIM.x(end+1:end+10)=[45,48,50,52,55,345,348,350,352,355];
+
+DIM.x(end+1:end+14)=[40,45,48,50,52,55,60,340,345,348,350,352,355,360];
 
 DIM.x(end+1)=WIDTH;
 
@@ -30,20 +24,21 @@ DIM.x(end+1)=WIDTH;
 x=unique(DIM.x);
 DIM.x=x;
 n=length(DIM.x);
+if LIN(1) == 1
+    DIM.z=linspace(0,WIDTH,n); %If you want the linear version
+end
 DIM.n=n;
 
 
 % Discretisation in z
-DIM.z=linspace(4,HEIGHT-4,m);
+DIM.z=[5:10:35,55:10:75];
 
 
 DIM.z(end+1)=HEIGHT;
 DIM.z(end+1)=HEIGHT-1;
-DIM.z(end+1)=HEIGHT-2;
-DIM.z(end+1)=HEIGHT-4;
-DIM.z(end+1:end+7)=[38.5,40,41.5,45,48.5,50,51.5];
-DIM.z(end+1)=4;
-DIM.z(end+1)=2;
+DIM.z(end+1)=HEIGHT-2.5;
+DIM.z(end+1:end+7)=[37.5,40,42.5,45,47.5,50,52.5];
+DIM.z(end+1)=2.5;
 DIM.z(end+1)=1;
 DIM.z(end+1)=0;
 
@@ -51,9 +46,12 @@ DIM.z(end+1)=0;
 z=unique(DIM.z);
 DIM.z=z;
 m=length(DIM.z);
+if LIN(2) == 1
+    DIM.z=linspace(0,HEIGHT,m); %If you want the Linear version
+end
 DIM.m=m;
 
-num_nodes = n * m;
+num_o_nodes = n * m
 
 %Create coordinate vector
 [X,Z]=meshgrid(DIM.x,DIM.z);
@@ -83,7 +81,7 @@ end
 dz(DIM.m,1)=DIM.z(DIM.m)-DIM.z(DIM.m-1);
 
 % Create the big distances matrix
-DELTA=zeros(num_nodes, 4);
+DELTA=zeros(num_o_nodes, 4);
 
 c=0;
 for i=0:n:n*(m-1)
@@ -120,12 +118,12 @@ confining = 2;
 sandstone = 3;
 
 % Set node point constants
-DIM.ST = zeros(num_nodes, 4);
+DIM.ST = zeros(num_o_nodes, 4);
 
 % Set all cells to be Sandstone
 DIM.ST(:, :) = sandstone;
 
-for i = 1:num_nodes
+for i = 1:num_o_nodes
     x = XZ(i, 1);
     z = XZ(i, 2);
     if 0 <= x && x < 50 && z == 30
@@ -230,7 +228,7 @@ end
 % Assign a node type to each vertex,
 % Just the baby problem for now
 % Add in the river nodes later
-NT = zeros(num_nodes, 1);
+NT = zeros(num_o_nodes, 1);
 
 
 for i=1:m*n
@@ -261,9 +259,9 @@ NT(n*(m-1)+1)=7;
 NT(end)=9;
 
 %Discover layout of the jacobian
-B=gallery('tridiag',num_nodes,1,1,1);
+B=gallery('tridiag',num_o_nodes,1,1,1);
 L=n;
-U=num_nodes;
+U=num_o_nodes;
 for i = 1:n*(m-1)
     B(L,i)=1;
     B(U-n,U)=1;

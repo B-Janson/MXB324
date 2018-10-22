@@ -6,7 +6,8 @@ format compact
 % Get the parameters to solve for
 [PARAMS] = VERIF_PARAMS;
 % Get the grid & other info about grid
-[DIM] = VERIF_GRID_COORD;
+%[X,Y] direction; 1=linear, 2 = nonlinear
+[DIM] = VERIF_GRID_COORD([1,1]);
 % Get initial conditions
 [h_old, S_old, phi_old, k_old] = VERIF_INIT_COND(DIM);
 
