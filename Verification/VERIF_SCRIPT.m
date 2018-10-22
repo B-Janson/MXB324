@@ -100,7 +100,7 @@ while steady_state == false && t < PARAMS.endtime
             PARAMS.dt = PARAMS.dt / 3;
             t = t + PARAMS.dt;
             if PARAMS.dt < 5
-                PARAMS.method = 'full';
+                %This should be gmres eventually
             end
         end
         
