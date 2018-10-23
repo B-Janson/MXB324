@@ -1,4 +1,4 @@
-function [F, S, phi, k] = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS)
+function [F, S, phi, k, sauce] = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, sauce_old t, PARAMS)
 
 n = DIM.n;
 m = DIM.m;
@@ -40,6 +40,20 @@ for i = 1:n*m
     end
 
 end
+
+
+
+%Deal with source terms
+
+[PUMPERS,EVAPERS]=SOURCE_EVAL(DIM,PARAMS.r_f,PARAMS.dt); 
+sauce=PUMPERS+EVAPERS;
+
+F=F-PARAMS.theta*sauce+(1-PARAMS.theta)*sauce_old;
+
+
+
+
+
 
 
 end

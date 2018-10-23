@@ -1,4 +1,4 @@
-function [DIM]=VERIF_GRID_COORD(LIN,PUMPS,EVAPO)
+function [DIM]=VERIF_GRID_COORD(LIN,PUMPS,EVAPOT)
 % GRIDCOORD returns the dimension of the grid
 
 % Width and height of aquifer
@@ -288,28 +288,29 @@ end
 
 
 %% Evapotranspiration Terms 
-%Defines a region of evapotranspiration as such [L,R,D,U,fraction of annual rainfall] 
+%Defines a region of evapotranspiration as such [L,R,Depth,fraction of annual rainfall] 
 
 S_E=zeroes(num_o_nodes,1);
-[LE,~]=size(EVAPO);
+[LE,~]=size(EVAPOT);
 j=1;
 
 while j <= LE
+    DEPTH=EVAPOT(j,3);
     for i=1:num_o_nodes        
         %Check if point is in jth evapotranspiration zone
-        if ((DIM.XZ(1,i) <= EVAPO(j,2)) &&(DIM.XZ(1,i) >= EVAPO(j,1))) %Check X-direction
-            if ((DIM.XZ(2,i) <= EVAPO(j,4)) &&(DIM.XZ(2,i) >= EVAPO(j,35))) %Check Z-direction
-            S_P(i)=EVAPO(5,j);
-            j=j+1;
+        if ((DIM.XZ(1,i) <= EVAPOT(j,2)) &&(DIM.XZ(1,i) >= EVAPOT(j,1))) %Check X-direction
+            if (DIM.XZ(2,i) >= HEIGHT-DEPTH) %Check Z-direction
+            S_E(i)=-EVAPOT(j,4)*(DIM.z(i,2)-WIDTH+DEPTH)^2/(DEPTH)^2;%Q(z) in the evapotranspiration zone           
             end
         end
-    end    
+    end 
+    j=j+1;
 end
 
 
 
 %Check how much water is beeing sucked out
-if (sum(EVAPO(:,5)+sum(PUMPS(:,3))) >= 1
+if (sum(EVAPOT(:,4)+sum(PUMPS(:,3))) >= 1
     disp('Caution! Too much SUCC')
 end
 
@@ -326,7 +327,7 @@ DIM.b=b;
 DIM.S_P=S_P(r);
 DIM.S_E=S_E(r);
 DIM.PUMPS=PUMPS(r,:);
-DIM.EVAPO=EVAPO(r,:);
+DIM.EVAPO=EVAPOT(r,:);
 DIM.XZ = DIM.XZ(r,:);
 DIM.NT = NT(r);
 DIM.ST = DIM.ST(r, :);

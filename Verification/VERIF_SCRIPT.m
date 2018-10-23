@@ -6,8 +6,21 @@ format compact
 % Get the parameters to solve for
 [PARAMS] = VERIF_PARAMS;
 % Get the grid & other info about grid
-%[X,Y] direction; 1=linear, 2 = nonlinear
-[DIM] = VERIF_GRID_COORD([1,1]);
+% Decide on source terms
+
+%Switch for linearity. 1=linear other=other. Like[X,Z]
+LIN=[1,1];
+
+%PUMPS. Add more lines as [x,z,fraction of rainfall]
+PUMPS=[100,50,0.5;... %Town Pump
+      450,10,0.25];   %Farm Pump
+  
+%Evapotranspiration zones. define as [L,R,Depth,fraction of rainfall]
+EVAPOT=[0,350,2,0.025;... %Alluviam zone
+        350,500,4,0.035]; %Sandstone zone
+
+%Precalculate everything to do with the domain
+[DIM] = VERIF_GRID_COORD(LIN,PUMPS,EVAPOT);
 % Get initial conditions
 [h_old, S_old, phi_old, k_old] = VERIF_INIT_COND(DIM);
 
