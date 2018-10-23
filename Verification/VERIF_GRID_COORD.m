@@ -1,4 +1,4 @@
-function [DIM]=VERIF_GRID_COORD(PARAMS, BC)
+function [DIM]=VERIF_GRID_COORD(LIN,PARAMS, BC)
 % GRIDCOORD returns the dimension of the grid
 
 % Width and height of aquifer
@@ -15,22 +15,54 @@ m = PARAMS.m;
 
 num_nodes = n * m;
 
-% Keep it uniform for now
-
 % Discretisation in x
-DIM.x = linspace(0, WIDTH, n);
-DIM.n = n;
+DIM.x=[0,5,10:10:40,60:10:340,360:10:490,495,WIDTH];
+%Make sure the boundaries are included
+
+DIM.x(end+1:end+14)=[40,45,48,50,52,55,60,340,345,348,350,352,355,360];
+DIM.x(end+1)=450;
+DIM.x(end+1)=100;
+DIM.x(end+1)=WIDTH;
+
+%Tidy up
+x=unique(DIM.x);
+DIM.x=x;
+n=length(DIM.x);
+if LIN(1) == 1
+    DIM.x=linspace(0,WIDTH,n); %If you want the linear version
+end
+DIM.n=n;
+
 
 % Discretisation in z
-DIM.z = linspace(0, HEIGHT, m);
-DIM.m = m;
+DIM.z=[5:10:35,55:10:75];
 
-% Create coordinate vector
-[X,Z] = meshgrid(DIM.x,DIM.z);
-X = X';
-Z = Z';
-XZ = [X(:), Z(:)];
-DIM.XZ = XZ;
+
+DIM.z(end+1)=HEIGHT;
+DIM.z(end+1)=HEIGHT-1;
+DIM.z(end+1)=HEIGHT-2.5;
+DIM.z(end+1:end+7)=[37.5,40,42.5,45,47.5,50,52.5];
+DIM.z(end+1)=2.5;
+DIM.z(end+1)=1;
+DIM.z(end+1)=50;
+DIM.z(end+1)=10;
+%Tidy up
+z=unique(DIM.z);
+DIM.z=z;
+m=length(DIM.z);
+if LIN(2) == 1
+    DIM.z=linspace(0,HEIGHT,m); %If you want the Linear version
+end
+DIM.m=m;
+
+num_o_nodes = n * m
+
+%Create coordinate vector
+[X,Z]=meshgrid(DIM.x,DIM.z);
+X=X';
+Z=Z';
+XZ=[X(:),Z(:)];
+DIM.XZ=XZ;
 
 % Create the distance matrix
 
