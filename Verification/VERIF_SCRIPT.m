@@ -72,8 +72,8 @@ while steady_state == false && t < PARAMS.endtime
     timesteps = timesteps + 1;
     
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
-        rho = err / err_old;
-        if mod(iters, PARAMS.jacobian_update) == 0 && err > 1e-8 || rho > PARAMS.rho_min
+%         rho = err / err_old;
+        if mod(iters, PARAMS.jacobian_update) == 0 && err > PARAMS.tol_r * 10 || rho > PARAMS.rho_min
             J_old=J;
             J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
             M = ilu(J);
@@ -82,7 +82,7 @@ while steady_state == false && t < PARAMS.endtime
         
         % Get the del h  
         if PARAMS.GMRES
-            dh = NEWTON_GMRES(J, -F, dh_guess, M, PARAMS.tol_r, 30, false);
+            dh = NEWTON_GMRES(J, -F, dh_guess, M, PARAMS.tol_a, 20, false);
         else
             dh = J\(-F);
         end
@@ -92,6 +92,7 @@ while steady_state == false && t < PARAMS.endtime
 
         % Update F and all other variables for this time step
         [F, S, phi, k] = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
+        rho = norm(F, 2) / err;
         err = norm(F, 2);
         iters = iters + 1;
         fevals = fevals + 1;
@@ -108,18 +109,13 @@ while steady_state == false && t < PARAMS.endtime
             t = t - PARAMS.dt;
             PARAMS.dt = PARAMS.dt / 2;
             t = t + PARAMS.dt;
-            if PARAMS.dt < 5
-                PARAMS.method = 'full';
-            end
         end
         
-        % If pressure head is positive at surface, steady state reached
-        if min(h) >= 0
-            fprintf('steady state\n')
-            steady_state = true;
-            break
-        end
-        
+    end
+    
+    if norm(phi - phi_old, 2) < PARAMS.steady_state_tol
+        fprintf('steady state\n');
+        PARAMS.PUMPS = 1;
     end
     
     T(end + 1) = t;
@@ -141,7 +137,7 @@ while steady_state == false && t < PARAMS.endtime
     fevals = 0;
     
     % If adaptive time stepping and converged quickly, increase time step
-    if iters <= PARAMS.jacobian_update * 1.5
+    if iters <= PARAMS.jacobian_update
         PARAMS.dt = min(PARAMS.dt * PARAMS.adaptive_timestep, PARAMS.max_dt);
     end
     
