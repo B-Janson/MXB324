@@ -25,8 +25,8 @@ x=unique(DIM.x);
 DIM.x=x;
 n=length(DIM.x);
 if LIN(1) == 1
-    DIM.z=linspace(0,WIDTH,51);
-    n=51;%If you want the linear version
+    DIM.x=0:10:WIDTH;
+    n=length(DIM.x);%If you want the linear version
 end
 DIM.n=n;
 
@@ -48,8 +48,8 @@ z=unique(DIM.z);
 DIM.z=z;
 m=length(DIM.z);
 if LIN(2) == 1
-    DIM.z=linspace(0,HEIGHT,17);
-    m=17;
+    DIM.z=0:2:80;
+    m=length(DIM.z);
     %If you want the Linear version
 end
 DIM.m=m;

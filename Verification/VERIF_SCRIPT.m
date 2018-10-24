@@ -26,9 +26,11 @@ EVAPOT=[0,350,2,0.025;... %Alluviam zone
 [h_old, S_old, phi_old, k_old] = VERIF_INIT_COND(DIM);
 h = h_old;
 
-%% Calculate initial rainfall
+%Calculate Initial Rainfall
 
 RT=PARAMS.r_f;
+
+
 %% Lachys time to shine
 %We need an anonymous function to output the rainfall at a certain time
 %
