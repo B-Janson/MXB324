@@ -12,9 +12,9 @@ south = (DIM.r == i-n);
 DELTA = DIM.DELTA(point, :);
 dx = DELTA(2);
 dz = DELTA(3);
-% get the K values
+% get the specific values for this node
 ST = DIM.ST(point, 4);
-BC = DIM.BC(point, :);
+BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), t, h(point));
 K_xx = DIM.K_xx(ST);
 K_zz = DIM.K_zz(ST);
 % get total cell volume
@@ -23,7 +23,6 @@ cell_volume = DIM.VOL(point, 5);
 dt = PARAMS.dt;
 theta = PARAMS.theta;
 sigma = PARAMS.sigma;
-r_f = PARAMS.r_f(PARAMS.r_t);
 active_flow = 1;
 
 % if the water table has reached this point, don't keep pouring in water
@@ -72,12 +71,12 @@ k_s_old = k_s_up_old + sigma / 2 * (k_s_down_old - k_s_up_old);
 
 % calculate line integrals
 gamma_1 = -k_e * K_xx * dz / 2 * ((h(east) - h(point))/dx);
-gamma_2 = -active_flow * r_f * dx / 2;
+gamma_2 = active_flow * BC(1) * dx / 2;
 gamma_3 = BC(2) * dz / 2;
 gamma_4 = -k_s * K_zz * dx / 2 * ((h(south) - h(point))/dz - 1);
 
 gamma_1_old = -k_e_old * K_xx * dz / 2 * ((h_old(east) - h_old(point))/dx);
-gamma_2_old = -active_flow * r_f * dx / 2;
+gamma_2_old = active_flow * BC(1) * dx / 2;
 gamma_4_old = -k_s_old * K_zz * dx / 2 * ((h_old(south) - h_old(point))/dz - 1);
 
 % evaluate f function

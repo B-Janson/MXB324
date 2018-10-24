@@ -16,17 +16,17 @@ end
 for i = 1:n*m
     switch DIM.NT(i)
         case 1
-            F(i) = V1(DIM, h, h_old, phi, phi_old, k, k_old, PARAMS);
+            F(i) = V1(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, t, PARAMS);
         case 2
-            F(i) = V2(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, PARAMS);
+            F(i) = V2(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, t, PARAMS);
         case 3
-            F(i) = V3(DIM, h, h_old, phi, phi_old, k, k_old, PARAMS);
+            F(i) = V3(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, t, PARAMS);
         case 4
-            F(i) = V4(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, PARAMS);
+            F(i) = V4(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, t, PARAMS);
         case 5
-            F(i) = V5(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, PARAMS);
+            F(i) = V5(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, t, PARAMS);
         case 6
-            F(i) = V6(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, PARAMS);
+            F(i) = V6(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, t, PARAMS);
         case 7
             F(i) = V7(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, t, PARAMS);
         case 8

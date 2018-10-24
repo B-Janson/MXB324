@@ -1,40 +1,75 @@
-function BC = BOUNDARY_CONDITIONS(PARAMS)
+function BC = BOUNDARY_CONDITIONS(DIM, PARAMS, XZ, t, h)
 
-vert_lines = (PARAMS.m - 1) * 2;
-horiz_lines = (PARAMS.n - 1) * 2;
+x = XZ(1);
+z = XZ(2);
+BC = zeros(2, 1);
 
-% River locations (either left or right of domain).
-% If no river wanted, set river_left or river_right = [0, 0];
-
-% Z location of left river [head, bottom]
-river_left = [65, 60];
-
-if river_left(1) < river_left(2)
-   error('the river head must be above the river bottom\')
+switch PARAMS.r_m
+    case 1
+        r_f = PARAMS.r_f(PARAMS.r_t);
+    case 2
+        r_f = PARAMS.r_f(PARAMS.r_t) * (cos(t * 2*pi / 365) + 1);
+    case 3
+        error('not yet implemented');
 end
 
-% Z location of right river [head, bottom]
-river_right = [0, 0];
-
-if river_right(1) < river_right(2)
-   error('the river head must be above the river bottom\')
+% Deal with LHS first
+if x == 0
+    if z == 0
+        % Nothing because bedrock
+    elseif z == DIM.HEIGHT
+        BC(1) = -r_f;
+        
+        if h + z > PARAMS.left_river(2)
+            BC(2) = PARAMS.K_r * 5 / 50;
+        end
+    elseif z == PARAMS.left_river(1) % Bottom of river
+        if h < 0
+            BC(2) = -PARAMS.K_r * 5 / 50;
+        else
+            BC(2) = -PARAMS.K_r * (5 - h) / 50;
+        end
+    elseif z > PARAMS.left_river(1)
+        if h + z > PARAMS.left_river(2)
+            BC(1) = PARAMS.K_r * 5 / 50;
+            BC(1) = PARAMS.K_r * 5 / 50;
+        else
+            BC(1) = -PARAMS.K_r * h / 50;
+            BC(2) = -PARAMS.K_r * h / 50;
+        end
+    else
+        % Nothing because bedrock
+    end
+elseif x == DIM.WIDTH % RHS
+    if z == 0
+        % Nothing because bedrock
+    elseif z == DIM.HEIGHT
+        BC(2) = -r_f;
+        
+        if h + z > PARAMS.right_river(2)
+            BC(1) = PARAMS.K_r * 5 / 50;
+        end
+    elseif z == PARAMS.right_river(1) % Bottom of river
+        if h < 0
+            BC(2) = -PARAMS.K_r * 5 / 50;
+        else
+            BC(2) = -PARAMS.K_r * (5 - h) / 50;
+        end
+    elseif z > PARAMS.right_river(1)
+        if h + z > PARAMS.right_river(2)
+            BC(1) = PARAMS.K_r * 5 / 50;
+            BC(1) = PARAMS.K_r * 5 / 50;
+        else
+            BC(1) = -PARAMS.K_r * h / 50;
+            BC(2) = -PARAMS.K_r * h / 50;
+        end
+    else
+        % Nothing because bedrock
+    end
+elseif z == 0 % Bottom
+    % Nothing because bedrock
+elseif z == DIM.HEIGHT
+    BC = [-r_f; -r_f];
 end
-
-% General left boundary condition
-left_BC = zeros(1, vert_lines);
-
-% General right boundary condition
-right_BC = zeros(1, vert_lines);
-
-% General bottom boundary conditions
-bottom_BC = zeros(1, horiz_lines);
-
-BC.river_left = river_left;
-BC.river_right = river_right;
-
-BC.left = left_BC;
-BC.right = right_BC;
-BC.bottom = bottom_BC;
-
 
 end

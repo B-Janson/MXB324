@@ -5,10 +5,8 @@ format compact
 %% Part 0 Initialisation
 % Get the parameters to solve for
 [PARAMS] = VERIF_PARAMS;
-% Get the boundary conditions
-[BC] = BOUNDARY_CONDITIONS(PARAMS);
 % Get the grid & other info about grid
-[DIM] = VERIF_GRID_COORD(PARAMS, BC);
+[DIM] = VERIF_GRID_COORD(PARAMS);
 % Get initial conditions
 [h_old, S_old, phi_old, k_old] = VERIF_INIT_COND(DIM);
 
@@ -18,15 +16,10 @@ h = h_old;
 F = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
 err = norm(F, 2);
 err_old = err;
-
-iters = 0;
-fevals = 0;
-f_eval_total = 1;
 framenum = 1;
 
 % Get the jacobian
 J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
-M = J;
 
 h = h_old;
 S = S_old;
@@ -55,47 +48,42 @@ t = 0;
 timesteps = 0;
 steady_state = false;
 
-dh_guess = zeros(DIM.n * DIM.m, 1);
-
 %% Part 1 Main Solver
 tic;
+% Time step iteration
 while steady_state == false && t < PARAMS.endtime
     t = t + PARAMS.dt;
     timesteps = timesteps + 1;
+    iters = 0;
+    rho = 1;
     
+    % Newton step iteration
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
-        if mod(iters, PARAMS.jacobian_update) == 0 && err > PARAMS.tol_r * 10 || rho > PARAMS.rho_min
-            J_old=J;
+        % If we need to recalculate the Jacobian
+        if mod(iters, PARAMS.jacobian_update) == 0 || rho > PARAMS.rho_min
+            if PARAMS.debug
+                fprintf('Recalculating Jacobian. Rho: %d\n', rho);
+            end
             J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
-            M = ilu(J);
-            fevals = fevals + DIM.n * DIM.m;
         end
         
-        % Get the del h  
-        if PARAMS.GMRES
-            dh = NEWTON_GMRES(J, -F, dh_guess, M, PARAMS.tol_a, 20, false);
-        else
-            dh = J\(-F);
-        end
+        % Get the del h
+        dh = J\(-F);
         
         % Update estimate for current timestep's h
         h = LineSearch(DIM, @VERIF_FVM, h, dh, h_old, S_old, phi_old, k_old, t, PARAMS);
-
+        
         % Update F and all other variables for this time step
         [F, S, phi, k] = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
+        % Take rho as current error by last error (within newton step)
         rho = norm(F, 2) / err;
+        % Store new error
         err = norm(F, 2);
         iters = iters + 1;
-        fevals = fevals + 1;
-        % Output some debug info if wanted
-        if PARAMS.debug == true
-            fprintf('t:%d iters:%d err:%d fevals:%d timesteps:%d steady_state:%d dt:%d rho:%d norm(dh-dh2):%d\n', ...
-                t, iters, err, fevals, timesteps, min(h) >= 0, PARAMS.dt, rho, norm(dh-dh,2));
-        end
         
         % If haven't converged but has been too many iterations, halve time
         % step
-        if iters == PARAMS.max_iters - 1 || err > 1e12
+        if iters == PARAMS.max_iters || err > 1e12
             iters = 0;
             t = t - PARAMS.dt;
             PARAMS.dt = PARAMS.dt / 2;
@@ -104,9 +92,10 @@ while steady_state == false && t < PARAMS.endtime
         
     end
     
-    if norm(phi - phi_old, 2) < PARAMS.steady_state_tol
-        fprintf('steady state\n');
-        PARAMS.PUMPS = 1;
+    % Output some debug info
+    if PARAMS.debug == true
+        fprintf('Newton converged for t=%d in %d iterations. Err:%d dt:%d\n', ...
+            t, iters, err, PARAMS.dt);
     end
     
     T(end + 1) = t;
@@ -124,17 +113,11 @@ while steady_state == false && t < PARAMS.endtime
     err = norm(F, 2);
     err_old = err;
     
-    f_eval_total = f_eval_total + fevals + 1;
-    fevals = 0;
-    
     % If adaptive time stepping and converged quickly, increase time step
     if iters <= PARAMS.jacobian_update
         PARAMS.dt = min(PARAMS.dt * PARAMS.adaptive_timestep, PARAMS.max_dt);
     end
     
-    % reset iters
-    iters = 0;
-
     if PARAMS.realtime_plot == true
         VISUALISE(DIM, h, phi, T, phi_true, phi_avg);
     end
@@ -143,15 +126,6 @@ end
 disp('Steady State Reached')
 toc
 
-save('steady_state_1')
-
 % CREATE_VIDEO(wcontvideo, watercontent, 20);
 % CREATE_VIDEO(pheadvideo, pressurehead, 20);
-
-PARAMS.PUMPS=1;
-
-%%
-clear
-close all
-load('steady_state_1.mat')
 

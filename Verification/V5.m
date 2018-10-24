@@ -1,4 +1,4 @@
-function f = V5(DIM, i, h, h_old, phi, phi_old, k, k_old, PARAMS)
+function f = V5(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
 % Normal interior node
 
 n = DIM.n;
