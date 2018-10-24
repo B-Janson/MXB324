@@ -1,4 +1,4 @@
-function [DIM]=VERIF_GRID_COORD(LIN,PUMPS,EVAPOT)
+function [DIM]=ALLUV_GRID_COORD(LIN,PUMPS,EVAPOT)
 % GRIDCOORD returns the dimension of the grid
 
 % Width and height of aquifer
@@ -25,8 +25,7 @@ x=unique(DIM.x);
 DIM.x=x;
 n=length(DIM.x);
 if LIN(1) == 1
-    DIM.z=linspace(0,WIDTH,51);
-    n=51;%If you want the linear version
+    DIM.z=linspace(0,WIDTH,n); %If you want the linear version
 end
 DIM.n=n;
 
@@ -48,9 +47,7 @@ z=unique(DIM.z);
 DIM.z=z;
 m=length(DIM.z);
 if LIN(2) == 1
-    DIM.z=linspace(0,HEIGHT,17);
-    m=17;
-    %If you want the Linear version
+    DIM.z=linspace(0,HEIGHT,m); %If you want the Linear version
 end
 DIM.m=m;
 
@@ -123,108 +120,108 @@ sandstone = 3;
 % Set node point constants
 DIM.ST = zeros(num_o_nodes, 4);
 
-% Set all cells to be Sandstone
-DIM.ST(:, :) = sandstone;
+% Set all cells to be alluvium
+DIM.ST(:, :) = alluvium;
 
 for i = 1:num_o_nodes
     x = XZ(i, 1);
     z = XZ(i, 2);
     if 0 <= x && x < 50 && z == 30
-        % Alluvium top
+        % alluvium top
         DIM.ST(i, 1:2) = alluvium;
         
-        % Sandstone bottom
-        DIM.ST(i, 3:4) = sandstone;
+        % alluvium bottom
+        DIM.ST(i, 3:4) = alluvium;
     elseif x == 50 && z == 30
-        % Confining top right
-        DIM.ST(i, 1) = confining;
+        % alluvium top right
+        DIM.ST(i, 1) = alluvium;
         
-        % Alluvium top left
+        % alluvium top left
         DIM.ST(i, 2) = alluvium;
         
-        % Sandstone bottom
-        DIM.ST(i, 3:4) = sandstone;
+        % alluvium bottom
+        DIM.ST(i, 3:4) = alluvium;
     elseif 50 < x && x < 350 && z == 30
-        % Confining top
-        DIM.ST(i, 1:2) = confining;
+        % alluvium top
+        DIM.ST(i, 1:2) = alluvium;
         
-        % Sandstone bottom
-        DIM.ST(i, 3:4) = sandstone;
+        % alluvium bottom
+        DIM.ST(i, 3:4) = alluvium;
     elseif x == 350 && z == 30
-        % Sandstone top right
-        DIM.ST(i, 1) = sandstone;
+        % alluvium top right
+        DIM.ST(i, 1) = alluvium;
         
-        % Confining top left
-        DIM.ST(i, 2) = confining;
-        
-        % Sandstone bottom
-        DIM.ST(i, 3:4) = sandstone;
-    elseif x == 350 && 30 < z && z < 40
-        % Sandstone top right
-        DIM.ST(i, 1) = sandstone;
-        
-        % Confining left
-        DIM.ST(i, 2:3) = confining;
-        
-        % Sandstone bottom right
-        DIM.ST(i, 4) = sandstone;
-    elseif x == 350 && z == 40
-        % Sandstone top right
-        DIM.ST(i, 1) = sandstone;
-        
-        % Alluvium top left
+        % alluvium top left
         DIM.ST(i, 2) = alluvium;
         
-        % Confining bottom left
-        DIM.ST(i, 3) = confining;
+        % alluvium bottom
+        DIM.ST(i, 3:4) = alluvium;
+    elseif x == 350 && 30 < z && z < 40
+        % alluvium top right
+        DIM.ST(i, 1) = alluvium;
         
-        % Sandstone bottom right
-        DIM.ST(i, 4) = sandstone;
-    elseif x == 350 && 40 < z && z < 80
-        % Sandstone top right
-        DIM.ST(i, 1) = sandstone;
-        
-        % Alluvium left
+        % alluvium left
         DIM.ST(i, 2:3) = alluvium;
         
-        % Sandstone bottom right
-        DIM.ST(i, 4) = sandstone;
-    elseif x == 350 && z == 80
-        % Alluvium bottom left
+        % alluvium bottom right
+        DIM.ST(i, 4) = alluvium;
+    elseif x == 350 && z == 40
+        % alluvium top right
+        DIM.ST(i, 1) = alluvium;
+        
+        % alluvium top left
+        DIM.ST(i, 2) = alluvium;
+        
+        % alluvium bottom left
         DIM.ST(i, 3) = alluvium;
         
-        % Sandstone bottom right
-        DIM.ST(i, 4) = sandstone;
-    elseif x == 50 && 30 < z && z < 40
-        % Confining top right
-        DIM.ST(i, 1) = confining;
+        % alluvium bottom right
+        DIM.ST(i, 4) = alluvium;
+    elseif x == 350 && 40 < z && z < 80
+        % alluvium top right
+        DIM.ST(i, 1) = alluvium;
         
-        % Alluvium left
+        % alluvium left
         DIM.ST(i, 2:3) = alluvium;
         
-        % Confining bottom right
-        DIM.ST(i, 4) = confining;
+        % alluvium bottom right
+        DIM.ST(i, 4) = alluvium;
+    elseif x == 350 && z == 80
+        % alluvium bottom left
+        DIM.ST(i, 3) = alluvium;
+        
+        % alluvium bottom right
+        DIM.ST(i, 4) = alluvium;
+    elseif x == 50 && 30 < z && z < 40
+        % alluvium top right
+        DIM.ST(i, 1) = alluvium;
+        
+        % alluvium left
+        DIM.ST(i, 2:3) = alluvium;
+        
+        % alluvium bottom right
+        DIM.ST(i, 4) = alluvium;
     elseif x == 50 && z == 40
-        % Alluvium top and bottom left
+        % alluvium top and bottom left
         DIM.ST(i, 1:3) = alluvium;
         
-        % Confining bottom right
-        DIM.ST(i, 4) = confining;
+        % alluvium bottom right
+        DIM.ST(i, 4) = alluvium;
     elseif 50 < x && x < 350 && z == 40
-        % Alluvium top
+        % alluvium top
         DIM.ST(i, 1:2) = alluvium;
         
-        % Confining bottom
-        DIM.ST(i, 3:4) = confining;
+        % alluvium bottom
+        DIM.ST(i, 3:4) = alluvium;
     elseif 0 <= x && x < 50 && 30 < z && z <= 80
-        % Alluvium everywhere
+        % alluvium everywhere
         DIM.ST(i, :) = alluvium;
     elseif 50 <= x && x < 350 && 40 < z && z <= 80
-        % Alluvium everywhere
+        % alluvium everywhere
         DIM.ST(i, :) = alluvium;
     elseif 50 < x && x < 350 && 30 < z && z < 40
-        % Confining everywhere
-        DIM.ST(i, :) = confining;
+        % alluvium everywhere
+        DIM.ST(i, :) = alluvium;
     end
 end
 
@@ -313,7 +310,7 @@ end
 
 
 %Check how much water is beeing sucked out
-if (sum(EVAPOT(:,4)+sum(PUMPS(:,3))) >= 1)
+if (sum(EVAPOT(:,4)+sum(PUMPS(:,3))) >= 1
     disp('Caution! Too much SUCC')
 end
 

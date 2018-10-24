@@ -1,4 +1,4 @@
-function f = V9(DIM, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
+function f = V9(DIM, h, h_old, phi, phi_old, k, k_old, RT, PARAMS)
 % Top right
 n = DIM.n;
 m=DIM.m;
@@ -22,12 +22,11 @@ cell_volume = DIM.VOL(point, 5);
 dt = PARAMS.dt;
 theta = PARAMS.theta;
 sigma = PARAMS.sigma;
-r_f = PARAMS.r_f(PARAMS.r_t);
-active_flow = 1;
+SAT = 1;
 
 % if the water table has reached this point, don't keep pouring in water
 if h_old(point) >= 0
-   active_flow = 0; 
+   SAT = 0; 
 end
 
 % calculate k
@@ -71,11 +70,11 @@ k_w_old = k_w_up_old + sigma / 2 * (k_w_down_old - k_w_up_old);
 k_s_old = k_s_up_old + sigma / 2 * (k_s_down_old - k_s_up_old);
 
 % calculate line integrals
-gamma_1 = -active_flow * r_f * dx / 2;
+gamma_1 = -SAT * RT * dx / 2;
 gamma_2 = -k_w * K_xx * dz / 2 * ((h(west) - h(point))/dx);
 gamma_3 = -k_s * K_zz * dx / 2 * ((h(south) - h(point))/dz - 1);
 
-gamma_1_old = -active_flow * r_f * dx / 2;
+gamma_1_old = -SAT * RT * dx / 2;
 gamma_2_old = -k_w_old * K_xx * dz / 2 * ((h_old(west) - h_old(point))/dx);
 gamma_3_old = -k_s_old * K_zz * dx / 2 * ((h_old(south) - h_old(point))/dz - 1);
 

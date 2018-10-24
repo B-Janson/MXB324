@@ -21,13 +21,20 @@ EVAPOT=[0,350,2,0.025;... %Alluviam zone
 
 %Precalculate everything to do with the domain
 [DIM] = VERIF_GRID_COORD(LIN,PUMPS,EVAPOT);
+
 % Get initial conditions
 [h_old, S_old, phi_old, k_old] = VERIF_INIT_COND(DIM);
-
 h = h_old;
 
+%% Calculate initial rainfall
+
+RT=PARAMS.r_f;
+%% Lachys time to shine
+%We need an anonymous function to output the rainfall at a certain time
+%
+
 % Initial calculation of F at t = dt
-F = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
+F = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PUMPERS_old, EVAPERS_old, RT, PARAMS);
 err = norm(F, 2);
 err_old = err;
 
@@ -37,10 +44,8 @@ f_eval_total = 1;
 framenum = 1;
 
 % Get the jacobian
-J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
+J = JAC_FUNC(DIM, F, @VERIF_FVM, DIM, h, h_old, S_old, phi_old, k_old, PUMPERS_old, EVAPERS_old, RT, PARAMS);
 % total_bandwidth = bandwidth(J);
-J2=jac_funcOG(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
-norm(J-J2)
 
 h = h_old;
 S = S_old;
@@ -81,23 +86,24 @@ steady_state = false;
 tic;
 while steady_state == false && t < PARAMS.endtime
     t = t + PARAMS.dt;
+    %recalculate rainfall
     timesteps = timesteps + 1;
     
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
         rho = err / err_old;
         if mod(iters, PARAMS.jacobian_update) == 0 && err > 1e-8 || rho > PARAMS.rho_max
             J_old=J;
-            J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
+            J = JAC_FUNC(DIM, F, @VERIF_FVM, DIM, h, h_old, S_old, phi_old, k_old, PUMPERS_old, EVAPERS_old, RT, PARAMS);
             fevals = fevals + DIM.n * DIM.m;
         end
         
         % Get the del h
         dh = J\(-F); %This line is now in Jsolv
         % Update estimate for current timestep's h
-        h = LineSearch(DIM, @VERIF_FVM, h, dh, h_old, S_old, phi_old, k_old, t, PARAMS);
+        h = LineSearch(DIM, @VERIF_FVM, DIM, h, h_old, S_old, phi_old, k_old, PUMPERS_old, EVAPERS_old, RT, PARAMS);
 
         % Update F and all other variables for this time step
-        [F, S, phi, k] = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
+        [F, S, phi, k] = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PUMPERS_old, EVAPERS_old, RT, PARAMS);
         err = norm(F, 2);
         iters = iters + 1;
         fevals = fevals + 1;
@@ -115,8 +121,9 @@ while steady_state == false && t < PARAMS.endtime
             t = t - PARAMS.dt;
             PARAMS.dt = PARAMS.dt / 3;
             t = t + PARAMS.dt;
+            %Recalculate rainfall
             if PARAMS.dt < 5
-                %This should be gmres eventually
+                
             end
         end
         
@@ -140,7 +147,7 @@ while steady_state == false && t < PARAMS.endtime
     k_old = k;
     
     % Recalculate base error
-    F = VERIF_FVM(DIM, h, h, S, phi, k, t, PARAMS);
+    F = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PUMPERS_old, EVAPERS_old, RT, PARAMS);
     err = norm(F, 2);
     err_old = err;
     
