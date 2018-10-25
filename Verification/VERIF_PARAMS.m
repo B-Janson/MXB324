@@ -18,14 +18,14 @@ PARAMS.town_rate    = 0.25;     % rate in m^2/s to extract from town bore
 PARAMS.bore_rate    = 0.125;    % rate in m^2/s to extract from crop bore
 
 % river
-PARAMS.left_river   = [60; 65]; % z position of river bottom and river head on LHS [0; 0] for inactive
-PARAMS.right_river  = [0; 0];   % z position of river bottom and river head on RHS [0; 0] for inactive
-PARAMS.K_r          = 0;      % hydraulic conductivity of the river (0 turns it off)
+PARAMS.left_river   = [60; 65; 80; 50]; % z position of river bottom and river head on LHS [0; 0] for inactive
+PARAMS.right_river  = [100; 100; 80; 50];   % z position of river bottom and river head on RHS [0; 0] for inactive
+PARAMS.K_r          = 0.5;      % hydraulic conductivity of the river (0 turns it off)
 
 % time
 PARAMS.dt           = 10;       % timestep size
 PARAMS.max_dt       = 30;       % maximum time step size
-PARAMS.endtime      = 3000;    % end time
+PARAMS.endtime      = 50 * 365;    % end time
 PARAMS.adaptive_timestep = 1.1; % amount to 'fast forward' time if converging quickly
 
 % solving methods
