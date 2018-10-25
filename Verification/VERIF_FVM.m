@@ -48,7 +48,7 @@ end
 sauce=PUMPERS+EVAPERS;
 sauce_old=PUMPERS_old+EVAPERS_old;
 
-F=F-PARAMS.theta*sauce+(1-PARAMS.theta)*sauce_old;
+F=F-(PARAMS.theta*sauce+(1-PARAMS.theta)*sauce_old);
 
 
 

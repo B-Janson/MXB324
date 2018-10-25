@@ -1,5 +1,8 @@
-function [PUMPERS,EVAPERS]=SOURCE_EVAL(DIM,RF,dt)
+function [PUMPERS,EVAPERS]=SOURCE_EVAL(DIM,PARAMS,RF,dt)
 %Evaluate the pump rate at each node point
-PUMPERS=DIM.S_P.*RF.*dt;
-EVAPERS=DIM.S_E.*RF.*dt;
+PUMPERS=PARAMS.PUMPS.*DIM.S_P.*dt/DIM.WIDTH;
+
+ON=(PHI >= DIM.PHISAT) 
+EVAPERS=DIM.S_E.*RF.*dt/DIM.WIDTH;
+
 end

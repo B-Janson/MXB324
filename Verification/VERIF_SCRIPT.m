@@ -176,11 +176,10 @@ while steady_state == false && t < PARAMS.endtime
     end
     
 end
+
+
 disp('Steady State Reached')
 toc
 
 % CREATE_VIDEO(wcontvideo, watercontent, 20);
 % CREATE_VIDEO(pheadvideo, pressurehead, 20);
-
-PARAMS.PUMPS=1;
-
