@@ -1,4 +1,4 @@
-function [DIM] = VERIF_GRID_COORD(PARAMS)
+function [DIM] = VERIF_GRID_COORD(PARAMS,PUMPS,EVAPOT)
 % GRIDCOORD returns the dimension of the grid
 
 % Width and height of aquifer
@@ -208,7 +208,6 @@ for i = 1:num_nodes
     end
 end
 
-% Assign a node type to each vertex,
 NT = zeros(num_nodes, 1);
 
 for i = 1:num_nodes
@@ -241,6 +240,60 @@ NT(n * (m - 1) + 1) = 7;
 % Top Right
 NT(n*m) = 9;
 
+%% Pump Terms
+%Each pump takes up a row of PUMPS=[x,z,fraction of annual rainfall]
+
+
+S_P=zeroes(num_o_nodes,1);
+[LP,~]=size(PUMPS);
+j=1;
+while j <= LP
+    for i=1:num_o_nodes        
+        if (DIM.XZ(1,i) == PUMPS(j,1)) &&(DIM.XZ(1,i) == PUMPS(j,1))
+            S_P(i)=PUMPS(3,j);
+            j=j+1;
+            break
+        end
+    end
+end
+
+
+%% Evapotranspiration Terms 
+%Defines a region of evapotranspiration as such [L,R,Depth,fraction of annual rainfall] 
+
+S_E=zeroes(num_o_nodes,1);
+[LE,~]=size(EVAPOT);
+j=1;
+
+while j <= LE
+    DEPTH=EVAPOT(j,3);
+    for i=1:num_o_nodes        
+        %Check if point is in jth evapotranspiration zone
+        if ((DIM.XZ(1,i) <= EVAPOT(j,2)) &&(DIM.XZ(1,i) > EVAPOT(j,1))) %Check X-direction
+            if (DIM.XZ(2,i) > HEIGHT-DEPTH) %Check Z-direction
+            S_E(i)=-EVAPOT(j,4)*(DIM.z(i,2)-WIDTH+DEPTH)^2/(DEPTH)^2;%Q(z) in the evapotranspiration zone           
+            end
+        end
+    end 
+    j=j+1;
+end
+
+% Calculate the cutoff for evapotranspiration
+PHISAT=zeros(m*n,1);
+for i=1:m*n
+   for j=1:4 
+       PHISAT(i)=PHISAT(i)+VOL(i,j)*ST(i,j); 
+   end 
+end
+PHISAT=0.5.*PHISAT./VOL(:,5);
+% Assign a node type to each vertex,
+
+%Check how much water is beeing sucked out
+if (sum(EVAPOT(:,4)+sum(PUMPS(:,3))) >= 1)
+    disp('Caution! Too much SUCC')
+end
+
+
 % Discover layout of the jacobian
 off_diag = ones(1, num_nodes - 1);
 off_diag(n:n:end) = 0;
@@ -251,12 +304,18 @@ B = diag(ones(1, num_nodes)) + diag(off_diag, 1) + diag(off_diag, -1) ...
 
 % RCM reorder the jacobian
 r = symrcm(B);
-b = 2 * bandwidth(B(r,r)) + 1;
-
+b1= 2 * bandwidth(B) + 1;
+b2 = 2 * bandwidth(B(r,r)) + 1;
+Weightloss=2*(b1-b2)
 DIM.r = r;
-DIM.b = b;
+DIM.b = b2;
 
 % Reorder Everything
+DIM.PHISAT=PHISAT(r);
+DIM.S_P=S_P(r);
+DIM.S_E=S_E(r);
+DIM.PUMPS=PUMPS(r,:);
+DIM.EVAPO=EVAPOT(r,:);
 DIM.XZ = XZ(r, :);
 DIM.NT = NT(r);
 DIM.ST = ST(r, :);
