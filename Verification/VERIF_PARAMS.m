@@ -3,7 +3,7 @@ function [PARAMS] = VERIF_PARAMS()
 % a struct
 
 % Grid structure
-PARAMS.uniform      = true;
+PARAMS.uniform      = false;
 PARAMS.n            = 11;
 PARAMS.m            = 17;
 

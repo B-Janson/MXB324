@@ -5,13 +5,15 @@ format compact
 %% Part 0 Initialisation
 % Get the parameters to solve for
 [PARAMS] = VERIF_PARAMS;
+save('PARAMS')
 % Get the grid & other info about grid
 [DIM] = VERIF_GRID_COORD(PARAMS);
+save('DIM')
 % Get initial conditions
 [h_old, S_old, phi_old, k_old] = VERIF_INIT_COND(DIM);
 
 h = h_old;
-
+h_store=h_old;
 % Initial calculation of F at t = dt
 F = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
 err = norm(F, 2);
@@ -52,7 +54,7 @@ m = PARAMS.gmres_max;
 %% Part 1 Main Solver
 tic;
 % Time step iteration
-while steady_state == false && t < PARAMS.endtime
+while t < PARAMS.endtime
     t = t + PARAMS.dt;
     timesteps = timesteps + 1;
     iters = 0;
@@ -71,7 +73,7 @@ while steady_state == false && t < PARAMS.endtime
         
         % Update estimate for current timestep's h
         h = LineSearch(DIM, @VERIF_FVM, h, dh, h_old, S_old, phi_old, k_old, t, PARAMS);
-        
+        h_store(:,end+1)=h;
         % Update F and all other variables for this time step
         F_old = F;
         [F, S, phi, k] = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
@@ -120,7 +122,8 @@ while steady_state == false && t < PARAMS.endtime
 end
 disp('Steady State Reached')
 toc
-
+save('T')
+save('h_store')
 % CREATE_VIDEO(wcontvideo, watercontent, 20);
 % CREATE_VIDEO(pheadvideo, pressurehead, 20);
 
