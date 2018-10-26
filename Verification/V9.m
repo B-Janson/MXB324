@@ -1,4 +1,4 @@
-function f = V9(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
+function f = V9(DIM, i, h, h_old, phi, phi_old, k, k_old, r_f, PARAMS)
 % Top right
 n = DIM.n;
 
@@ -13,7 +13,7 @@ dx = DELTA(1);
 dz = DELTA(3);
 % get the K values
 ST = DIM.ST(point, 3);
-BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), t, h(point));
+BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), r_f, h(point));
 K_xx = DIM.K_xx(ST);
 K_zz = DIM.K_zz(ST);
 % get total cell volume
@@ -80,7 +80,8 @@ gamma_3_old = -k_w_old * K_xx * dz / 2 * ((h_old(west) - h_old(point))/dx);
 gamma_4_old = -k_s_old * K_zz * dx / 2 * ((h_old(south) - h_old(point))/dz - 1);
 
 % evaluate f function
-f = phi(point) - phi_old(point) + dt/cell_volume * (theta * ...
+f = phi(point) - phi_old(point) ...
+            + dt/cell_volume * (theta * ...
             (gamma_1 + gamma_2 + gamma_3 + gamma_4) ...
             + (1 - theta) * ( ...
             gamma_1 + gamma_2_old + gamma_3_old + gamma_4_old));

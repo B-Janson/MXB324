@@ -1,4 +1,4 @@
-function f = V6(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
+function f = V6(DIM, i, h, h_old, phi, phi_old, k, k_old, r_f, PARAMS)
 % Right boundary
 
 n = DIM.n;
@@ -15,7 +15,7 @@ dx = DELTA(1);
 dz = DELTA(3:4);
 % get the K values
 ST = DIM.ST(point, :);
-BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), t, h(point));
+BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), r_f, h(point));
 K_xx = DIM.K_xx;
 K_zz = DIM.K_zz;
 % get total cell volume

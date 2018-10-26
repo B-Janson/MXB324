@@ -1,4 +1,4 @@
-function f = V7(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
+function f = V7(DIM, i, h, h_old, phi, phi_old, k, k_old, r_f, PARAMS)
 % Top Left
 
 n = DIM.n;
@@ -14,7 +14,7 @@ dx = DELTA(2);
 dz = DELTA(3);
 % get the specific values for this node
 ST = DIM.ST(point, 4);
-BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), t, h(point));
+BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), r_f, h(point));
 K_xx = DIM.K_xx(ST);
 K_zz = DIM.K_zz(ST);
 % get total cell volume
@@ -80,7 +80,8 @@ gamma_2_old = active_flow * BC(1) * dx / 2;
 gamma_4_old = -k_s_old * K_zz * dx / 2 * ((h_old(south) - h_old(point))/dz - 1);
 
 % evaluate f function
-f = phi(point) - phi_old(point) + dt/cell_volume * ... 
+f = phi(point) - phi_old(point) ...
+            + dt/cell_volume * ... 
             (theta * (gamma_1 + gamma_2 + gamma_3 + gamma_4) + ...
             (1 - theta) * (gamma_1_old + gamma_2_old + gamma_3 + gamma_4_old));
         

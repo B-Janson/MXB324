@@ -1,4 +1,4 @@
-function []=VISUALISE(DIM, h, phi, T, phi_true, phi_avg)
+function []=VISUALISE(DIM, h, psi, T, psi_true, psi_avg)
 % SOL_VIS  displays the solution of the given vector at whichever time step
 %   draws to fig object, uses colour_type to determine colour scheme,
 %   fig_title is the title the draw on the figure, and vec is the vector of
@@ -12,7 +12,7 @@ X = DIM.x;
 
 % revert grid to 'standard' view
 h(DIM.r) = h;
-phi(DIM.r) = phi;
+psi(DIM.r) = psi;
 
 H = zeros(m, n);
 PHI = zeros(m, n);
@@ -22,7 +22,7 @@ for j = m:-1:1
     for k = n:-1:1
         C = C - 1;
         H(j, k) = h(C);
-        PHI(j, k) = phi(C);
+        PHI(j, k) = psi(C);
     end
 end
 
@@ -48,16 +48,16 @@ drawnow
 hold off
 xlabel('X (m)')
 ylabel('Z (m)')
-title('Water content')
+title('Water content (?)')
 
 subplot(1, 3, 3)
 hold on
-plot(T/365, phi_avg, 'b')
-plot(T/365, phi_true, 'r')
-legend('avg', 'true')
-title('water content (avg vs analytic)')
-xlabel('time (years)')
-ylabel('water content (phi)')
+plot(T/365, psi_avg, 'b')
+plot(T/365, psi_true, 'r')
+legend('Simulation', 'Analytic', 'Location', 'southeast')
+title('Water Content (Simulation vs Analytic)')
+xlabel('Time (Years)')
+ylabel('Water Content (?)')
 hold off
 drawnow
 

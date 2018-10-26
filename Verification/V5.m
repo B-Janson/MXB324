@@ -1,4 +1,4 @@
-function f = V5(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
+function f = V5(DIM, i, h, h_old, phi, phi_old, k, k_old, r_f, PARAMS)
 % Normal interior node
 
 n = DIM.n;
@@ -24,15 +24,6 @@ cell_volume = DIM.VOL(point, 5);
 dt = PARAMS.dt;
 theta = PARAMS.theta;
 sigma = PARAMS.sigma;
-source = 0;
-
-if PARAMS.PUMPS == 1
-    if DIM.XZ(point, 1) == 450 && DIM.XZ(point, 2) == 10 && phi(point) > 0.2
-        source = -PARAMS.town_rate / DIM.WIDTH; % -5e-8 * 60*60*24;
-    elseif DIM.XZ(point, 1) == 100 && DIM.XZ(point, 2) == 50
-%         source = -PARAMS.bore_rate / DIM.WIDTH;
-    end
-end
 
 % calculate k
 if h(point) >= h(east)
@@ -129,7 +120,7 @@ gamma_7_old = -k_s_old * K_zz(ST(4)) * dx(2) / 2 * ((h_old(south) - h_old(point)
 gamma_8_old = -k_e_old * K_xx(ST(4)) * dz(1) / 2 * ((h_old(east) - h_old(point))/dx(2));
 
 % evaluate f function
-f = phi(point) - phi_old(point) - dt * (theta * source + (1 - theta) * source) ...
+f = phi(point) - phi_old(point) ...
             + dt/cell_volume * (theta * ...
              (gamma_1 + gamma_2 + gamma_3 + gamma_4 + gamma_5 + gamma_6 + gamma_7 + gamma_8) ...
             + (1 - theta) * ( ...

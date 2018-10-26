@@ -1,17 +1,8 @@
-function BC = BOUNDARY_CONDITIONS(DIM, PARAMS, XZ, t, h)
+function BC = BOUNDARY_CONDITIONS(DIM, PARAMS, XZ, r_f, h)
 
 x = XZ(1);
 z = XZ(2);
 BC = zeros(2, 1);
-
-switch PARAMS.r_m
-    case 1
-        r_f = PARAMS.r_f(PARAMS.r_t);
-    case 2
-        r_f = PARAMS.r_f(PARAMS.r_t) * (cos(t * 2*pi / 365) + 1);
-    case 3
-        error('not yet implemented');
-end
 
 % Deal with LHS first
 if x == 0

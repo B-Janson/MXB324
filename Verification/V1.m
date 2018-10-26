@@ -1,4 +1,4 @@
-function f = V1(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
+function f = V1(DIM, h, h_old, phi, phi_old, k, k_old, r_f, PARAMS)
 % V1  returns the f function evaulated at the bottom left corner of the
 %     grid
 
@@ -15,7 +15,7 @@ dx = DELTA(2);
 dz = DELTA(4);
 % get the K values for the first quadrant only
 ST = DIM.ST(point, 1);
-BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), t, h(point));
+BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), r_f, h(point));
 K_xx = DIM.K_xx(ST);
 K_zz = DIM.K_zz(ST);
 % get total cell volume

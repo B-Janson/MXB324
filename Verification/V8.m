@@ -1,4 +1,4 @@
-function f = V8(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
+function f = V8(DIM, i, h, h_old, phi, phi_old, k, k_old, r_f, PARAMS)
 % Top row
 
 n = DIM.n;
@@ -16,7 +16,7 @@ dz = DELTA(3);
 
 % get the K values for the first quadrant only
 ST = DIM.ST(point, :);
-BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), t, h(point));
+BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), r_f, h(point));
 K_xx = DIM.K_xx;
 K_zz = DIM.K_zz;
 % get total cell volume
@@ -105,7 +105,8 @@ gamma_5_old = -k_s_old * K_zz(ST(3)) * dx(1) / 2 * ((h_old(south) - h_old(point)
 gamma_6_old = -k_s_old * K_zz(ST(4)) * dx(2) / 2 * ((h_old(south) - h_old(point))/dz - 1);
 
 % evaluate f function
-f = phi(point) - phi_old(point) + dt/cell_volume * (theta * ...
+f = phi(point) - phi_old(point) ...
+            + dt/cell_volume * (theta * ...
             (gamma_1 + gamma_2 + gamma_3 + gamma_4 + gamma_5 + gamma_6) ...
             + (1 - theta) * ( ...
             gamma_1_old + gamma_2_old + gamma_3_old + gamma_4_old + gamma_5_old + gamma_6_old));

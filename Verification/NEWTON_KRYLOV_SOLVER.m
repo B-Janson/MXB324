@@ -29,7 +29,8 @@ k = k_old;
 
 T = 0;
 phi_avg = PHI_AVG(DIM, phi);
-phi_true = PHI_TRUE(DIM, PARAMS, 0);
+phi_0 = phi_avg;
+phi_true = PHI_TRUE(DIM, PARAMS, 0, phi_0);
 
 % videoName_wcont = 'WaterContent.avi';
 % videoName_phead = 'PressureHead.avi';
@@ -55,6 +56,7 @@ while steady_state == false && t < PARAMS.endtime
     t = t + PARAMS.dt;
     timesteps = timesteps + 1;
     iters = 0;
+    F_0_norm = norm(F, Inf);
     
     % Newton step iteration
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
@@ -71,6 +73,7 @@ while steady_state == false && t < PARAMS.endtime
         h = LineSearch(DIM, @VERIF_FVM, h, dh, h_old, S_old, phi_old, k_old, t, PARAMS);
         
         % Update F and all other variables for this time step
+        F_old = F;
         [F, S, phi, k] = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
         err = norm(F, 2);
         iters = iters + 1;
@@ -93,7 +96,7 @@ while steady_state == false && t < PARAMS.endtime
     
     T(end + 1) = t;
     phi_avg(end + 1) = PHI_AVG(DIM, phi);
-    phi_true(end + 1) = PHI_TRUE(DIM, PARAMS, t);
+    phi_true(end + 1) = PHI_TRUE(DIM, PARAMS, t, phi_0);
     
     % We have now converged, so update variables
     h_old = h;

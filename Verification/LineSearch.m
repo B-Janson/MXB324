@@ -14,12 +14,6 @@ sigma = 0.5;
 % calculate base error
 h_star = h + lambda * del_h;
 
-% the error using the current h
-% base_error = norm(FVM_func(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS));
-
-% the error using the h_star
-% current_error = norm(FVM_func(DIM, h_star, h_old, S_old, phi_old, k_old, t, PARAMS));
-
 g_base = norm(FVM_func(DIM, h, h_old, S_old, phi_old, k_old,  t, PARAMS), 2)^2;
 
 g_star = norm(FVM_func(DIM, h_star, h_old, S_old, phi_old, k_old, t, PARAMS), 2)^2;
