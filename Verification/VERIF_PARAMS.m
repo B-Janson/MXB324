@@ -34,7 +34,7 @@ PARAMS.K_r          = 0;      % hydraulic conductivity of the river (0 turns it 
 
 % time
 PARAMS.dt           = 5;       % timestep size
-PARAMS.max_dt       = 21;       % maximum time step size
+PARAMS.max_dt       = 28;       % maximum time step size
 PARAMS.endtime      = 50 * 365; % end time
 PARAMS.adaptive_timestep = 1.1; % amount to 'fast forward' time if converging quickly
 
@@ -50,7 +50,7 @@ PARAMS.max_iters    = 16;       % maximum number of iterations for the Newton st
 
 % heuristics
 PARAMS.rho_min      = 0.65;     % minimum rho heuristic value to re-calculate jacobian
-PARAMS.jacobian_update = 5;     % how often should the Jacobian be recalculated
+PARAMS.jacobian_update = 7;     % how often should the Jacobian be recalculated
 PARAMS.steady_state_tol = 10^-16; % tolerance between water content to determine steady state
 
 % GMRES
@@ -63,7 +63,7 @@ PARAMS.lambda       = 0.9;
 PARAMS.alpha       = 2;
 
 % debug and plots
-PARAMS.realtime_plot = true;    % should a plot of the solution be produced in realtime? 
+PARAMS.realtime_plot = false;    % should a plot of the solution be produced in realtime? 
 PARAMS.debug = true;            % should we display some debug status info
 
 end
