@@ -11,7 +11,8 @@ switch PARAMS.r_m
         RF = PARAMS.r_f(PARAMS.r_t) * (cos(t * 2*pi / 365) + 1);
     case 3
         % realistic rainfall model
-        error('not yet implemented')
+        %error('not yet implemented')
+        RF = DALBY_RAIN(PARAMS.r_t, t);
 end
 
 end
