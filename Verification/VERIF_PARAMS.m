@@ -1,4 +1,4 @@
-function [PARAMS] = VERIF_PARAMS()
+function [PARAMS] = VERIF_PARAMS2()
 % INIT_PARAMS Initialises the parameters of the problem and returns them in
 % a struct
 
@@ -49,8 +49,8 @@ PARAMS.tol_r        = 0.1;     % relative tolerance of the Newton step
 PARAMS.max_iters    = 16;       % maximum number of iterations for the Newton step
 
 % heuristics
-PARAMS.rho_min      = 0.65;     % minimum rho heuristic value to re-calculate jacobian
-PARAMS.jacobian_update = 7;     % how often should the Jacobian be recalculated
+PARAMS.rho_min      = 0.1;     % minimum rho heuristic value to re-calculate jacobian
+PARAMS.jacobian_update = 5;     % how often should the Jacobian be recalculated
 PARAMS.steady_state_tol = 10^-16; % tolerance between water content to determine steady state
 
 % GMRES
