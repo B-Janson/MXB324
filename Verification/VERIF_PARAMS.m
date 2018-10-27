@@ -33,7 +33,7 @@ PARAMS.right_river  = [100; 100; 80; 50];   % z position of river bottom and riv
 PARAMS.K_r          = 0.3;      % hydraulic conductivity of the river (0 turns it off)
 
 % time
-PARAMS.dt           = 3;       % timestep size
+PARAMS.dt           = 7;       % timestep size
 PARAMS.max_dt       = 21;       % maximum time step size
 PARAMS.endtime      = 50 * 365; % end time
 PARAMS.adaptive_timestep = 1.1; % amount to 'fast forward' time if converging quickly
