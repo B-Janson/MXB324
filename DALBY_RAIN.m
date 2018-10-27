@@ -8,7 +8,7 @@ function [RFT]=DALBY_RAIN(PARAMS,t)
 % 4.0 = beginning of jan, 15.9999 = end of december.
 
 % fix t for using in this section
- t=16.234 % test t value
+% t=16.234 % test t value turn this on to test a given month value
 int_t = floor(t)
 decimal_t = t-int_t
 
