@@ -16,8 +16,8 @@ x0 = zeros(N, 1);
 NORM=0;%get into loop
 rnorm=inf;
 
-%while  NORM < eta * Fk && m <= max_krylov
-while  rnorm > PARAMS.gmres_tol*beta && m <= max_krylov
+%while  NORM < eta * Fk && m <= max_krylov   %Eisenstat Walker
+while  rnorm > PARAMS.gmres_tol*beta && m <= max_krylov %Regular gmres
     m = m + 1;
     
     u = M \ V(:, m);
@@ -41,7 +41,7 @@ while  rnorm > PARAMS.gmres_tol*beta && m <= max_krylov
     H(m+1, m) = norm(V(:, m+1), 2);
     rhs = [beta; zeros(m, 1)];
     
-    NORM=norm(JVm+F,2);
+ %   NORM=norm(JVm-F,2);
     
     % Check for breakdown
     if abs(H(m+1, m)) < 1e-14
