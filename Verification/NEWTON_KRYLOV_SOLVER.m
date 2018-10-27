@@ -18,8 +18,9 @@ h_store=h_old;
 F = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
 err = norm(F, 2);
 err_old = err;
+PARAMS.F0=norm(F,inf);
 framenum = 1;
-
+F_old=F;
 % Get the jacobian
 J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
 M = J;
@@ -62,14 +63,15 @@ while t < PARAMS.endtime
     
     % Newton step iteration
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
-        if m > PARAMS.gmres_max / 2
+
+        if m > PARAMS.gmres_max
             fprintf('Recalculating Preconditioner\n');
             J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
             M = J;
         end
         
         % Get the del h
-        [dh, m] = NEWTON_GMRES(F, M, PARAMS, DIM, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t);
+        [dh, m] = NEWTON_GMRES(F,F_old,iters, M, PARAMS, DIM, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t);
         
         % Update estimate for current timestep's h
         h = LineSearch(DIM, @VERIF_FVM, h, dh, h_old, S_old, phi_old, k_old, t, PARAMS);
@@ -105,7 +107,7 @@ while t < PARAMS.endtime
     S_old = S;
     phi_old = phi;
     k_old = k;
-    
+
     % Recalculate base error
     F = VERIF_FVM(DIM, h, h, S, phi, k, t, PARAMS);
     err = norm(F, 2);

@@ -15,21 +15,24 @@ if PARAMS.uniform
     m = PARAMS.m;
     
     % Discretisation in x
-    DIM.x = linspace(0, WIDTH, n);
+    DIM.x = 0:25:WIDTH; %course grid
     
     % Discretisation in z
-    DIM.z = linspace(0, HEIGHT, m);
+    DIM.z = 0:2:HEIGHT;
+    
+    n = length(DIM.x);
+    m = length(DIM.z);
 else
     % Discretisation in x
     DIM.x = [0,2.5,5,10:10:40,45,47.5, 50,52.5,55,60:10:90,95,...
-        97.5,100,102.5,105,110:10:340,345,347.5,350,352.5,355,...
+        97.5,100,102.5,105,linspace(110,340,9),345,347.5,350,352.5,355,...
         360:10:440,445,447.5,450,452.5,455,460:10:490,495,497.5,500];
-    n = length(DIM.x)
+    n = length(DIM.x);
     
     % Discretisation in z
-    DIM.z = [0,2.5,5,7.5,10,12.5,15,20,25,27.5,30,32.5,35,37.5,...
-        40,42.5,45,47.5,50,52.5,55,57.5,60,62.5,65,70,75,77.5,80];
-    m = length(DIM.z)
+    DIM.z = [0,1,2,4,6,8,9,10,11,12,14,16,18,20,22,24,26,28,29,30,31,32,34,36,...
+        38,39,40,41,42,44,46,48,49,50,51,52,54,56,58,59,60,61,62,64,65,66,68,70,72,74,76,78,79,80];
+    m = length(DIM.z);
 end
 
 % Ensure that all corner points are included

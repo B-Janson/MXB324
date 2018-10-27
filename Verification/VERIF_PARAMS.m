@@ -30,12 +30,12 @@ PARAMS.EVAPOT       = [% x1,  x2, l, R
 % river
 PARAMS.left_river   = [60; 65; 80; 50]; % z position of river bottom and river head on LHS [0; 0] for inactive
 PARAMS.right_river  = [100; 100; 80; 50];   % z position of river bottom and river head on RHS [0; 0] for inactive
-PARAMS.K_r          = 0;      % hydraulic conductivity of the river (0 turns it off)
+PARAMS.K_r          = 0.3;      % hydraulic conductivity of the river (0 turns it off)
 
 % time
-PARAMS.dt           = 10;       % timestep size
-PARAMS.max_dt       = 30;       % maximum time step size
-PARAMS.endtime      = 42 * 365; % end time
+PARAMS.dt           = 3;       % timestep size
+PARAMS.max_dt       = 21;       % maximum time step size
+PARAMS.endtime      = 50 * 365; % end time
 PARAMS.adaptive_timestep = 1.1; % amount to 'fast forward' time if converging quickly
 
 % solving methods
@@ -44,9 +44,9 @@ PARAMS.theta        = 1;        % temporal weighting, 1-Backward Euler, 0.5-Cran
 PARAMS.sigma        = 0;        % stream weighting, 0-Upwinding, 1-Averaging, 2-Downwinding
 
 % tolerances
-PARAMS.tol_a        = 1e-5;     % absolute tolerance of the Newton step
-PARAMS.tol_r        = 1e-5;     % relative tolerance of the Newton step
-PARAMS.max_iters    = 18;       % maximum number of iterations for the Newton step
+PARAMS.tol_a        = 0.01;     % absolute tolerance of the Newton step
+PARAMS.tol_r        = 0.01;     % relative tolerance of the Newton step
+PARAMS.max_iters    = 20;       % maximum number of iterations for the Newton step
 
 % heuristics
 PARAMS.rho_min      = 0.65;     % minimum rho heuristic value to re-calculate jacobian
@@ -56,8 +56,11 @@ PARAMS.steady_state_tol = 10^-16; % tolerance between water content to determine
 % GMRES
 PARAMS.GMRES        = true;     % whether to solve using GMRES
 PARAMS.gmres_tol    = 0.5;      % Maximumn bound upon the residual
-PARAMS.gmres_max    = 20;       % Maximum gmres iterations
+PARAMS.gmres_max    = 16;       % Maximum gmres iterations
 PARAMS.eta_max      = 0.9;      % Maximum value of eta for forcing term
+PARAMS.eta_old      = 0.9;
+PARAMS.lambda       = 0.9;
+PARAMS.alpha       = 2;
 
 % debug and plots
 PARAMS.realtime_plot = true;    % should a plot of the solution be produced in realtime? 
