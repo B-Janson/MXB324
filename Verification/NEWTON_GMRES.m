@@ -14,9 +14,10 @@ tol = PARAMS.gmres_tol;
 x0 = zeros(N, 1);
 [eta,Fk] = EW_ETA(K,F,F_old, PARAMS);
 NORM=0;%get into loop
+rnorm=inf;
 
-
-while  NORM < eta * Fk && m <= max_krylov
+%while  NORM < eta * Fk && m <= max_krylov
+while  rnorm > PARAMS.gmres_tol*beta && m <= max_krylov
     m = m + 1;
     
     u = M \ V(:, m);
