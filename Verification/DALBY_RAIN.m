@@ -8,18 +8,30 @@ function [RFT]=DALBY_RAIN(PARAMS,t)
 % 4.0 = beginning of jan, 15.9999 = end of december.
 
 % fix t for using in this section
-% t=16.234 % test t value turn this on to test a given month value
+% t=15.234 % test t value turn this on to test a given month value
 int_t = floor(t)
 decimal_t = t-int_t
 
 % drought factor: set this to make it flood (more than 1) or drought (less than 1)
 % change this to accept a variable from PARAMS...
-drought_factor = 0.654; % 1=100% of rainfall, 1.2=more rainfall, 0.8=less rainfall
+drought_factor = 1; % 1=100% of rainfall, 1.2=more rainfall, 0.8=less rainfall
+
+if PARAMS.r_t == 1              % NORMAL RAIN
+    drought_factor = 1;         % change these numbers...
+elseif PARAMS.r_t == 2          % FLOOD RAIN
+    drought_factor = 2;         % change these numbers...
+else                            % DROUGHT RAIN
+    drought_factor = 0.3;       % change these numbers...
+end
+    
 
 x = 1:18;
 % a years worth of data with repeated 3 months prior and after
 % proper year needed is from point 4-15
-y = [58.4 71 94.1 76.1 80 57.4 19.1 36.7 31.2 22.7 23.5 30.4 58.4 71 94.1 76.1 80 57.4];
+% months of the day scaled accordingly
+y = [58.4/31 71/30 94.1/31 76.1/31 80/29 57.4/31 19.1/30 36.7/31 31.2/30 22.7/31 23.5/31 30.4/30 58.4/31 71/30 94.1/31 76.1/31 80/29 57.4/31];
+y = y/1000;
+% add code here to import data from CSV files...
 
 csp = csape(x,y,'periodic'); %enforces periodicity
 xx = linspace(1,18,101);
