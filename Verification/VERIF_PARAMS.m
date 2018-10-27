@@ -3,7 +3,7 @@ function [PARAMS] = VERIF_PARAMS()
 % a struct
 
 % Grid structure
-PARAMS.uniform      = false;
+PARAMS.uniform      = true;
 PARAMS.n            = 11;
 PARAMS.m            = 17;
 
@@ -30,7 +30,7 @@ PARAMS.EVAPOT       = [% x1,  x2, l, R
 % river
 PARAMS.left_river   = [60; 65; 80; 50]; % z position of river bottom and river head on LHS [0; 0] for inactive
 PARAMS.right_river  = [100; 100; 80; 50];   % z position of river bottom and river head on RHS [0; 0] for inactive
-PARAMS.K_r          = 0;      % hydraulic conductivity of the river (0 turns it off)
+PARAMS.K_r          = 0.3;      % hydraulic conductivity of the river (0 turns it off)
 
 % time
 PARAMS.dt           = 5;       % timestep size
@@ -63,7 +63,7 @@ PARAMS.lambda       = 0.9;
 PARAMS.alpha       = 2;
 
 % debug and plots
-PARAMS.realtime_plot = false;    % should a plot of the solution be produced in realtime? 
+PARAMS.realtime_plot = true;    % should a plot of the solution be produced in realtime? 
 PARAMS.debug = true;            % should we display some debug status info
 
 end

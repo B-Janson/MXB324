@@ -67,7 +67,7 @@ while t < PARAMS.endtime
         if m > PARAMS.gmres_max
             fprintf('Recalculating Preconditioner\n');
             J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
-            M = J;
+            [M,~] = lu(J);
         end
         
         % Get the del h
