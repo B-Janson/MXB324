@@ -7,12 +7,8 @@ HEIGHT = 80;
 
 DIM.WIDTH = WIDTH;
 DIM.HEIGHT = HEIGHT;
-
-if PARAMS.uniform
-    % number of horizontal node points
-    n = PARAMS.n;
-    % number of vertical node points
-    m = PARAMS.m;
+PARAMS.uniform
+if PARAMS.uniform == 1
     
     % Discretisation in x
     DIM.x = 0:25:WIDTH; %course grid

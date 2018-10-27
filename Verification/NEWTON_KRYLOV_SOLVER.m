@@ -5,10 +5,10 @@ format compact
 %% Part 0 Initialisation
 % Get the parameters to solve for
 [PARAMS] = VERIF_PARAMS;
-save('PARAMS')
+save('PARAMS_SSL')
 % Get the grid & other info about grid
 [DIM] = VERIF_GRID_COORD(PARAMS);
-save('DIM')
+save('DIM_SSL')
 % Get initial conditions
 [h_old, S_old, phi_old, k_old] = VERIF_INIT_COND(DIM);
 
@@ -124,8 +124,8 @@ while t < PARAMS.endtime
 end
 disp('Steady State Reached')
 toc
-save('T')
-save('h_store')
+save('T_SSL')
+save('h_store_SSL')
 % CREATE_VIDEO(wcontvideo, watercontent, 20);
 % CREATE_VIDEO(pheadvideo, pressurehead, 20);
 
