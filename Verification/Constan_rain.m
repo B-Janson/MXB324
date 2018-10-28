@@ -8,26 +8,29 @@ clc
 format compact
 %% Part 0 Initialisation
 % Get the parameters to solve for
-[PARAMS_CONS] = load(PARAMS_CONS.SSL);
+tic
+ load('PARAMS_SSL')
+PARAMS_CONS=PARAMS_SSL;
 PARAMS_CONS.PUMPING=1;
 PARAMS_CONS.endtime=10*365;
 PARAMS_CONS.realtime_plot=1;
 save('PARAMS_CONS')
 % Get the grid & other info about grid
-[DIM_CONS] = load(DIM_SSL);
-save('DIM_CONS')
+load('DIM_SSL');
+DIM_CONS=DIM_SSL;
 
 %Recalculate 'initial conditions' using steady state
-
-h = h_old;
+load('h_store_SSL');
+h = h_store_SSL(:,end);
+h_old=h;
 h_store_CONS=h_old;
-S=zeros(DIM.n*DIM.m,1);
-phi=zeros(DIM.n*DIM.m,1);
-k=zeros(DIM.n*DIM.m,1);
-for i = 1:DIM.n*DIM.m
-    S(i) = SATURATION(DIM, h, i);
-    phi(i) = WATER_CONTENT(DIM, h, S, i);
-    k(i) = PERM(DIM, h, S, i);
+S=zeros(DIM_CONS.n*DIM_CONS.m,1);
+phi=zeros(DIM_CONS.n*DIM_CONS.m,1);
+k=zeros(DIM_CONS.n*DIM_CONS.m,1);
+for i = 1:DIM_CONS.n*DIM_CONS.m
+    S(i) = SATURATION(DIM_CONS, h, i);
+    phi(i) = WATER_CONTENT(DIM_CONS, h, S, i);
+    k(i) = PERM(DIM_CONS, h, S, i);
 end
 % Initial calculation of F at t = dt
 F = VERIF_FVM(DIM_CONS, h, h_old, S_old, phi_old, k_old, PARAMS_CONS.dt, PARAMS_CONS);

@@ -33,7 +33,7 @@ PARAMS.K_r          = 0.4;      % hydraulic conductivity of the river (0 turns i
 % time
 PARAMS.dt           = 7;       % timestep size
 PARAMS.max_dt       = 28;       % maximum time step size
-PARAMS.endtime      = 35 * 365; % end time
+PARAMS.endtime      = 50 * 365; % end time
 PARAMS.adaptive_timestep = 1.1; % amount to 'fast forward' time if converging quickly
 
 % solving methods
