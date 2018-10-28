@@ -13,12 +13,12 @@ t = mod(t * 12/365, 12) + 4;
 
 % fix t for using in this section
 % t=15.234 % test t value turn this on to test a given month value
-int_t = floor(t)
-decimal_t = t-int_t
+int_t = floor(t);
+decimal_t = t-int_t;
 
 % drought factor: set this to make it flood (more than 1) or drought (less than 1)
 % change this to accept a variable from PARAMS...
-drought_factor = 1; % 1=100% of rainfall, 1.2=more rainfall, 0.8=less rainfall
+drought_factor = PARAMS.df; % 1=100% of rainfall, 1.2=more rainfall, 0.8=less rainfall
 
 % if PARAMS.r_t == 1              % NORMAL RAIN
 %     drought_factor = 1;         % change these numbers...
@@ -27,7 +27,6 @@ drought_factor = 1; % 1=100% of rainfall, 1.2=more rainfall, 0.8=less rainfall
 % else                            % DROUGHT RAIN
 %     drought_factor = 0.3;       % change these numbers...
 % end
-    
 
 x = 1:18;
 % a years worth of data with repeated 3 months prior and after
