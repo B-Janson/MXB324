@@ -53,7 +53,7 @@ k = k_old;
 T_SIMPLE_PUMPS = 0;
 phi_avg = PHI_AVG(DIM_SIMPLE_PUMPS, phi);
 phi_0 = phi_avg;
-phi_true = PHI_TRUE(DIM_SIMPLE_PUMPS, PARAMS_SIMPLE_PUMPS, 0, phi_0);
+phi_true = phi_0;
 
 % videoName_wcont = 'WaterContent.avi';
 % videoName_phead = 'PressureHead.avi';
@@ -161,12 +161,12 @@ end
 disp('Steady State Reached')
 disp(['Total Time ' num2str(Total_Time_SIMPLE_PUMPS(end))])
     
-save('T_SIMPLE_PUMPS')
-save('h_store_SIMPLE_PUMPS')
-save('Pumps_SIMPLE_PUMPS')
-save('Evapot_SIMPLE_PUMPS')
-save('Iteration_Time_SIMPLE_PUMPS')
-save('Total_Time_SIMPLE_PUMPS')
+save('T_DROUGHT_PUMPS')
+save('h_store_DROUGHT_PUMPS')
+save('Pumps_DROUGHT_PUMPS')
+save('Evapot_DROUGHT_PUMPS')
+save('Iteration_Time_DROUGHT_PUMPS')
+save('Total_Time_DROUGHT_PUMPS')
 
 % CREATE_VIDEO(wcontvideo, watercontent, 20);
 % CREATE_VIDEO(pheadvideo, pressurehead, 20);

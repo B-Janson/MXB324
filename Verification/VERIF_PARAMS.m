@@ -9,6 +9,7 @@ PARAMS.uniform      = 1;
 PARAMS.r_f          = [0.00171];  % rainfall constant [normal,flood,drought]
 PARAMS.r_t          = 1;        % rain type 1=normal, 2=flood, 3=drought
 PARAMS.r_m          = 2;        % rain model 1=constant, 2=cosine, 3=interpol
+PARAM.df=1;
 
 % pumping rates%  x,  z, m^2/day
 PARAMS.PUMPS        = [   450, 10, 0.213
