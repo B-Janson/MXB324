@@ -68,12 +68,12 @@ while t < PARAMS_SSL.endtime
 
         if m > PARAMS_SSL.gmres_max
             fprintf('Recalculating Preconditioner\n');
-            M=J;
+            %M=J;
+            %[M,~] = lu(J); 
+            %[M,~] = ilu(J); 
+             M=diag(J);
             J = JAC_FUNC(DIM_SSL, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS_SSL);
-            %M=J; %dt became very small
-            %[M,~] = lu(J); %Quite slow
-            %[M,~] = ilu(J); %Singularity warnings
-            % M=diag(J); %Invariant krylov subspace
+
         end
         
         % Get the del h
