@@ -54,7 +54,9 @@ m = PARAMS_SSL.gmres_max;
 Pumps_SSL=zeros(DIM_SSL.n*DIM_SSL.m,1);
 Evapot_SSL=zeros(DIM_SSL.n*DIM_SSL.m,1);
 %% Part 1 Main Solver
-tic;
+Overhead_Time_SSL=toc
+Iteration_Time_SSL=0;
+Total_Time_SSL=Overhead_Time_SSL;
 % Time step iteration
 while t < PARAMS_SSL.endtime
     tic
@@ -69,8 +71,8 @@ while t < PARAMS_SSL.endtime
         if m > PARAMS_SSL.gmres_max
             fprintf('Recalculating Preconditioner\n');
             %M=J;
-            [M,~] = lu(J); 
-            %[M,~] = ilu(J); 
+            %[M,~] = lu(J); 
+            [M,~] = ilu(J); 
             %M=diag(J); % Invariant subspace
             J = JAC_FUNC(DIM_SSL, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS_SSL);
 
@@ -127,17 +129,25 @@ while t < PARAMS_SSL.endtime
         PARAMS_SSL.dt = min(PARAMS_SSL.dt * PARAMS_SSL.adaptive_timestep, PARAMS_SSL.max_dt);
     end
     
-    if (PARAMS_SSL.realtime_plot == true && mod(iters,25) == 0) || t >= PARAMS_SSL.endtime
+    if (PARAMS_SSL.realtime_plot == true && mod(iters,10) == 0) || t >= PARAMS_SSL.endtime
         VISUALISE(DIM_SSL, h, phi, T_SSL, phi_true, phi_avg);
     end
-    toc
+    Iteration_Time_SSL(end+1)=toc;
+    disp(['Iter Time ' num2str(Iteration_Time_SSL(end))])
+    Total_Time_SSL=Total_Time_SSL+Iteration_Time_SSL(end);
+
 end
+
 disp('Steady State Reached')
-toc
+disp(['Total Time ' num2str(Total_Time_SSL(end))])
+    
 save('T_SSL')
 save('h_store_SSL')
 save('Pumps_SSL')
 save('Evapot_SSL')
+save('Iteration_Time_SSL')
+save('Total_Time_SSL')
+
 % CREATE_VIDEO(wcontvideo, watercontent, 20);
 % CREATE_VIDEO(pheadvideo, pressurehead, 20);
 
