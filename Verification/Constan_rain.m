@@ -12,7 +12,7 @@ tic
  load('PARAMS_SSL')
 PARAMS_CONS=PARAMS_SSL;
 PARAMS_CONS.PUMPING=1;
-PARAMS_CONS.endtime=10*365;
+PARAMS_CONS.endtime=25*365;
 PARAMS_CONS.realtime_plot=1;
 save('PARAMS_CONS')
 % Get the grid & other info about grid
@@ -32,6 +32,7 @@ for i = 1:DIM_CONS.n*DIM_CONS.m
     phi(i) = WATER_CONTENT(DIM_CONS, h, S, i);
     k(i) = PERM(DIM_CONS, h, S, i);
 end
+
 % Initial calculation of F at t = dt
 F = VERIF_FVM(DIM_CONS, h, h_old, S_old, phi_old, k_old, PARAMS_CONS.dt, PARAMS_CONS);
 err = norm(F, 2);
@@ -51,7 +52,7 @@ k = k_old;
 T_CONS = 0;
 phi_avg = PHI_AVG(DIM_CONS, phi);
 phi_0 = phi_avg;
-phi_true = PHI_TRUE(DIM_CONS, PARAMS_CONS, 0, phi_0);
+phi_true = phi_0;
 
 % videoName_wcont = 'WaterContent.avi';
 % videoName_phead = 'PressureHead.avi';
@@ -129,7 +130,7 @@ while t < PARAMS_CONS.endtime
     
     T_CONS(end + 1) = t;
     phi_avg(end + 1) = PHI_AVG(DIM_CONS, phi);
-    phi_true(end + 1) = PHI_TRUE(DIM_CONS, PARAMS_CONS, t, phi_0);
+    phi_true(end + 1) = phi_0;%PHI_TRUE(DIM_CONS, PARAMS_CONS, t, phi_0);
     
     % We have now converged, so update variables
     h_old = h;
