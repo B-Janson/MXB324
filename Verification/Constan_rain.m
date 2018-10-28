@@ -14,7 +14,7 @@ PARAMS_CONS=PARAMS_SSL;
 PARAMS_CONS.PUMPING=1;
 PARAMS_CONS.endtime=25*365;
 PARAMS_CONS.realtime_plot=1;
-PARAMS_CONS.realtime_plot=1;
+PARAMS_CONS.PUMPS=[ 450, 10, 0.213; 100, 50, 0.427];
 save('PARAMS_CONS')
 % Get the grid & other info about grid
 load('DIM_SSL');

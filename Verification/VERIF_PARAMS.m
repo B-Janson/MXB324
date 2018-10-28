@@ -10,11 +10,9 @@ PARAMS.r_f          = [0.00171];  % rainfall constant [normal,flood,drought]
 PARAMS.r_t          = 1;        % rain type 1=normal, 2=flood, 3=drought
 PARAMS.r_m          = 2;        % rain model 1=constant, 2=cosine, 3=interpol
 
-% pumping rates
-PARAMS.PUMPS        = [ %  x,  z, m^2/day
-                         350, 10, 0.25
-                          50, 60, 0.125
-                      ];
+% pumping rates%  x,  z, m^2/day
+PARAMS.PUMPS        = [   450, 10, 0.213
+                          100, 50, 0.427];
 PARAMS.PUMPING      = 0;        % pumps start off
 PARAMS.town_rate    = 0.25;     % rate in m^2/s to extract from town bore
 PARAMS.bore_rate    = 0.125;    % rate in m^2/s to extract from crop bore

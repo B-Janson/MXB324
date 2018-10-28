@@ -15,6 +15,7 @@ PARAMS_LK.PUMPING=1;
 PARAMS_LK.endtime=25*365;
 PARAMS_LK.realtime_plot=1;
 PARAMS_LK.K_r=0.6;
+PARAMS_LK.PUMPS=[ 450, 10, 0.213; 100, 50, 0.427];
 save('PARAMS_LK')
 % Get the grid & other info about grid
 load('DIM_SSL');
