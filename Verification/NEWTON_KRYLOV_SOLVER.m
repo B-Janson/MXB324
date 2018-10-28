@@ -69,9 +69,9 @@ while t < PARAMS_SSL.endtime
         if m > PARAMS_SSL.gmres_max
             fprintf('Recalculating Preconditioner\n');
             %M=J;
-            %[M,~] = lu(J); 
+            [M,~] = lu(J); 
             %[M,~] = ilu(J); 
-             M=diag(J);
+            %M=diag(J); % Invariant subspace
             J = JAC_FUNC(DIM_SSL, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS_SSL);
 
         end
@@ -127,7 +127,7 @@ while t < PARAMS_SSL.endtime
         PARAMS_SSL.dt = min(PARAMS_SSL.dt * PARAMS_SSL.adaptive_timestep, PARAMS_SSL.max_dt);
     end
     
-    if PARAMS_SSL.realtime_plot == true
+    if (PARAMS_SSL.realtime_plot == true && mod(iters,25) == 0) || t >= PARAMS_SSL.endtime
         VISUALISE(DIM_SSL, h, phi, T_SSL, phi_true, phi_avg);
     end
     toc

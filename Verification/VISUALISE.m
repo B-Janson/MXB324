@@ -48,7 +48,7 @@ drawnow
 hold off
 xlabel('X (m)')
 ylabel('Z (m)')
-title('Water content (?)')
+title('Water content')
 
 subplot(1, 3, 3)
 hold on
@@ -57,7 +57,7 @@ plot(T/365, psi_true, 'r')
 legend('Simulation', 'Analytic', 'Location', 'southeast')
 title('Water Content (Simulation vs Analytic)')
 xlabel('Time (Years)')
-ylabel('Water Content (?)')
+ylabel('Water Content')
 hold off
 drawnow
 
