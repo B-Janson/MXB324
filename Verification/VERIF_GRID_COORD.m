@@ -7,7 +7,7 @@ HEIGHT = 80;
 
 DIM.WIDTH = WIDTH;
 DIM.HEIGHT = HEIGHT;
-PARAMS.uniform
+
 if PARAMS.uniform == 1
     
     % Discretisation in x
@@ -23,12 +23,12 @@ else
     DIM.x = [0,5,10:15:40,45,50,55,60:15:90,95,...
         100,105,linspace(110,340,9),345,350,355,...
         360:20:440,445,460:15:490,495,500];
-    n = length(DIM.x)
+    n = length(DIM.x);
     
     % Discretisation in z
     DIM.z = [0,1,2,4,8,12,16,20,24,28,29,30,31,32,34,36,...
         38,39,40,41,42,44,48,52,56,58,60,62,64,65,66,70,74,78,79,80];
-    m = length(DIM.z)
+    m = length(DIM.z);
 end
 
 % Ensure that all corner points are included
