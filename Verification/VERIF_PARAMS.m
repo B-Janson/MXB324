@@ -61,7 +61,7 @@ PARAMS.lambda       = 0.9;
 PARAMS.alpha       = 2;
 
 % debug and plots
-PARAMS.realtime_plot = true;    % should a plot of the solution be produced in realtime? 
+PARAMS.realtime_plot = false;    % should a plot of the solution be produced in realtime? 
 PARAMS.debug = true;            % should we display some debug status info
 
 end
