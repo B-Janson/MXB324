@@ -1,4 +1,4 @@
-%% Constant Rainfall With Pumps on
+%% Constant Rainfall,lower conductivity With Pumps on
 %Run from the steady state for 10 years to invesigate pumping
 
 
@@ -13,6 +13,7 @@ tic
 PARAMS_CONS=PARAMS_SSL;
 PARAMS_CONS.PUMPING=1;
 PARAMS_CONS.endtime=25*365;
+PARAMS_CONS.realtime_plot=1;
 PARAMS_CONS.realtime_plot=1;
 save('PARAMS_CONS')
 % Get the grid & other info about grid
