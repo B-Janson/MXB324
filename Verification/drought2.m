@@ -17,6 +17,8 @@ PARAMS_DROUGHT2_PUMPS.realtime_plot=1;
 PARAMS_DROUGHT2_PUMPS.PUMPS(1, 3) = 0.427;
 PARAMS_DROUGHT2_PUMPS.PUMPS(2, 3) = 0.213;
 PARAMS_DROUGHT2_PUMPS.df=86/624;
+PARAMS_DROUGHT2_PUMPS.K_r=0.6;
+PARAMS_DROUGHT2_PUMPS.max_dt=21;% 28 is to fast for the river to interact properly
 PARAMS_DROUGHT2_PUMPS.left_river   = [60; 60; 80; 50];%empty river
 save('PARAMS_DROUGHT2_PUMPS')
 % Get the grid & other info about grid
