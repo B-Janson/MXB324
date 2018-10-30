@@ -13,8 +13,8 @@ north = (DIM.r == n+1);
 DELTA = DIM.DELTA(point, :);
 dx = DELTA(2);
 dz = DELTA(4);
-% get the K values for the first quadrant only
-ST = DIM.ST(point, 1);
+% get the parameters for the first quadrant only
+ST = DIM.ST(point, 1); % soil type
 BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), r_f, h(point));
 K_xx = DIM.K_xx(ST);
 K_zz = DIM.K_zz(ST);
@@ -25,7 +25,7 @@ dt = PARAMS.dt;
 theta = PARAMS.theta;
 sigma = PARAMS.sigma;
 
-% calculate k
+% calculate k (using up winding test)
 if h(point) >= h(east)
     k_e_up   = k(point);
     k_e_down = k(east);

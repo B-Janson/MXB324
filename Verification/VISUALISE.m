@@ -10,7 +10,7 @@ m = DIM.m;
 Z = DIM.z;
 X = DIM.x;
 
-% revert grid to 'standard' view
+% revert vectors to 'standard' view
 h(DIM.r) = h;
 psi(DIM.r) = psi;
 
@@ -26,7 +26,7 @@ for j = m:-1:1
     end
 end
 
-% draw the surface plot and contour plot
+% draw the pressure head
 subplot(1, 3, 1)
 hold on
 surf(X, Z, H, 'EdgeColor','none')
@@ -39,6 +39,7 @@ xlabel('X (m)')
 ylabel('Z (m)')
 title('Pressure Head (m)')
 
+% draw the water content
 subplot(1, 3, 2)
 hold on
 surf(X, Z, PHI, 'EdgeColor','none')
@@ -50,6 +51,7 @@ xlabel('X (m)')
 ylabel('Z (m)')
 title('Water content')
 
+% draw the numerical v analytic solution
 subplot(1, 3, 3)
 hold on
 plot(T/365, psi_avg, 'b')

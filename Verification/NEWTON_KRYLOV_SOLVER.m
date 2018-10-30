@@ -2,6 +2,7 @@ close all
 clear
 clc
 format compact
+tic
 %% Part 0 Initialisation
 % Get the parameters to solve for
 [PARAMS_SSL] = VERIF_PARAMS;

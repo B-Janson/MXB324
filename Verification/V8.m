@@ -14,7 +14,7 @@ DELTA = DIM.DELTA(point, :);
 dx = DELTA(1:2);
 dz = DELTA(3);
 
-% get the K values for the first quadrant only
+% get the parameter values for the first quadrant only
 ST = DIM.ST(point, :);
 BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), r_f, h(point));
 K_xx = DIM.K_xx;

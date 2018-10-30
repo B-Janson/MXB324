@@ -15,7 +15,7 @@ DELTA = DIM.DELTA(point, :);
 dx = DELTA(1:2);
 dz = DELTA(3:4);
 ST = DIM.ST(point, :);
-% get the K values
+% get the parameter values
 K_xx = DIM.K_xx;
 K_zz = DIM.K_zz;
 % get total cell volume

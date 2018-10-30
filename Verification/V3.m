@@ -13,7 +13,7 @@ north = (DIM.r == n+n);
 DELTA = DIM.DELTA(point, :);
 dx = DELTA(1);
 dz = DELTA(4);
-% get the K values for the second quadrant only
+% get the parameter values for the second quadrant only
 ST = DIM.ST(point, 2);
 BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), r_f, h(point));
 K_xx = DIM.K_xx(ST);

@@ -1,6 +1,7 @@
 function jacobian = JAC_FUNC(DIM, F, FVM_func, h, h_old, S_old, phi_old, k_old, t, PARAMS)
-% Calculate the jacobian at the current time step
+% Estimate the jacobian
 
+% Get teh dimensions of the domain
 n = DIM.n;
 m = DIM.m;
 
@@ -33,10 +34,12 @@ switch PARAMS.method
             Fhs = FVM_func(DIM, h_shift, h_old, S_old, phi_old, k_old, t, PARAMS);
 
             % Update the column of the jacobian with the finite difference formula
-            jacobian(:,j) = (Fhs - F)/step;
+            jacobian(:,j) = (Fhs - F) / step;
         end
     case 'column'
+        % Get the total bandwidth
         b = DIM.b;
+        % Get the actual bandwidth back
         half_b = (b - 1) / 2;
         shifts = zeros(n*m, b); % Initialise array of shift vectors
         ep = zeros(1, b); % initialise vector of shift sizes
@@ -91,6 +94,9 @@ switch PARAMS.method
         end
 end
 
+% Store as a sparse matrix
+% In future endeavours, this would be created as sparse at this point using
+% the proper vector form.
 jacobian = sparse(jacobian);
 
 end

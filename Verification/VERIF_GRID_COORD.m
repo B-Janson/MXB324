@@ -8,6 +8,7 @@ HEIGHT = 80;
 DIM.WIDTH = WIDTH;
 DIM.HEIGHT = HEIGHT;
 
+% If we want a uniform mesh
 if PARAMS.uniform == 1
     
     % Discretisation in x
@@ -19,6 +20,9 @@ if PARAMS.uniform == 1
     n = length(DIM.x);
     m = length(DIM.z);
 else
+    % Otherwise we want non-linear and the (x,z) location of the node points
+    % can be specified here
+    
     % Discretisation in x
     DIM.x = [0,5,10:15:40,45,50,55,60:15:90,95,...
         100,105,linspace(110,340,9),345,350,355,...

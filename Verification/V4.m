@@ -14,7 +14,7 @@ south = (DIM.r == i-n);
 DELTA = DIM.DELTA(point, :);
 dx = DELTA(2);
 dz = DELTA(3:4);
-% get the K values
+% get the parameter values
 ST = DIM.ST(point, :);
 BC = BOUNDARY_CONDITIONS(DIM, PARAMS, DIM.XZ(point, :), r_f, h(point));
 K_xx = DIM.K_xx;

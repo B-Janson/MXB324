@@ -23,9 +23,4 @@ for i = 1:n*m
     k(i) = PERM(DIM, h, S, i);
 end
 
-% h(DIM.r) = h;
-% S(DIM.r) = S;
-% phi(DIM.r) = phi;
-% k(DIM.r) = k;
-
 end

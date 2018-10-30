@@ -1,5 +1,7 @@
 function sat_col = SAT_COLOUR()
 %SAT_COLOUR Returns the colour scheme to plot the saturation contour
+% Returns a 30 x 3 matrix of rgb values, where the r,g values decrease
+% linearly.
 
 sat_col = zeros(30, 3);
 
