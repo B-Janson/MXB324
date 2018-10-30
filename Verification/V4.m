@@ -1,4 +1,4 @@
-function f = V4(DIM, i, h, h_old, phi, phi_old, k, k_old, r_f, PARAMS)
+function [f, river] = V4(DIM, i, h, h_old, phi, phi_old, k, k_old, r_f, PARAMS)
 % V4  returns the f function evaulated at the left boundary of the
 %     grid
 
@@ -90,6 +90,8 @@ gamma_3 = BC(2) * dz(2) / 2;
 gamma_4 = BC(1) * dz(1) / 2;
 gamma_5 = -k_s * K_zz(ST(4)) * dx / 2 * ((h(south) - h(point))/dz(1) - 1);
 gamma_6 = -k_e * K_xx(ST(4)) * dz(1) / 2 * ((h(east) - h(point))/dx);
+
+river = gamma_3 + gamma_4;
 
 gamma_1_old = -k_e_old * K_xx(ST(1)) * dz(2) / 2 * ((h_old(east) - h_old(point))/dx);
 gamma_2_old = -k_n_old * K_zz(ST(1)) * dx / 2 * ((h_old(north) - h_old(point))/dz(2) + 1);

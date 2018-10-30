@@ -255,7 +255,7 @@ S_P = zeros(num_nodes, 1);
 for pump = 1:num_pumps
     for i = 1:num_nodes
         if XZ(i, 1) == PARAMS.PUMPS(pump, 1) && XZ(i, 2) == PARAMS.PUMPS(pump, 2)
-            S_P(i) = PARAMS.PUMPS(pump, 3);
+            S_P(i) = -PARAMS.PUMPS(pump, 3);
             break;
         end
     end

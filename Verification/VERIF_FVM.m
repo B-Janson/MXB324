@@ -1,4 +1,4 @@
-function [F, S, phi, k, PUMPS, EVAPOTS] = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS)
+function [F, S, phi, k, PUMPS, EVAPOTS, river, total_rain] = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS)
 %VERIF_FVM function to calculate the finite volume method for each cell
 %over the domain
 % INPUTS
@@ -30,6 +30,9 @@ phi = phi_old;
 k = k_old;
 % Get the value of q dot n at the surface boundary
 r_f = RAINFALL(PARAMS, t);
+total_rain = r_f * PARAMS.dt / DIM.HEIGHT;
+% initialise amount lost to water
+river = 0;
 
 % Calculate the new estimates for the closure conditions using this head
 for i = 1:n*m
@@ -48,7 +51,8 @@ for i = 1:n*m
         case 3
             F(i) = V3(DIM, h, h_old, phi, phi_old, k, k_old, r_f, PARAMS);
         case 4
-            F(i) = V4(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, r_f, PARAMS);
+            [F(i), node_river] = V4(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, r_f, PARAMS);
+            river = river + node_river;
         case 5
             F(i) = V5(DIM, DIM.r(i), h, h_old, phi, phi_old, k, k_old, r_f, PARAMS);
         case 6
@@ -64,10 +68,12 @@ for i = 1:n*m
     end
 end
 
+river = river * PARAMS.dt / (DIM.WIDTH * DIM.HEIGHT);
+
 % Source terms
 [PUMPS, EVAPOTS] = SOURCE_EVAL(DIM, PARAMS, phi, r_f);
-total_source = PUMPS + EVAPOTS;
+total_source = (PUMPS + EVAPOTS);
 
-F = F - PARAMS.dt * (PARAMS.theta * total_source + (1 - PARAMS.theta) * total_source);
+F = F - (PARAMS.theta * total_source + (1 - PARAMS.theta) * total_source);
 
 end

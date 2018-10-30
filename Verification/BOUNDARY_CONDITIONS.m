@@ -35,8 +35,8 @@ if x == 0
     elseif z > PARAMS.left_river(2)
         % Above river head
         if h + z > PARAMS.left_river(2)
-            BC(1) = -PARAMS.K_r * (PARAMS.left_river(2) - (z)) / PARAMS.left_river(3);
-            BC(2) = -PARAMS.K_r * (PARAMS.left_river(2) - (z)) / PARAMS.left_river(3);
+            BC(1) = -PARAMS.K_r * (PARAMS.left_river(2) - (h + z)) / PARAMS.left_river(3);
+            BC(2) = -PARAMS.K_r * (PARAMS.left_river(2) - (h + z)) / PARAMS.left_river(3);
         end
     else
         % Nothing because bedrock
