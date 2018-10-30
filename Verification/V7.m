@@ -1,12 +1,19 @@
-function f = V7(DIM, i, h, h_old, phi, phi_old, k, k_old, t, PARAMS)
+function f = V7(DIM, h, h_old, phi, phi_old, k, k_old, RT, PARAMS)
 % Top Left
 
 n = DIM.n;
+m=DIM.m;
 
 % find which index we want from the re-arranged matrix
+<<<<<<< HEAD
 point = (DIM.r == i);
 east = (DIM.r == i+1);
 south = (DIM.r == i-n);
+=======
+point = find((DIM.r == n*(m-1)+1));
+east = find((DIM.r == n*(m-1)+2));
+south = find((DIM.r == n*(m-2)+1));
+>>>>>>> master
 
 % get the dx and dz values
 DELTA = DIM.DELTA(point, :);
@@ -23,12 +30,12 @@ cell_volume = DIM.VOL(point, 5);
 dt = PARAMS.dt;
 theta = PARAMS.theta;
 sigma = PARAMS.sigma;
-r_f = PARAMS.r_f(PARAMS.r_t);
-active_flow = 1;
+
+SAT = 1;
 
 % if the water table has reached this point, don't keep pouring in water
 if h_old(point) >= 0
-   active_flow = 0; 
+   SAT = 0; 
 end
 
 % calculate k
@@ -72,6 +79,7 @@ k_s_old = k_s_up_old + sigma / 2 * (k_s_down_old - k_s_up_old);
 
 % calculate line integrals
 gamma_1 = -k_e * K_xx * dz / 2 * ((h(east) - h(point))/dx);
+<<<<<<< HEAD
 gamma_2 = -active_flow * r_f * dx / 2;
 gamma_3 = BC(2) * dz / 2;
 gamma_4 = -k_s * K_zz * dx / 2 * ((h(south) - h(point))/dz - 1);
@@ -79,6 +87,14 @@ gamma_4 = -k_s * K_zz * dx / 2 * ((h(south) - h(point))/dz - 1);
 gamma_1_old = -k_e_old * K_xx * dz / 2 * ((h_old(east) - h_old(point))/dx);
 gamma_2_old = -active_flow * r_f * dx / 2;
 gamma_4_old = -k_s_old * K_zz * dx / 2 * ((h_old(south) - h_old(point))/dz - 1);
+=======
+gamma_2 = -SAT * RT * dx / 2;
+gamma_3 = -k_s * K_zz * dx / 2 * ((h(south) - h(point))/dz - 1);
+
+gamma_1_old = -k_e_old * K_xx * dz / 2 * ((h_old(east) - h_old(point))/dx);
+gamma_2_old = -SAT * RT * dx / 2;
+gamma_3_old = -k_s_old * K_zz * dx / 2 * ((h_old(south) - h_old(point))/dz - 1);
+>>>>>>> master
 
 % evaluate f function
 f = phi(point) - phi_old(point) + dt/cell_volume * ... 

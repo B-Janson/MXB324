@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 function [DIM]=VERIF_GRID_COORD(PARAMS, BC)
+=======
+function [DIM]=VERIF_GRID_COORD(LIN,PUMPS,EVAPOT)
+>>>>>>> master
 % GRIDCOORD returns the dimension of the grid
 
 % Width and height of aquifer
@@ -8,20 +12,44 @@ HEIGHT = 80;
 DIM.WIDTH = WIDTH;
 DIM.HEIGHT = HEIGHT;
 
+<<<<<<< HEAD
 % number of horizontal node points
 n = PARAMS.n;
 % number of vertical node points
 m = PARAMS.m;
+=======
+>>>>>>> master
 
 num_nodes = n * m;
 
 % Keep it uniform for now
 
 % Discretisation in x
+<<<<<<< HEAD
 DIM.x = linspace(0, WIDTH, n);
 DIM.n = n;
+=======
+DIM.x=[0,5,10:10:40,60:10:340,360:10:490,495,WIDTH];
+%Make sure the boundaries are included
+
+DIM.x(end+1:end+14)=[40,45,48,50,52,55,60,340,345,348,350,352,355,360];
+
+DIM.x(end+1)=WIDTH;
+
+%Tidy up
+x=unique(DIM.x);
+DIM.x=x;
+n=length(DIM.x);
+if LIN(1) == 1
+    DIM.x=0:10:WIDTH;
+    n=length(DIM.x);%If you want the linear version
+end
+DIM.n=n;
+>>>>>>> master
+
 
 % Discretisation in z
+<<<<<<< HEAD
 DIM.z = linspace(0, HEIGHT, m);
 DIM.m = m;
 
@@ -31,6 +59,38 @@ X = X';
 Z = Z';
 XZ = [X(:), Z(:)];
 DIM.XZ = XZ;
+=======
+DIM.z=[5:10:35,55:10:75];
+
+
+DIM.z(end+1)=HEIGHT;
+DIM.z(end+1)=HEIGHT-1;
+DIM.z(end+1)=HEIGHT-2.5;
+DIM.z(end+1:end+7)=[37.5,40,42.5,45,47.5,50,52.5];
+DIM.z(end+1)=2.5;
+DIM.z(end+1)=1;
+DIM.z(end+1)=0;
+
+%Tidy up
+z=unique(DIM.z);
+DIM.z=z;
+m=length(DIM.z);
+if LIN(2) == 1
+    DIM.z=0:2:80;
+    m=length(DIM.z);
+    %If you want the Linear version
+end
+DIM.m=m;
+
+num_o_nodes = n * m
+
+%Create coordinate vector
+[X,Z]=meshgrid(DIM.x,DIM.z);
+X=X';
+Z=Z';
+XZ=[X(:),Z(:)];
+DIM.XZ=XZ;
+>>>>>>> master
 
 % Create the distance matrix
 
@@ -53,7 +113,7 @@ end
 dz(DIM.m,1) = DIM.z(DIM.m) - DIM.z(DIM.m-1);
 
 % Create the big distances matrix
-DELTA=zeros(num_nodes, 4);
+DELTA=zeros(num_o_nodes, 4);
 
 c=0;
 for i=0:n:n*(m-1)
@@ -90,12 +150,12 @@ confining = 2;
 sandstone = 3;
 
 % Set node point constants
-DIM.ST = zeros(num_nodes, 4);
+DIM.ST = zeros(num_o_nodes, 4);
 
 % Set all cells to be Sandstone
 DIM.ST(:, :) = sandstone;
 
-for i = 1:num_nodes
+for i = 1:num_o_nodes
     x = XZ(i, 1);
     z = XZ(i, 2);
     if 0 <= x && x < 50 && z == 30
@@ -200,6 +260,7 @@ end
 % Assign a node type to each vertex,
 % Just the baby problem for now
 % Add in the river nodes later
+<<<<<<< HEAD
 NT = zeros(num_nodes, 1);
 
 for i = 1:m*n
@@ -215,11 +276,30 @@ for i = 1:m*n
     elseif XZ(i, 1) == WIDTH
         % Right edge
         NT(i) = 6;
+=======
+NT = zeros(num_o_nodes, 1);
+
+
+for i=1:m*n
+    if XZ(i,2) == 0
+        %Bottom edge
+        NT(i)=2;
+    elseif XZ(i,2) == 80
+        %Top edge
+        NT(i)=8;
+    elseif XZ(i,1) == 0
+        %Left edge
+        NT(i)=4;
+    elseif XZ(i,1) == 500
+        %Right edge
+        NT(i)=6;
+>>>>>>> master
     else
         % Interior
         NT(i) = 5;
     end
 end
+<<<<<<< HEAD
 
 % Bottom Left
 NT(1) = 1;
@@ -278,6 +358,88 @@ DIM.b = b;
 
 % Reorder Everything
 DIM.XZ = DIM.XZ(r, :);
+=======
+%Bottom Left
+NT(1)=1;
+%Bottom Right
+NT(n)=3;
+%Top Left
+NT(n*(m-1)+1)=7;
+%Top Right
+NT(end)=9;
+
+%Discover layout of the jacobian
+B=gallery('tridiag',num_o_nodes,1,1,1);
+L=n;
+U=num_o_nodes;
+for i = 1:n*(m-1)
+    B(L,i)=1;
+    B(U-n,U)=1;
+    L=L+1;
+    U=U-1;
+end
+
+%% Pump Terms
+%Each pump takes up a row of PUMPS=[x,z,fraction of annual rainfall]
+
+
+S_P=zeroes(num_o_nodes,1);
+[LP,~]=size(PUMPS);
+j=1;
+while j <= LP
+    for i=1:num_o_nodes        
+        if (DIM.XZ(1,i) == PUMPS(j,1)) &&(DIM.XZ(1,i) == PUMPS(j,1))
+            S_P(i)=PUMPS(3,j);
+            j=j+1;
+            break
+        end
+    end
+end
+
+
+%% Evapotranspiration Terms 
+%Defines a region of evapotranspiration as such [L,R,Depth,fraction of annual rainfall] 
+
+S_E=zeroes(num_o_nodes,1);
+[LE,~]=size(EVAPOT);
+j=1;
+
+while j <= LE
+    DEPTH=EVAPOT(j,3);
+    for i=1:num_o_nodes        
+        %Check if point is in jth evapotranspiration zone
+        if ((DIM.XZ(1,i) <= EVAPOT(j,2)) &&(DIM.XZ(1,i) >= EVAPOT(j,1))) %Check X-direction
+            if (DIM.XZ(2,i) >= HEIGHT-DEPTH) %Check Z-direction
+            S_E(i)=-EVAPOT(j,4)*(DIM.z(i,2)-WIDTH+DEPTH)^2/(DEPTH)^2;%Q(z) in the evapotranspiration zone           
+            end
+        end
+    end 
+    j=j+1;
+end
+
+
+
+%Check how much water is beeing sucked out
+if (sum(EVAPOT(:,4)+sum(PUMPS(:,3))) >= 1)
+    disp('Caution! Too much SUCC')
+end
+
+%% Reordering
+
+%RCM reorder the jacobian
+r=symrcm(B);
+b=bandwidth(B(r,r));
+Weightloss=2*(bandwidth(B)-bandwidth(B(r,r)))
+DIM.r=r;
+DIM.b=b;
+
+%Reorder Everything
+DIM.S_P=S_P(r);
+DIM.S_E=S_E(r);
+DIM.PUMPS=PUMPS(r,:);
+DIM.EVAPO=EVAPOT(r,:);
+DIM.XZ = DIM.XZ(r,:);
+>>>>>>> master
 DIM.NT = NT(r);
 DIM.ST = DIM.ST(r, :);
 DIM.DELTA = DIM.DELTA(r, :);

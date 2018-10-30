@@ -5,9 +5,15 @@ function f = V3(DIM, h, h_old, phi, phi_old, k, k_old, PARAMS)
 n = DIM.n;
 
 % find which index we want from the re-arranged matrix
+<<<<<<< HEAD
 point = (DIM.r == n);
 west = (DIM.r == n-1);
 north = (DIM.r == n+n);
+=======
+point = find((DIM.r == n));
+west = find((DIM.r == n-1));
+north =find((DIM.r == n+n));
+>>>>>>> master
 
 % get the dx and dz values
 DELTA = DIM.DELTA(point, :);

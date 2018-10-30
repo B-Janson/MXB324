@@ -8,14 +8,41 @@ format compact
 % Get the boundary conditions
 [BC] = BOUNDARY_CONDITIONS(PARAMS);
 % Get the grid & other info about grid
+<<<<<<< HEAD
 [DIM] = VERIF_GRID_COORD(PARAMS, BC);
+=======
+% Decide on source terms
+
+%Switch for linearity. 1=linear other=other. Like[X,Z]
+LIN=[1,1];
+
+%PUMPS. Add more lines as [x,z,fraction of rainfall]
+PUMPS=[100,50,0.5;... %Town Pump
+      450,10,0.25];   %Farm Pump
+  
+%Evapotranspiration zones. define as [L,R,Depth,fraction of rainfall]
+EVAPOT=[0,350,2,0.025;... %Alluviam zone
+        350,500,4,0.035]; %Sandstone zone
+
+%Precalculate everything to do with the domain
+[DIM] = VERIF_GRID_COORD(LIN,PUMPS,EVAPOT);
+
+>>>>>>> master
 % Get initial conditions
 [h_old, S_old, phi_old, k_old] = VERIF_INIT_COND(DIM);
-
 h = h_old;
 
+%Calculate Initial Rainfall
+
+RT=PARAMS.r_f;
+
+
+%% Lachys time to shine
+%We need an anonymous function to output the rainfall at a certain time
+%
+
 % Initial calculation of F at t = dt
-F = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
+F = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PUMPERS_old, EVAPERS_old, RT, PARAMS);
 err = norm(F, 2);
 err_old = err;
 
@@ -25,8 +52,13 @@ f_eval_total = 1;
 framenum = 1;
 
 % Get the jacobian
+<<<<<<< HEAD
 J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, PARAMS.dt, PARAMS);
 M = ilu(J);
+=======
+J = JAC_FUNC(DIM, F, @VERIF_FVM, DIM, h, h_old, S_old, phi_old, k_old, PUMPERS_old, EVAPERS_old, RT, PARAMS);
+% total_bandwidth = bandwidth(J);
+>>>>>>> master
 
 h = h_old;
 S = S_old;
@@ -51,7 +83,7 @@ if PARAMS.realtime_plot
     phi_figure = figure('Name', 'Water Content');
 %     sat_figure = figure('Name', 'Saturation');
     SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(0)], h);
-    SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(0)], phi);
+    SOL_VIS(DIM, phi_figure, 'parula', ['Water Content Time: ', num2str(0)], phi);
 %     SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(0)], S);
     
     analytic_figure = figure('Name', 'Analytic');
@@ -69,12 +101,14 @@ dh_guess = zeros(DIM.n * DIM.m, 1);
 tic;
 while steady_state == false && t < PARAMS.endtime
     t = t + PARAMS.dt;
+    %recalculate rainfall
     timesteps = timesteps + 1;
     
     while err > PARAMS.tol_a + PARAMS.tol_r * err_old && iters < PARAMS.max_iters
 %         rho = err / err_old;
         if mod(iters, PARAMS.jacobian_update) == 0 && err > PARAMS.tol_r * 10 || rho > PARAMS.rho_min
             J_old=J;
+<<<<<<< HEAD
             J = JAC_FUNC(DIM, F, @VERIF_FVM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
             M = ilu(J);
             fevals = fevals + DIM.n * DIM.m;
@@ -87,12 +121,24 @@ while steady_state == false && t < PARAMS.endtime
             dh = J\(-F);
         end
         
+=======
+            J = JAC_FUNC(DIM, F, @VERIF_FVM, DIM, h, h_old, S_old, phi_old, k_old, PUMPERS_old, EVAPERS_old, RT, PARAMS);
+            fevals = fevals + DIM.n * DIM.m;
+        end
+        
+        % Get the del h
+        dh = J\(-F); %This line is now in Jsolv
+>>>>>>> master
         % Update estimate for current timestep's h
-        h = LineSearch(DIM, @VERIF_FVM, h, dh, h_old, S_old, phi_old, k_old, t, PARAMS);
+        h = LineSearch(DIM, @VERIF_FVM, DIM, h, h_old, S_old, phi_old, k_old, PUMPERS_old, EVAPERS_old, RT, PARAMS);
 
         % Update F and all other variables for this time step
+<<<<<<< HEAD
         [F, S, phi, k] = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, t, PARAMS);
         rho = norm(F, 2) / err;
+=======
+        [F, S, phi, k] = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PUMPERS_old, EVAPERS_old, RT, PARAMS);
+>>>>>>> master
         err = norm(F, 2);
         iters = iters + 1;
         fevals = fevals + 1;
@@ -107,8 +153,22 @@ while steady_state == false && t < PARAMS.endtime
         if iters == PARAMS.max_iters - 1 || err > 1e12
             iters = 0;
             t = t - PARAMS.dt;
-            PARAMS.dt = PARAMS.dt / 2;
+            PARAMS.dt = PARAMS.dt / 3;
             t = t + PARAMS.dt;
+<<<<<<< HEAD
+=======
+            %Recalculate rainfall
+            if PARAMS.dt < 5
+                
+            end
+        end
+        
+        % If pressure head is positive at surface, steady state reached
+        if min(h) >= 0
+            fprintf('steady state\n')
+            steady_state = true;
+            break
+>>>>>>> master
         end
         
     end
@@ -129,7 +189,7 @@ while steady_state == false && t < PARAMS.endtime
     k_old = k;
     
     % Recalculate base error
-    F = VERIF_FVM(DIM, h, h, S, phi, k, t, PARAMS);
+    F = VERIF_FVM(DIM, h, h_old, S_old, phi_old, k_old, PUMPERS_old, EVAPERS_old, RT, PARAMS);
     err = norm(F, 2);
     err_old = err;
     
@@ -147,7 +207,7 @@ while steady_state == false && t < PARAMS.endtime
     if PARAMS.realtime_plot == true
         SOL_VIS(DIM, head_figure, 'gray', ['Pressure Head (m) Time: ', num2str(t)], h);
 %         pressurehead(framenum) = getframe(gcf);
-        SOL_VIS(DIM, phi_figure, sat_col, ['Water Content Time: ', num2str(t)], phi);
+        SOL_VIS(DIM, phi_figure, 'parula', ['Water Content Time: ', num2str(t)], phi);
 %         watercontent(framenum) = getframe(gcf);
 %         SOL_VIS(DIM, sat_figure, sat_col, ['Saturation Time: ', num2str(t)], S);
         
@@ -156,6 +216,8 @@ while steady_state == false && t < PARAMS.endtime
     end
     
 end
+
+
 disp('Steady State Reached')
 toc
 
@@ -163,6 +225,7 @@ save('steady_state_1')
 
 % CREATE_VIDEO(wcontvideo, watercontent, 20);
 % CREATE_VIDEO(pheadvideo, pressurehead, 20);
+<<<<<<< HEAD
 
 PARAMS.PUMPS=1;
 
@@ -171,3 +234,5 @@ clear
 close all
 load('steady_state_1.mat')
 
+=======
+>>>>>>> master
